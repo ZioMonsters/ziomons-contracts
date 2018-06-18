@@ -4,10 +4,25 @@ import "./ERCCore.sol";
 
 contract CryptoMon is ERCCore {
 	
-	event Unboxed(address indexed _player, uint256[6] _monsters);
-	event ForSale(address indexed _player, uint256 indexed _price);
-	event Bought(address indexed _from, address indexed _to, uint256 _id);
-	event Results(address indexed _defender, address indexed _attacker, address indexed _winner, uint256 _price);
+	event Unboxed(
+		address indexed _player,
+		uint256[6] _monsters
+	);
+	event ForSale(
+		address indexed _player,
+		uint256 indexed _price
+	);
+	event Bought(
+		address indexed _from,
+		address indexed _to,
+		uint256 _id
+	);
+	event Results(
+		address indexed _defender,
+		address indexed _attacker,
+		address indexed _winner,
+		uint256 _price
+	);
 
 	function unbox() public payable running returns(uint256[6]) {
 		//TODO
