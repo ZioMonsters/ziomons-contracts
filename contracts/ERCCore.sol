@@ -23,7 +23,7 @@ contract ERCCore is Core {
         require(owner[_tokenId] != address(0));
         return owner[_tokenId];
     }
-
+/* TODO:Fix safetransfer
     function safeTransferFrom(
         address _from,
         address _to,
@@ -54,7 +54,7 @@ contract ERCCore is Core {
     {
         safeTransferFrom(_from, _to, _tokenId, "");
     }
-
+*/
     function transferFrom(
         address _from,
         address _to,
