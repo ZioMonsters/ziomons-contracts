@@ -109,7 +109,7 @@ contract CryptoMon is ERCCore {
 		running
 		returns(bool)
 	{
-		/* TODO */
+		startMatch(_team, onDefence[_opponent].deck);
 	}
 
 	function sellMonster(
