@@ -1,9 +1,8 @@
 pragma solidity ^0.4.24;
 
-import "./Mortal.sol";
 import "./Interfaces.sol";
 
-contract Core is Mortal, ERC721, ERC165, ERC721Receiver {
+contract Core is State, ERC721, ERC165, ERC721Receiver {
 	struct Monster {
 		uint8 atk;
 		uint8 def;

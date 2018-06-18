@@ -1,6 +1,8 @@
 pragma solidity ^0.4.24;
 
-contract GameState{
+import "./Mortal.sol";
+
+contract State is Mortal{
 	bool running;
 
 	event RunningStateChanged(bool indexed _state);
