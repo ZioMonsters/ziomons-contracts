@@ -1,6 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "./Core.sol";
+import "./SafeMath.sol";
 
 contract ERCCore is Core {
     using SafeMath for uint;
@@ -119,7 +120,7 @@ contract ERCCore is Core {
         returns (bool)
     {
         bytes4 InterfaceSignature_ERC165 =
-            bytes4(keccak256('supportsInterface(bytes4)'));                                                                                                   
+            bytes4(keccak256('supportsInterface(bytes4)'));
 
         bytes4 InterfaceSignature_ERC721 =
             bytes4(keccak256('balanceOf(address)')) ^

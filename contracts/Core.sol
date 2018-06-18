@@ -13,7 +13,11 @@ contract Core is ERC721, ERC165, ERC721Receiver {
 		uint8 lvl;
 		uint16 exp;
 		Rarity rarity;
-		uint8 energy;
+	}
+
+	struct Defender {
+		uint[5] deck;
+		bool isDefending;
 	}
 
 	Monster[] monsters;
@@ -21,6 +25,7 @@ contract Core is ERC721, ERC165, ERC721Receiver {
 	mapping(address => uint256) balance;
 	mapping(address => mapping(address => bool)) approvedForAll;
 	mapping(uint256 => address) approved;
+	mapping(address => Defender) onDefence;
 
 	modifier isAuthorized(address _sender, uint256 _id) {
 		require(
