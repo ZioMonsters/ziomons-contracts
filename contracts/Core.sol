@@ -1,8 +1,9 @@
 pragma solidity ^0.4.24;
 
 import "./Interfaces.sol";
+import "./State.sol";
 
-contract Core is ERC721, ERC165, ERC721Receiver {
+contract Core is State, ERC721, ERC165, ERC721Receiver {
 
 	enum Rarity {common, rare, epic, legendary}
 
@@ -13,11 +14,14 @@ contract Core is ERC721, ERC165, ERC721Receiver {
 		uint8 lvl;
 		uint16 exp;
 		Rarity rarity;
+<<<<<<< HEAD
 	}
 
 	struct Defender {
 		uint[5] deck;
 		bool isDefending;
+=======
+>>>>>>> 00a535849d1b629c2e488d0db0f1b8b960897589
 	}
 
 	Monster[] monsters;
@@ -26,6 +30,8 @@ contract Core is ERC721, ERC165, ERC721Receiver {
 	mapping(address => mapping(address => bool)) approvedForAll;
 	mapping(uint256 => address) approved;
 	mapping(address => Defender) onDefence;
+
+	mapping(uint256 => uint256) inSale;
 
 	modifier isAuthorized(address _sender, uint256 _id) {
 		require(

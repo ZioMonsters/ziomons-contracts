@@ -8,7 +8,7 @@ contract Owned {
     address contractOwner;
     address newOwner;
 
-    event OwnershipTransfered(
+    event OwnershipTransferred(
         address indexed _from,
         address indexed _to
     );
@@ -28,7 +28,7 @@ contract Owned {
 
     function acceptOwnership() external {
         require(msg.sender == newOwner, "You are not the designated god");
-        emit OwnershipTransfered(contractOwner, newOwner);
+        emit OwnershipTransferred(contractOwner, newOwner);
         contractOwner = newOwner;
         newOwner = address(0);
     }

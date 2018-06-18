@@ -7,35 +7,39 @@ contract CryptoMon is ERCCore {
 	event Unboxed(
 		address indexed _player,
 		uint256[6] _monsters
-	);
-	event ForSale(
-		address indexed _player,
-		uint256 indexed _price
-	);
-	event Bought(
-		address indexed _from,
-		address indexed _to,
-		uint256 _id
-	);
-	event Results(
-		address indexed _defender,
-		address indexed _attacker,
-		address indexed _winner,
-		uint256 _price
-	);
+    );
+    event ForSale(
+        address indexed _player,
+        uint256 indexed _price
+    );
+    event Bought(
+        address indexed _from,
+        address indexed _to,
+        uint256 _id
+    );
+    event Results(
+        address indexed _defender,
+        address indexed _attacker,
+        address indexed _winner,
+        uint256 _price
+    );
 
 	uint8 standardBoxPrice = 2;
 	uint8 plusBoxPrice = 5;
 	uint8 maxiBoxPrice  = 8;
-	uint8 i = 0;
 
-
-	uint256 seed = now;
+    constructor() public {
+        uint256 seed = now;
+        for (uint i = 0; i < 255; i++) {
+            monsters.push(Monster(1, 1, 1, 1, 1, common, 1));
+            owner[i] = msg.sender;
+        }
+    }
 
 	function random ()
 		internal
 		pure
-		returns (uint256)
+		returns(uint256)
 	{
 		seed = (4832897258932085 * seed + 34732894208) % 4325352;
 		return seed;
@@ -44,7 +48,7 @@ contract CryptoMon is ERCCore {
 	function genMonster(uint8 _modPack)
 		internal
 		pure
-		returns (Monster)
+		returns(Monster)
 	{
 
 		uint8 _modRarity = ( random()%(100-_modPack) == 42)? 6: (random()%(1000-(_modPack*5)) == 42)? 8: (random()%(10000-(_modPack*10)) == 42)? 9:5;
@@ -65,6 +69,7 @@ contract CryptoMon is ERCCore {
 		returns(uint256[6])
 	{
 		require(msg.value >= standardBoxPrice);
+		uint8 i = 0;
 		if (msg.value >= maxiBoxPrice ) {
 			for (i = 0; i<6; i++) {
 				owner[monsters.length] = msg.sender;
@@ -122,7 +127,8 @@ contract CryptoMon is ERCCore {
 		public
 		payable
 		running
-		returns(bool) {
+		returns(bool)
+    {
 		//TODO
 	}
 

@@ -16,8 +16,8 @@ contract ERCCore is Core {
     }
 
     function ownerOf(uint256 _tokenId)
-    external
-    view
+        external
+        view
     returns(address)
     {
         require(owner[_tokenId] != address(0));
@@ -60,7 +60,7 @@ contract ERCCore is Core {
         address _to,
         uint256 _tokenId
     )
-        external
+        public
         payable
         isAuthorized(msg.sender, _tokenId)
     {
