@@ -28,22 +28,17 @@ contract CryptoMon is ERCCore {
 	uint8 plusBoxPrice = 5;
 	uint8 maxiBoxPrice  = 8;
 
+    uint256 seed;
+
     constructor() public {
-        uint256 seed = now;
+        seed = now;
         for (uint i = 0; i < 255; i++) {
             monsters.push(Monster(1, 1, 1, 1, 1, common, 1));
             owner[i] = msg.sender;
         }
     }
 
-	function random ()
-		internal
-		pure
-		returns(uint256)
-	{
-		seed = (4832897258932085 * seed + 34732894208) % 4325352;
-		return seed;
-	}
+
 
 	function genMonster(uint8 _modPack)
 		internal
