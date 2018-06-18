@@ -40,7 +40,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 		_;
 	}
 
-    function startMatch(uint[5] t1, uint[5] t2) {}
+    function startMatch(uint[5] t1, uint[5] t2) { uint8 a;}
 
     function random()
         internal
