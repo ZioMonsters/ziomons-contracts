@@ -14,14 +14,11 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 		uint8 lvl;
 		uint16 exp;
 		Rarity rarity;
-<<<<<<< HEAD
 	}
 
 	struct Defender {
 		uint[5] deck;
 		bool isDefending;
-=======
->>>>>>> 00a535849d1b629c2e488d0db0f1b8b960897589
 	}
 
 	Monster[] monsters;
