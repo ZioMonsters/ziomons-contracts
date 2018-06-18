@@ -36,7 +36,7 @@ contract CryptoMon is ERCCore {
         }
     }
 
-	function genMonster(uint _modPack)
+	function generateMonster(uint _modPack)
 		internal
 		returns(Monster)
 	{
@@ -58,28 +58,27 @@ contract CryptoMon is ERCCore {
 		running
 		returns(uint256[6])
 	{
-		require(msg.value >= standardBoxPrice);
-		uint8 i = 0;
-		if (msg.value >= maxiBoxPrice ) {
-			for (i = 0; i<6; i++) {
-				owner[monsters.length] = msg.sender;
-				monsters.push(genMonster(20));
-				balance[msg.sender] = balance[msg.sender].add(1);
-			}
-		} else if (msg.value >= plusBoxPrice) {
-			for (i = 0; i<6; i++){
-				owner[monsters.length] = msg.sender;
-				monsters.push(genMonster(10));
-				balance[msg.sender] = balance[msg.sender].add(1);
-			}
-		} else {
-			for (i = 0; i<6; i++) {
-            owner[monsters.length] = msg.sender;
-                monsters.push(genMonster(0));
-            balance[msg.sender] = balance[msg.sender].add(1);
-            }
-		}
+        uint8 _modifier;
+        if (msg.value >= maxiBoxPrice)
+            _modifier = 20;
+        else if (msg.value >= plusBoxPrice)
+            _modifier = 10;
+        else if (msg.value >= standardBoxPrice)
+            _modifier = 0;
+        else
+            revert();
 
+        uint256[6] _id;
+
+        for (uint8 i = 0; i < 6; i++) {
+            owner[monsters.length] = msg.sender;
+            monsters.push(generateMonster(_modifier));
+            _id.push(monsters.length.sub(1));
+            balance[msg.sender] = balance[msg.sender].add(1);
+        }
+
+        emit Unboxed(msg.sender, _id);
+        return _id;
 	}
 
 	function defend(uint256[5] _team)
@@ -99,6 +98,7 @@ contract CryptoMon is ERCCore {
 		running
 		returns(bool)
 	{
+        
 		startMatch(_team, onDefence[_opponent].deck);
 	}
 
