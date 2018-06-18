@@ -113,13 +113,15 @@ contract CryptoMon is ERCCore {
 
 	function sellMonster(
 		uint256 _id,
-		uint256 price
+		uint256 _price
 	)
 		public
 		running
-		returns(bool)
+        isAuthorized(msg.sender, _id)
+        returns(bool)
 	{
-		//TODO
+		inSale[_id] = _price;
+        emit ForSale(msg.sender, _price);
 	}
 
 	function buyMonster(uint256 _id)
