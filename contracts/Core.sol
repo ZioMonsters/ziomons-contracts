@@ -4,13 +4,16 @@ import "./Mortal.sol";
 import "./Interfaces.sol";
 
 contract Core is Mortal, ERC721, ERC165, ERC721Receiver {
+
+	enum Rarity {common, rare, epic, legendary}
+
 	struct Monster {
 		uint8 atk;
 		uint8 def;
 		uint8 spd;
 		uint8 lvl;
 		uint16 exp;
-		uint8 rarity;
+		Rarity rarity;
 		uint8 energy;
 	}
 
@@ -20,5 +23,7 @@ contract Core is Mortal, ERC721, ERC165, ERC721Receiver {
 	mapping(address => mapping(address => bool)) approvedForAll;
 	mapping(address => mapping(uint256 => address)) approved;
 	mapping(uint => mapping(address => address)) tokenIdToApprovedAddress;
+
+
 
 }

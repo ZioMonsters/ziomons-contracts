@@ -3,7 +3,7 @@ pragma solidity ^0.4.24;
 import "./ERCCore.sol";
 
 contract CryptoMon is ERCCore {
-	
+
 	event Unboxed(
 		address indexed _player,
 		uint256[6] _monsters
@@ -24,8 +24,66 @@ contract CryptoMon is ERCCore {
 		uint256 _price
 	);
 
-	function unbox() public payable running returns(uint256[6]) {
-		//TODO
+	uint8 standardBoxPrice = 2;
+	uint8 plusBoxPrice = 5;
+	uint8 maxiBoxPrice  = 8;
+
+	uint256 seed = now;
+
+	function random ()
+		internal
+		pure
+		returns (uint256)
+	{
+		seed = (4832897258932085 * seed + 34732894208) % 4325352;
+		return seed;
+	}
+
+	function genMonster(uint8 _modPack)
+		internal
+		pure
+		returns (Monster)
+	{
+
+		uint8 _modRarity = ( random()%(100-_modPack) == 42)? 6: (random()%(1000-(_modPack*5)) == 42)? 8: (random()%(10000-(_modPack*10)) == 42)? 9:5;
+		return Monster(
+				random()%4 + _modRarity,
+				random()%4 + _modRarity,
+				random()%4 + _modRarity,
+				5,
+				0,
+				(_modRarity == 5)? Rarity.common:(_modRarity == 6)? Rarity.rare:(_modRarity == 8)? Rarity.epic:Rarity.legendary,
+				0
+			);
+	}
+
+	function unbox()
+		public
+		payable
+		running
+		returns(uint256[6])
+	{
+		require(msg.value >= standardBoxPrice);
+		if (msg.value >= maxiBoxPrice ) {
+			for (uint8 i = 0; i<6; i++){
+				owner[monsters.length] = msg.sender;
+				Monster.push(genMonster(20));
+				balance[msg.sender] = balance[msg.sender].add(1);
+			}
+		} else if (msg.value >= plusBoxPrice){
+			for (uint8 i = 0; i<6; i++){
+				owner[monsters.length] = msg.sender;
+				Monster.push(genMonster(10));
+				balance[msg.sender] = balance[msg.sender].add(1);
+			}
+		} else {
+			for (uint8 i = 0; i<6; i++){
+				owner[monsters.length] = msg.sender;
+				Monster.push(genMonster(0));
+				balance[msg.sender] = balance[msg.sender].add(1);
+			}
+		}
+
 	}
 
 	function defend(uint256[5] _team)
@@ -33,7 +91,7 @@ contract CryptoMon is ERCCore {
 		running
 		returns(bool)
 	{
-		//TODO
+		/* TODO */
 	}
 
 	function attack(
@@ -41,39 +99,6 @@ contract CryptoMon is ERCCore {
 		address _opponent
 	)
 		public
-		running
-		returns(bool)
-	{
-		//TODO
-	}
-
-	function defendBet(uint256[5] _team)
-		public
-		payable
-		running
-		returns(bool)
-	{
-		//TODO
-	}
-
-	function attackBet(
-		uint256[5] _team,
-		address _opponent
-	)
-		public
-		payable
-		running
-		returns(bool)
-	{
-		//TODO
-	}
-
-	function attackBet(
-		uint256[5] _team,
-		address _opponent
-	)
-		public
-		payable
 		running
 		returns(bool)
 	{
