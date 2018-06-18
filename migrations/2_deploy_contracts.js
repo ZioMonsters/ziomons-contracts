@@ -1,1 +1,2 @@
-module.exports = deployer => deployer.deploy(artifacts.require("./Core.sol", { gas: 900000000 }));
+module.exports = deployer => deployer.deploy(artifacts.require("./CryptoMon.sol"));
+

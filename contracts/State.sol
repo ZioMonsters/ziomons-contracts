@@ -3,18 +3,18 @@ pragma solidity ^0.4.24;
 import "./Mortal.sol";
 
 contract State is Mortal{
-	bool running;
+	bool isRunning;
 
 	event RunningStateChanged(bool indexed _state);
 
-	modifier isRunning {
-		require(running);
+	modifier running {
+		require(isRunning);
 		_;
 	}
 
 	function changeRunningState(bool _state) public isOwner returns(bool) {
-		running = _state;
+		isRunning = _state;
 		emit RunningStateChanged(_state);
-		return running;
+		return isRunning;
 	}
 }

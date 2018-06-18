@@ -30,27 +30,24 @@ contract CryptoMon is ERCCore {
 
     constructor() public {
         seed = now;
-        for (uint i = 0; i < 255; i++) {
-            monsters.push(Monster(1, 1, 1, 1, 1, common, 1));
+        for (uint i = 0; i < 5; i++) {
+            monsters.push(Monster(1, 1, 1, 1, 1, Rarity.common));
             owner[i] = msg.sender;
         }
     }
 
-
-
-	function genMonster(uint8 _modPack)
+	function genMonster(uint _modPack)
 		internal
-		pure
 		returns(Monster)
 	{
 
-		uint8 _modRarity = ( random()%(100-_modPack) == 42)? 6: (random()%(1000-(_modPack*5)) == 42)? 8: (random()%(10000-(_modPack*10)) == 42)? 9:5;
+		uint256 _modRarity = ( random()%(100-_modPack) == 42)? 6: (random()%(1000-(_modPack*5)) == 42)? 8: (random()%(10000-(_modPack*10)) == 42)? 9:5;
 		return Monster(
-				random()%4 + _modRarity,
-				random()%4 + _modRarity,
-				random()%4 + _modRarity,
+        uint8(	random()%4 + _modRarity),
+        uint8(random()%4 + _modRarity),
+				uint8(random()%4 + _modRarity),
 				5,
-				common,
+				0,
 				(_modRarity == 5)? Rarity.common:(_modRarity == 6)? Rarity.rare:(_modRarity == 8)? Rarity.epic:Rarity.legendary
 			);
 	}
@@ -66,21 +63,21 @@ contract CryptoMon is ERCCore {
 		if (msg.value >= maxiBoxPrice ) {
 			for (i = 0; i<6; i++) {
 				owner[monsters.length] = msg.sender;
-				Monster.push(genMonster(20));
+				monsters.push(genMonster(20));
 				balance[msg.sender] = balance[msg.sender].add(1);
 			}
 		} else if (msg.value >= plusBoxPrice) {
 			for (i = 0; i<6; i++){
 				owner[monsters.length] = msg.sender;
-				Monster.push(genMonster(10));
+				monsters.push(genMonster(10));
 				balance[msg.sender] = balance[msg.sender].add(1);
 			}
 		} else {
 			for (i = 0; i<6; i++) {
-				owner[monsters.length] = msg.sender;
-				Monster.push(genMonster(0));
-				balance[msg.sender] = balance[msg.sender].add(1);
-			}
+            owner[monsters.length] = msg.sender;
+                monsters.push(genMonster(0));
+            balance[msg.sender] = balance[msg.sender].add(1);
+            }
 		}
 
 	}
@@ -124,9 +121,9 @@ contract CryptoMon is ERCCore {
 		running
 		returns(bool)
     {
-		require(inSale[_id] > 0 && msg.value >= inSale);
+		require(inSale[_id] > 0 && msg.value >= inSale[_id]);
         inSale[_id] = 0;
-        approve(_id, msg.sender);
+        approve(msg.sender, _id);
         address owner_ = owner[_id];
         transferFrom(owner_, msg.sender, _id);
         emit Bought(owner_, msg.sender, _id);

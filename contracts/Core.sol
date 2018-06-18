@@ -40,9 +40,10 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 		_;
 	}
 
-    function random ()
+    function startMatch(uint[5] t1, uint[5] t2) {}
+
+    function random()
         internal
-        pure
         returns(uint256)
     {
         seed = (4832897258932085 * seed + 34732894208) % 4325352;
