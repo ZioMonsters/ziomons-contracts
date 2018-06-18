@@ -7,38 +7,34 @@ contract CryptoMon is ERCCore {
 	event Unboxed(
 		address indexed _player,
 		uint256[6] _monsters
-	);
-	event ForSale(
-		address indexed _player,
-		uint256 indexed _price
-	);
-	event Bought(
-		address indexed _from,
-		address indexed _to,
-		uint256 _id
-	);
-	event Results(
-		address indexed _defender,
-		address indexed _attacker,
-		address indexed _winner,
-		uint256 _price
-	);
+    );
+    event ForSale(
+        address indexed _player,
+        uint256 indexed _price
+    );
+    event Bought(
+        address indexed _from,
+        address indexed _to,
+        uint256 _id
+    );
+    event Results(
+        address indexed _defender,
+        address indexed _attacker,
+        address indexed _winner,
+        uint256 _price
+    );
 
     uint8 standardBoxPrice = 2;
     uint8 plusBoxPrice = 5;
     uint8 maxiBoxPrice  = 8;
 
-	constructor() public {
-		for (uint i = 0; i < 255; i++) {
-			monsters.push(Monster(1, 1, 1, 1, 1, common, 1));
-		}
-	}
-
-	function unbox() public payable running returns(uint256[6]) {
-		//TODO
-	}
-
-	uint256 seed = now;
+    constructor() public {
+        uint256 seed = now;
+        for (uint i = 0; i < 255; i++) {
+            monsters.push(Monster(1, 1, 1, 1, 1, common, 1));
+            owner[i] = msg.sender;
+        }
+    }
 
 	function random ()
 		internal
@@ -130,7 +126,8 @@ contract CryptoMon is ERCCore {
 		public
 		payable
 		running
-		returns(bool) {
+		returns(bool)
+    {
 		//TODO
 	}
 

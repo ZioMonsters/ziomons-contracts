@@ -59,7 +59,7 @@ contract ERCCore is Core {
         address _to,
         uint256 _tokenId
     )
-        external
+        public
         payable
         isAuthorized(msg.sender, _tokenId)
     {
