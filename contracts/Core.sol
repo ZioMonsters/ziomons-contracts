@@ -2,7 +2,7 @@ pragma solidity ^0.4.24;
 
 import "./Interfaces.sol";
 
-contract Core is Mortal, ERC721, ERC165, ERC721Receiver {
+contract Core is ERC721, ERC165, ERC721Receiver {
 
 	enum Rarity {common, rare, epic, legendary}
 
@@ -24,9 +24,10 @@ contract Core is Mortal, ERC721, ERC165, ERC721Receiver {
 
 	modifier isAuthorized(address _sender, uint256 _id) {
 		require(
-			owner[_id] == sender ||
+			owner[_id] == _sender ||
 			approved[_id] == _sender ||
-			approvedForAll[owner[_id]][_sender];
-		)
+			approvedForAll[owner[_id]][_sender]
+		);
+		_;
 	}
 }

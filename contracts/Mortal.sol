@@ -4,6 +4,6 @@ import "./Owned.sol";
 
 contract Mortal is Owned {
     function kill() external isOwner {
-        selfdestruct(owner);
+        selfdestruct(contractOwner);
     }
 }

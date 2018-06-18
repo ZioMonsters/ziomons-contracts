@@ -28,7 +28,7 @@ contract ERCCore is Core {
         address _to,
         uint256 _tokenId,
         bytes data
-    ) 
+    )
         public
         payable
         isAuthorized
@@ -89,7 +89,7 @@ contract ERCCore is Core {
         address _operator,
         bool _approved
     ) external {
-        approvedForAll[msg.sender][_operator] = _approved
+        approvedForAll[msg.sender][_operator] = _approved;
         emit ApprovalForAll(msg.sender, _operator, _approved);
     }
 
@@ -112,14 +112,14 @@ contract ERCCore is Core {
     {
         return approvedForAll[_owner][_operator];
     }
-    
+
     function supportsInterface(bytes4 interfaceID)
         external
         view
         returns (bool)
     {
         bytes4 InterfaceSignature_ERC165 =
-            bytes4(keccak256('supportsInterface(bytes4)'));                                                                                                       [0/373]
+            bytes4(keccak256('supportsInterface(bytes4)'));                                                                                                   
 
         bytes4 InterfaceSignature_ERC721 =
             bytes4(keccak256('balanceOf(address)')) ^
@@ -135,6 +135,6 @@ contract ERCCore is Core {
         return(
             interfaceID == InterfaceSignature_ERC165 ||
             interfaceID == InterfaceSignature_ERC721
-        );        
+        );
     }
 }
