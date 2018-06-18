@@ -5,7 +5,7 @@ import "./SafeMath.sol";
 contract Owned {
     using SafeMath for uint;
 
-    address owner;
+    address contractOwner;
     address newOwner;
 
     event OwnershipTransfered(
@@ -14,11 +14,11 @@ contract Owned {
     );
 
     constructor() public {
-        owner = msg.sender;
+        contractOwner = msg.sender;
     }
 
     modifier isOwner {
-        require(msg.sender == owner, "You are not the owner");
+        require(msg.sender == contractOwner, "You are not the owner");
         _;
     }
 
@@ -28,8 +28,8 @@ contract Owned {
 
     function acceptOwnership() external {
         require(msg.sender == newOwner, "You are not the designated god");
-        emit OwnershipTransfered(owner, newOwner);
-        owner = newOwner;
+        emit OwnershipTransfered(contractOwner, newOwner);
+        contractOwner = newOwner;
         newOwner = address(0);
     }
 }

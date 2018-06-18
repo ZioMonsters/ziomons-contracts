@@ -17,7 +17,13 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 	mapping(uint256 => address) owner;
 	mapping(address => uint256) balance;
 	mapping(address => mapping(address => bool)) approvedForAll;
-	mapping(address => mapping(uint256 => address)) approved;
-	mapping(uint => mapping(address => address)) tokenIdToApprovedAddress;
+	mapping(uint256 => address) approved;
 
+	modifier isAuthorized(address _sender, uint256 _id) {
+		require(
+			owner[_id] == sender ||
+			approved[_id] == _sender ||
+			approvedForAll[owner[_id]][_sender];
+		)
+	}
 }
