@@ -17,5 +17,8 @@ contract Core is Mortal, ERC721, ERC165, ERC721Receiver {
 	Monster[] monsters;
 	mapping(uint256 => address) owner;
 	mapping(address => uint256) balance;
-	
+	mapping(address => mapping(address => bool)) approvedForAll;
+	mapping(address => mapping(uint256 => address)) approved;
+	mapping(uint => mapping(address => address)) tokenIdToApprovedAddress;
+
 }
