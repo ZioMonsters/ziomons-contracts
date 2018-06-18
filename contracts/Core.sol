@@ -29,6 +29,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 	mapping(address => Defender) onDefence;
 
 	mapping(uint256 => uint256) inSale;
+    uint256 seed;
 
 	modifier isAuthorized(address _sender, uint256 _id) {
 		require(

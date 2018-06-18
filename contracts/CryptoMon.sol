@@ -28,8 +28,6 @@ contract CryptoMon is ERCCore {
 	uint8 plusBoxPrice = 5;
 	uint8 maxiBoxPrice  = 8;
 
-    uint256 seed;
-
     constructor() public {
         seed = now;
         for (uint i = 0; i < 255; i++) {
