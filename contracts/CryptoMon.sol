@@ -57,7 +57,7 @@ contract CryptoMon is ERCCore {
 				random()%4 + _modRarity,
 				random()%4 + _modRarity,
 				5,
-				0,
+				common,
 				(_modRarity == 5)? Rarity.common:(_modRarity == 6)? Rarity.rare:(_modRarity == 8)? Rarity.epic:Rarity.legendary
 			);
 	}
@@ -114,13 +114,15 @@ contract CryptoMon is ERCCore {
 
 	function sellMonster(
 		uint256 _id,
-		uint256 price
+		uint256 _price
 	)
 		public
 		running
-		returns(bool)
+        isAuthorized(msg.sender, _id)
+        returns(bool)
 	{
-		//TODO
+		inSale[_id] = _price;
+        emit ForSale(msg.sender, _price);
 	}
 
 	function buyMonster(uint256 _id)
@@ -129,7 +131,12 @@ contract CryptoMon is ERCCore {
 		running
 		returns(bool)
     {
-		//TODO
+		require(inSale[_id] > 0 && msg.value >= inSale);
+        inSale[_id] = 0;
+        approve(_id, msg.sender);
+        address owner_ = owner[_id];
+        transferFrom(owner_, msg.sender, _id);
+        emit Bought(owner_, msg.sender, _id);
 	}
 
 }
