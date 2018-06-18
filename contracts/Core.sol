@@ -2,14 +2,17 @@ pragma solidity ^0.4.24;
 
 import "./Interfaces.sol";
 
-contract Core is State, ERC721, ERC165, ERC721Receiver {
+contract Core is ERC721, ERC165, ERC721Receiver {
+
+	enum Rarity {common, rare, epic, legendary}
+
 	struct Monster {
 		uint8 atk;
 		uint8 def;
 		uint8 spd;
 		uint8 lvl;
 		uint16 exp;
-		uint8 rarity;
+		Rarity rarity;
 	}
 
 	Monster[] monsters;
@@ -22,9 +25,10 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 
 	modifier isAuthorized(address _sender, uint256 _id) {
 		require(
-			owner[_id] == sender ||
+			owner[_id] == _sender ||
 			approved[_id] == _sender ||
-			approvedForAll[owner[_id]][_sender];
-		)
+			approvedForAll[owner[_id]][_sender]
+		);
+		_;
 	}
 }

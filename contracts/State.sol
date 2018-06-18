@@ -9,6 +9,7 @@ contract State is Mortal{
 
 	modifier isRunning {
 		require(running);
+		_;
 	}
 
 	function changeRunningState(bool _state) public isOwner returns(bool) {
