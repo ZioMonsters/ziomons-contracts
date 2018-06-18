@@ -24,6 +24,12 @@ contract CryptoMon is ERCCore {
 		uint256 _price
 	);
 
+	constructor() public {
+		for (uint i = 0; i < 255; i++) {
+			monsters.push(Monster(1, 1, 1, 1, 1, common, 1));
+		}
+	}
+
 	function unbox() public payable running returns(uint256[6]) {
 		//TODO
 	}

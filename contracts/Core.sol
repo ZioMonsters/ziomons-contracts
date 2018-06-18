@@ -10,7 +10,6 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 		uint8 lvl;
 		uint16 exp;
 		uint8 rarity;
-		uint8 energy;
 	}
 
 	Monster[] monsters;
@@ -18,6 +17,8 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 	mapping(address => uint256) balance;
 	mapping(address => mapping(address => bool)) approvedForAll;
 	mapping(uint256 => address) approved;
+
+	mapping(uint256 => bool) inSale;
 
 	modifier isAuthorized(address _sender, uint256 _id) {
 		require(

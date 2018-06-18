@@ -15,8 +15,8 @@ contract ERCCore is Core {
     }
 
     function ownerOf(uint256 _tokenId)
-    external
-    view
+        external
+        view
     returns(address)
     {
         require(owner[_tokenId] != address(0));
