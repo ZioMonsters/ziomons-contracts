@@ -24,9 +24,9 @@ contract CryptoMon is ERCCore {
         uint256 _price
     );
 
-    uint8 standardBoxPrice = 2;
-    uint8 plusBoxPrice = 5;
-    uint8 maxiBoxPrice  = 8;
+	uint8 standardBoxPrice = 2;
+	uint8 plusBoxPrice = 5;
+	uint8 maxiBoxPrice  = 8;
 
     constructor() public {
         uint256 seed = now;
@@ -58,8 +58,7 @@ contract CryptoMon is ERCCore {
 				random()%4 + _modRarity,
 				5,
 				0,
-				(_modRarity == 5)? Rarity.common:(_modRarity == 6)? Rarity.rare:(_modRarity == 8)? Rarity.epic:Rarity.legendary,
-				0
+				(_modRarity == 5)? Rarity.common:(_modRarity == 6)? Rarity.rare:(_modRarity == 8)? Rarity.epic:Rarity.legendary
 			);
 	}
 
@@ -70,20 +69,21 @@ contract CryptoMon is ERCCore {
 		returns(uint256[6])
 	{
 		require(msg.value >= standardBoxPrice);
+		uint8 i = 0;
 		if (msg.value >= maxiBoxPrice ) {
-			for (uint8 i = 0; i<6; i++){
+			for (i = 0; i<6; i++) {
 				owner[monsters.length] = msg.sender;
 				Monster.push(genMonster(20));
 				balance[msg.sender] = balance[msg.sender].add(1);
 			}
-		} else if (msg.value >= plusBoxPrice){
-			for (uint8 i = 0; i<6; i++){
+		} else if (msg.value >= plusBoxPrice) {
+			for (i = 0; i<6; i++){
 				owner[monsters.length] = msg.sender;
 				Monster.push(genMonster(10));
 				balance[msg.sender] = balance[msg.sender].add(1);
 			}
 		} else {
-			for (uint8 i = 0; i<6; i++){
+			for (i = 0; i<6; i++) {
 				owner[monsters.length] = msg.sender;
 				Monster.push(genMonster(0));
 				balance[msg.sender] = balance[msg.sender].add(1);
@@ -97,7 +97,8 @@ contract CryptoMon is ERCCore {
 		running
 		returns(bool)
 	{
-		/* TODO */
+		onDefence[msg.sender] = Defender(_team, true);
+		return true;
 	}
 
 	function attack(
@@ -108,7 +109,7 @@ contract CryptoMon is ERCCore {
 		running
 		returns(bool)
 	{
-		//TODO
+		/* TODO */
 	}
 
 	function sellMonster(
