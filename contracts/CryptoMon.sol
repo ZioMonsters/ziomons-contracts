@@ -72,9 +72,8 @@ using SafeMath for uint8;
 
 	function defend(uint256[5] _teamId)
 		public
-        payable
-		running
 		payable
+		running
 		returns(bool)
 	{
 		Monster[5]  _team;
