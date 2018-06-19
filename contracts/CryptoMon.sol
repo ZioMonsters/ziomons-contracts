@@ -20,8 +20,13 @@ using SafeMath for uint8;
         address indexed _to,
         uint256 _id
     );
+    event Defending(
+        address indexed _defender,
+        uint256 indexed _bet,
+        uint256 indexed _level
+    );
     event Results(
-				address indexed _attacker,
+        address indexed _attacker,
         address indexed _defender,
         address indexed _winner,
         uint256 _price
@@ -30,6 +35,8 @@ using SafeMath for uint8;
 	uint8 standardBoxPrice = 2;
 	uint8 plusBoxPrice = 5;
 	uint8 maxiBoxPrice  = 8;
+
+    uint256 matchmakingRange = 5;
 
     constructor() public {
         seed = now;
@@ -70,51 +77,53 @@ using SafeMath for uint8;
         return _ids;
 	}
 
-	function defend(uint256[5] _teamId)
+	function defend(uint256[5] _ids)
 		public
 		payable
 		running
 		returns(bool)
-	{
-		Monster[5]  _team;
-		uint8 i;
-		uint256 _lvlTeam = 0;
+    {
+        //TODO Fix matchmaking level
+        uint256 _level;
+        for (uint8 i = 0; i < 5; i++) {
+            require(owner[_ids[i]] == msg.sender);
+            _level += monsters[_ids[i]].lvl;
+        }
+        _level = _level / 5;
 
-		for(i = 0; i<5; i++){
-			_team[i] = monsters[_teamId[i]];
-			_lvlTeam = _lvlTeam.add(monsters[_teamId[i]].lvl);
-		}
-		onDefence[msg.sender] = Defender(_team, true, msg.value, _lvlTeam/5);
+		onDefence[msg.sender] = Defender(_ids, msg.value, uint8(_level), true);
+        money[contractOwner] += msg.value;
+
+        emit Defending(msg.sender, msg.value, _level);
 		return true;
 	}
 
 	function attack(
-		uint256[5] _teamId,
+		uint256[5] _ids,
 		address _opponent
 	)
 		public
 		running
 		returns(bool)
 	{
-    Monster[5] _team;
-		uint8 i;
-		uint256 _lvlTeam = 0;
-
-		for(i = 0; i<5; i++){
-			_team[i] = monsters[_teamId[i]];
-			_lvlTeam = _lvlTeam.add(monsters[_teamId[i]].lvl);
-		}
-
-		uint256 _avg = _lvlTeam/5;
-		uint8 range = 5;
+        //TODO fix matchmaking level
+        uint256 _level;
+        for (uint8 i = 0; i < 5; i++) {
+            _level += monsters[_ids[i]].lvl;
+        }
+        _level = _level / 5;
 
 		require(
-			onDefence[_opponent].averageLvl >= _avg-range &&
-			onDefence[_opponent].averageLvl <= _avg+range
+			onDefence[_opponent].level >= _level - matchmakingRange &&
+			onDefence[_opponent].level <= _level + matchmakingRange &&
+            onDefence[_opponent].bet <= msg.value
 		);
 
-		uint _winner = startMatch(_team, onDefence[_opponent].deck);
-		emit Results (msg.sender,
+        money[contractOwner] += msg.value;
+
+		uint _winner = startMatch(_ids, onDefence[_opponent].deck);
+		emit Results (
+            msg.sender,
 			_opponent,
 			(_winner == 1)? msg.sender:(_winner == 2)? _opponent: address(0),
 			msg.value.add(onDefence[_opponent].bet)

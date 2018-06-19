@@ -18,10 +18,10 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 	}
 
 	struct Defender {
-		Monster[5] deck;
-		bool isDefending;
-		uint256 bet;
-		uint256 averageLvl;
+		uint256[5] deck;
+        uint256 bet;
+        uint8 level;
+        bool defending;
 	}
 
 	Monster[] monsters;
@@ -29,8 +29,8 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 	mapping(address => uint256) balances;
 	mapping(address => mapping(address => bool)) approvedForAll;
 	mapping(uint256 => address) approved;
-	mapping(address => Defender) onDefence;
 	mapping(address => uint256) money;
+    mapping(address => Defender) onDefence;
 
 	mapping(uint256 => uint256) inSale;
     uint256 seed;
@@ -44,33 +44,31 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 		_;
 	}
 
-    function startMatch(Monster[5] _team1, Monster[5] _team2)
+    function startMatch(uint256[5] _team1, uint256[5] _team2)
 			internal
 			returns (uint)
 		{
 			uint256 _score1 = 0;
 			uint256 _score2 = 0;
-			uint256 i = 0;
-
-			for(i=0; i<5; i++){
-				if (_team1[i].spd > _team2[i].spd) {
-					if(_team1[i].atk > _team2[i].def) _score1 = _score1.add(1);
-					else _score2 = _score2.add(1);
-				} else if (_team1[i].spd < _team2[i].spd) {
-					if(_team2[i].atk > _team1[i].def) _score2 = _score2.add(1);
-					else _score1 = _score1.add(1);
+			for(uint256 i=0; i<5; i++){
+				if (monsters[_team1[i]].spd > monsters[_team2[i]].spd) {
+					if(monsters[_team1[i]].atk > monsters[_team2[i]].def) _score1++;
+					else _score2++;
+				} else if (monsters[_team1[i]].spd < monsters[_team2[i]].spd) {
+					if(monsters[_team1[i]].atk > monsters[_team2[i]].atk) _score2++;
+					else _score1++;
 				} else {
-					if (_team1[i].atk > _team2[i].atk) _score1 = _score1.add(1);
-					else if (_team1[i].atk < _team2[i].atk) _score2 = _score2.add(1);
+					if (monsters[_team1[i]].atk > monsters[_team2[i]].atk) _score1++;
+					else if (monsters[_team1[i]].atk < monsters[_team2[i]].atk) _score2++;
 					else {
-						if (_team1[i].def > _team2[i].def) _score1 = _score1.add(1);
-						else if (_team1[i].def < _team2[i].def) _score2 = _score2.add(1);
+						if (monsters[_team1[i]].def > monsters[_team2[i]].def) _score1++;
+						else if (monsters[_team1[i]].def < monsters[_team2[i]].def) _score2++;
 					 //else tied, same monster, no points
 					}
 				}
 			}
 
-			return (_score1 > _score2)? 1: (_score1 < _score2)? 2:0;
+			return (_score1 > _score2)? 1:(_score1 < _score2)? 2:0;
 		}
 
     function random() public returns(uint256) {
