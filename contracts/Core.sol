@@ -137,4 +137,17 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 	function randInt(uint256 _min, uint256 _max) public returns(uint256) {
 		return random() % (_max-_min) + _min;
 	}
+
+    uint prime = 4294967291;
+    event T(uint _n);
+
+    function NRrandInt(uint _x) internal returns(uint) {
+        return NRRandom((NRRandom(_x) + 92837498) ^ 0x5bf03635);
+    }
+
+    function NRRandom(uint _i) private returns(uint){
+        if (_i >= prime) return _i;
+        uint residue = (_i*_i) % prime;
+        return (_i <= prime / 2) ? residue : prime - residue;
+    }
 }
