@@ -98,7 +98,7 @@ contract CryptoMon is ERCCore {
 		running
 		returns(bool)
 	{
-        
+
 		startMatch(_team, onDefence[_opponent].deck);
 	}
 
