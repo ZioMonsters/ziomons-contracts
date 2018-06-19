@@ -160,7 +160,7 @@ using SafeMath for uint8;
 	}
 
     function generateMonster(uint _modPack)
-        private
+        internal
         returns(Monster)
     {
         //FIXME random numbers
@@ -185,6 +185,6 @@ using SafeMath for uint8;
         );
     }
 
-		
+
 
 }
