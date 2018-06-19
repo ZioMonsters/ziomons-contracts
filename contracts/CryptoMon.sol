@@ -10,17 +10,17 @@ using SafeMath for uint8;
 	event Unboxed(
 		address indexed _player,
 		uint256[6] _monsters
-    );
-    event ForSale(
+  );
+  event ForSale(
         address indexed _player,
         uint256 indexed _price
-    );
-    event Bought(
+  );
+  event Bought(
         address indexed _from,
         address indexed _to,
         uint256 _id
-    );
-    event Results(
+  );
+  event Results(
 				address indexed _attacker,
         address indexed _defender,
         address indexed _winner,
@@ -76,7 +76,7 @@ using SafeMath for uint8;
 		running
 		returns(bool)
 	{
-		Monster[5]  _team;
+		Monster[5] memory _team;
 		uint8 i;
 		uint256 _lvlTeam = 0;
 
