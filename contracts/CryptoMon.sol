@@ -62,7 +62,28 @@ using SafeMath for uint8;
 
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
-            monsters.push(generateMonster(_modifier));
+            //FIXME random numbers
+            uint256 _tmp = randInt(0, 10000);
+            uint256 _modRarity;
+            if (_tmp == 0)
+                _modRarity = 9;
+            else if (_tmp < 11)
+                _modRarity = 8;
+            else if (_tmp < 111)
+                _modRarity = 6;
+            else
+                _modRarity = 5;
+
+            monsters.push(
+                Monster(
+                    uint8(randInt(0, 5)),
+                    uint8(randInt(0, 5)),
+                    uint8(randInt(0, 5)),
+                    1,
+                    0,
+                    Rarity.common
+                )   
+            );
             _ids[i] = monsters.length - 1;
             emit Transfer(address(0), msg.sender, monsters.length);
         }
@@ -158,31 +179,4 @@ using SafeMath for uint8;
         transferFrom(owner_, msg.sender, _id);
         emit Bought(owner_, msg.sender, _id);
 	}
-
-    function generateMonster(uint _modPack)
-        private
-        returns(Monster)
-    {
-        //FIXME random numbers
-        uint256 _tmp = randInt(0, 10000);
-        uint256 _modRarity;
-        if (_tmp == 0)
-            _modRarity = 9;
-        else if (_tmp < 11)
-            _modRarity = 8;
-        else if (_tmp < 111)
-            _modRarity = 6;
-        else
-            _modRarity = 5;
-
-        return Monster(
-            uint8(randInt(0, 4)),
-            uint8(randInt(0, 4) + _modRarity),
-            uint8(randInt(0, 4) + _modRarity),
-            1,
-            0,
-            (_modRarity == 5)? Rarity.common:(_modRarity == 6)? Rarity.rare:(_modRarity == 8)? Rarity.epic:Rarity.legendary
-        );
-    }
-
 }
