@@ -6,6 +6,16 @@ import "./SafeMath.sol";
 contract ERCCore is Core {
     using SafeMath for uint;
 
+    function isContract(address addr)
+        internal
+        returns(bool)
+    {
+        uint size;
+        assembly { size := extcodesize(addr) }
+        return size > 0;
+    }
+
+
     function balanceOf(address _owner)
         external
         view
@@ -23,16 +33,16 @@ contract ERCCore is Core {
         require(owner[_tokenId] != address(0));
         return owner[_tokenId];
     }
-/* TODO:Fix safetransfer
+
     function safeTransferFrom(
         address _from,
         address _to,
         uint256 _tokenId,
-        bytes data
+        bytes _data
     )
         public
         payable
-        isAuthorized
+        isAuthorized(msg.sender, _tokenId)
     {
         transferFrom(_from, _to, _tokenId);
         if (isContract(_to)) {
@@ -54,7 +64,7 @@ contract ERCCore is Core {
     {
         safeTransferFrom(_from, _to, _tokenId, "");
     }
-*/
+
     function transferFrom(
         address _from,
         address _to,
@@ -83,7 +93,7 @@ contract ERCCore is Core {
         isAuthorized(msg.sender, _tokenId)
     {
         approved[_tokenId] = _approved;
-        Approval(msg.sender, _approved, _tokenId);
+        emit Approval(msg.sender, _approved, _tokenId);
     }
 
     function setApprovalForAll(
