@@ -69,16 +69,16 @@ using SafeMath for uint8;
                 _modRarity = 9;
             else if (_tmp < 11)
                 _modRarity = 8;
-            else if (_tmp < 111)
+            else if (_tmp < 2000)
                 _modRarity = 6;
             else
                 _modRarity = 5;
 
             monsters.push(
                 Monster(
-                    uint8(randInt(0, 5) ) + uint8(_modRarity),
-                    uint8(randInt(0, 5) + _modRarity),
-                    uint8(randInt(0, 5) + _modRarity),
+                    uint8(randInt(0+_modRarity, 5+_modRarity)),
+                    uint8(randInt(0+_modRarity, 5+_modRarity)),
+                    uint8(randInt(0+_modRarity, 5+_modRarity)),
                     1,
                     0,
                     (_modRarity == 9)? Rarity.legendary: (_modRarity == 8)? Rarity.epic: (_modRarity == 6)? Rarity.rare: Rarity.common //Rarity.common

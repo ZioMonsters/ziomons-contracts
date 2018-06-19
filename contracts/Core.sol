@@ -44,27 +44,77 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 		_;
 	}
 
-    function startMatch(uint256[5] _team1, uint256[5] _team2)
-			public
+	struct tmp {
+		uint8 atk;
+		uint8 def;
+		uint8 spd;
+	}
+
+    function startMatch(uint256[5] _team1Id, uint256[5] _team2Id)
+			public /** TODO set to internal **/
 			returns (uint)
 		{
 			uint256 _score1 = 0;
 			uint256 _score2 = 0;
-			for(uint256 i=0; i<5; i++){
-				if (monsters[_team1[i]].spd > monsters[_team2[i]].spd) {
-					if(monsters[_team1[i]].atk > monsters[_team2[i]].def) _score1++;
-					else _score2++;
-				} else if (monsters[_team1[i]].spd < monsters[_team2[i]].spd) {
-					if(monsters[_team1[i]].atk > monsters[_team2[i]].atk) _score2++;
-					else _score1++;
-				} else {
-					if (monsters[_team1[i]].atk > monsters[_team2[i]].atk) _score1++;
-					else if (monsters[_team1[i]].atk < monsters[_team2[i]].atk) _score2++;
+			uint256 i;
+
+			tmp[6] memory _team1;
+			tmp[6] memory _team2;
+
+			for(i=0; i<5; i++){
+				_team1[i] = tmp(
+					monsters[_team1Id[i]].atk,
+					monsters[_team1Id[i]].def,
+					monsters[_team1Id[i]].spd
+				);
+
+					_team2[i] = tmp(
+						monsters[_team1Id[i]].atk,
+						monsters[_team1Id[i]].def,
+						monsters[_team1Id[i]].spd
+					);
+			}
+
+			for(i=0; i<5; i++) {
+				if (_team1[i].spd > _team2[i].spd) {
+					if(_team1[i].atk > _team2[i].def) {
+						_score1++;
+						_team1[i+1].atk++;
+					}
 					else {
-						if (monsters[_team1[i]].def > monsters[_team2[i]].def) _score1++;
-						else if (monsters[_team1[i]].def < monsters[_team2[i]].def) _score2++;
+						_score2++;
+						_team2[i+1].def++;
+					}
+				} else if (_team1[i].spd < _team2[i].spd) {
+					if(_team1[i].atk > _team2[i].atk) {
+						_score2++;
+						_team2[i+1].atk++;
+					}
+					else {
+						_score1++;
+						_team1[i+1].def++;
+					}
+				} else {
+					if (_team1[i].atk > _team2[i].atk) {
+						_score1++;
+						_team1[i+1].atk++;
+					}
+					else if (_team1[i].atk < _team2[i].atk) {
+						_score2++;
+						_team2[i+1].def++;
+					}
+					else {
+						if (_team1[i].def > _team2[i].def) {
+							_score1++;
+							_team1[i+1].def++;
+						}
+						else if (_team1[i].def < _team1[i].def) {
+							_score2++;
+							_team2[i+1].def++;
+						}
 					 //else tied, same monster, no points
 					}
+					/*  TODO bonus e levelUp*/
 				}
 			}
 
