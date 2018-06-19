@@ -76,7 +76,7 @@ using SafeMath for uint8;
 
             monsters.push(
                 Monster(
-                    uint8(randInt(0, 15)),
+                    uint8(randInt(0, 15) ),
                     uint8(randInt(0, 15)),
                     uint8(randInt(0, 15)),
                     1,
