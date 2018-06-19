@@ -15,6 +15,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 		uint8 lvl;
 		uint16 exp;
 		Rarity rarity;
+        uint32 genome;
 	}
 
 	struct Defender {
@@ -30,7 +31,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 	mapping(address => mapping(address => bool)) approvedForAll;
 	mapping(uint256 => address) approved;
 	mapping(address => uint256) money;
-  mapping(address => Defender) onDefence;
+    mapping(address => Defender) public onDefence; //TODO remove public
 
 	mapping(uint256 => uint256) inSale;
     uint256 seed;
@@ -124,10 +125,11 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
     function notDuplicate(uint256[5] _ids) internal returns(bool) {
         for (uint256 i = 0; i < 5; i++) {
             for (uint256 j = 0; j < 5; j++) {
-                if (_ids[i] == _ids[j])
+                if (_ids[i] == _ids[j] && j != i)
                     return false;
             }
         }
+        return true;
     }
 
     function random() public returns(uint256) {

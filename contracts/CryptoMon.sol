@@ -81,7 +81,8 @@ using SafeMath for uint8;
                     uint8(randInt(0+_modRarity, 5+_modRarity)),
                     1,
                     0,
-                    (_modRarity == 9)? Rarity.legendary: (_modRarity == 8)? Rarity.epic: (_modRarity == 6)? Rarity.rare: Rarity.common //Rarity.common
+                    (_modRarity == 9)? Rarity.legendary: (_modRarity == 8)? Rarity.epic: (_modRarity == 6)? Rarity.rare: Rarity.common, //Rarity.common
+                    uint32(NRrandInt(monsters.length))
                 )
             );
             _ids[i] = monsters.length - 1;
