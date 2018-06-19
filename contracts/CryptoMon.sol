@@ -40,10 +40,6 @@ using SafeMath for uint8;
 
     constructor() public {
         seed = now;
-        for (uint i = 0; i < 5; i++) {
-            monsters.push(Monster(1, 1, 1, 1, 1, Rarity.common));
-            owner[i] = msg.sender;
-        }
     }
 
 	function unbox()
@@ -83,6 +79,7 @@ using SafeMath for uint8;
 		running
 		returns(bool)
     {
+        require(notDuplicate(_ids));
         //TODO Fix matchmaking level
         uint256 _level;
         for (uint8 i = 0; i < 5; i++) {
@@ -106,9 +103,11 @@ using SafeMath for uint8;
 		running
 		returns(bool)
 	{
+        require(notDuplicate(_ids));
         //TODO fix matchmaking level
         uint256 _level;
         for (uint8 i = 0; i < 5; i++) {
+            require(owner[_ids[i]] == msg.sender);
             _level += monsters[_ids[i]].lvl;
         }
         _level = _level / 5;
@@ -116,12 +115,14 @@ using SafeMath for uint8;
 		require(
 			onDefence[_opponent].level >= _level - matchmakingRange &&
 			onDefence[_opponent].level <= _level + matchmakingRange &&
-            onDefence[_opponent].bet <= msg.value
+            onDefence[_opponent].bet <= msg.value &&
+            onDefence[_opponent].defending == true
 		);
 
         money[contractOwner] += msg.value;
-
+        onDefence[_opponent].defending = false;
 		uint _winner = startMatch(_ids, onDefence[_opponent].deck);
+
 		emit Results (
             msg.sender,
 			_opponent,
@@ -162,13 +163,23 @@ using SafeMath for uint8;
         private
         returns(Monster)
     {
-        //TODO better format
-        uint256 _modRarity = ( random()%(100-_modPack) == 42)? 6: (random()%(1000-(_modPack*5)) == 42)? 8: (random()%(10000-(_modPack*10)) == 42)? 9:5;
+        //FIXME random numbers
+        uint256 _tmp = randInt(0, 10000);
+        uint256 _modRarity;
+        if (_tmp == 0)
+            _modRarity = 9;
+        else if (_tmp < 11)
+            _modRarity = 8;
+        else if (_tmp < 111)
+            _modRarity = 6;
+        else
+            _modRarity = 5;
+
         return Monster(
-            uint8(	random()%4 + _modRarity),
-            uint8(random()%4 + _modRarity),
-            uint8(random()%4 + _modRarity),
-            5,
+            uint8(randInt(0, 4)),
+            uint8(randInt(0, 4) + _modRarity),
+            uint8(randInt(0, 4) + _modRarity),
+            1,
             0,
             (_modRarity == 5)? Rarity.common:(_modRarity == 6)? Rarity.rare:(_modRarity == 8)? Rarity.epic:Rarity.legendary
         );

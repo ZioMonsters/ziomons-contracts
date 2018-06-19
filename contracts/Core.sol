@@ -71,6 +71,15 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 			return (_score1 > _score2)? 1:(_score1 < _score2)? 2:0;
 		}
 
+    function notDuplicate(uint256[5] _ids) internal returns(bool) {
+        for (uint256 i = 0; i < 5; i++) {
+            for (uint256 j = 0; j < 5; j++) {
+                if (_ids[i] == _ids[j])
+                    return false;
+            }
+        }
+    }
+
     function random() public returns(uint256) {
         seed = (4832897258932085 * seed + 34732894208) % 4325352;
         return seed;
