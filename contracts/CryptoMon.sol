@@ -76,13 +76,13 @@ using SafeMath for uint8;
 
             monsters.push(
                 Monster(
-                    uint8(randInt(0, 5)),
-                    uint8(randInt(0, 5)),
-                    uint8(randInt(0, 5)),
+                    uint8(randInt(0, 15)),
+                    uint8(randInt(0, 15)),
+                    uint8(randInt(0, 15)),
                     1,
                     0,
                     Rarity.common
-                )   
+                )
             );
             _ids[i] = monsters.length - 1;
             emit Transfer(address(0), msg.sender, monsters.length);
