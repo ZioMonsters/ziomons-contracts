@@ -39,22 +39,6 @@ using SafeMath for uint8;
         }
     }
 
-	function generateMonster(uint _modPack)
-		internal
-		returns(Monster)
-	{
-
-		uint256 _modRarity = ( random()%(100-_modPack) == 42)? 6: (random()%(1000-(_modPack*5)) == 42)? 8: (random()%(10000-(_modPack*10)) == 42)? 9:5;
-		return Monster(
-        uint8(	random()%4 + _modRarity),
-        uint8(random()%4 + _modRarity),
-				uint8(random()%4 + _modRarity),
-				5,
-				0,
-				(_modRarity == 5)? Rarity.common:(_modRarity == 6)? Rarity.rare:(_modRarity == 8)? Rarity.epic:Rarity.legendary
-			);
-	}
-
 	function unbox()
 		public
 		payable
@@ -71,21 +55,24 @@ using SafeMath for uint8;
         else
             revert();
 
-        uint256[6] memory _id;
+        uint256[6] memory _ids;
 
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
             monsters.push(generateMonster(_modifier));
-            _id[i] = monsters.length - 1;
-            balance[msg.sender] = balance[msg.sender].add(1);
+            _ids[i] = monsters.length - 1;
+            emit Transfer(address(0), msg.sender, monsters.length);
         }
+        balances[msg.sender] = balances[msg.sender].add(6);
+        money[contractOwner] += msg.value;
 
-        emit Unboxed(msg.sender, _id);
-        return _id;
+        emit Unboxed(msg.sender, _ids);
+        return _ids;
 	}
 
 	function defend(uint256[5] _teamId)
 		public
+        payable
 		running
 		payable
 		returns(bool)
@@ -162,5 +149,21 @@ using SafeMath for uint8;
         transferFrom(owner_, msg.sender, _id);
         emit Bought(owner_, msg.sender, _id);
 	}
+
+    function generateMonster(uint _modPack)
+        private
+        returns(Monster)
+    {
+        //TODO better format
+        uint256 _modRarity = ( random()%(100-_modPack) == 42)? 6: (random()%(1000-(_modPack*5)) == 42)? 8: (random()%(10000-(_modPack*10)) == 42)? 9:5;
+        return Monster(
+            uint8(	random()%4 + _modRarity),
+            uint8(random()%4 + _modRarity),
+            uint8(random()%4 + _modRarity),
+            5,
+            0,
+            (_modRarity == 5)? Rarity.common:(_modRarity == 6)? Rarity.rare:(_modRarity == 8)? Rarity.epic:Rarity.legendary
+        );
+    }
 
 }

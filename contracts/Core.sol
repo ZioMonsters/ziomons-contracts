@@ -26,10 +26,11 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 
 	Monster[] monsters;
 	mapping(uint256 => address) owner;
-	mapping(address => uint256) balance;
+	mapping(address => uint256) balances;
 	mapping(address => mapping(address => bool)) approvedForAll;
 	mapping(uint256 => address) approved;
 	mapping(address => Defender) onDefence;
+	mapping(address => uint256) money;
 
 	mapping(uint256 => uint256) inSale;
     uint256 seed;
@@ -72,11 +73,12 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 			return (_score1 > _score2)? 1: (_score1 < _score2)? 2:0;
 		}
 
-    function random()
-        internal
-        returns(uint256)
-    {
+    function random() public returns(uint256) {
         seed = (4832897258932085 * seed + 34732894208) % 4325352;
         return seed;
     }
+
+	function randInt(uint256 _min, uint256 _max) public returns(uint256) {
+		return random() % (_max-_min) + _min;
+	}
 }
