@@ -1,8 +1,11 @@
 pragma solidity ^0.4.24;
 
 import "./ERCCore.sol";
+import "./SafeMath.sol";
 
 contract CryptoMon is ERCCore {
+
+using SafeMath for uint8;
 
 	event Unboxed(
 		address indexed _player,
@@ -18,8 +21,8 @@ contract CryptoMon is ERCCore {
         uint256 _id
     );
     event Results(
+				address indexed _attacker,
         address indexed _defender,
-        address indexed _attacker,
         address indexed _winner,
         uint256 _price
     );
@@ -84,14 +87,18 @@ contract CryptoMon is ERCCore {
 	function defend(uint256[5] _teamId)
 		public
 		running
+		payable
 		returns(bool)
 	{
-		Monster[5] _team;
+		Monster[5]  _team;
 		uint8 i;
+		uint256 _lvlTeam = 0;
+
 		for(i = 0; i<5; i++){
 			_team[i] = monsters[_teamId[i]];
+			_lvlTeam = _lvlTeam.add(monsters[_teamId[i]].lvl);
 		}
-		onDefence[msg.sender] = Defender(_team, true);
+		onDefence[msg.sender] = Defender(_team, true, msg.value, _lvlTeam/5);
 		return true;
 	}
 
@@ -105,10 +112,28 @@ contract CryptoMon is ERCCore {
 	{
     Monster[5] _team;
 		uint8 i;
+		uint256 _lvlTeam = 0;
+
 		for(i = 0; i<5; i++){
 			_team[i] = monsters[_teamId[i]];
+			_lvlTeam = _lvlTeam.add(monsters[_teamId[i]].lvl);
 		}
-		startMatch(_team, onDefence[_opponent].deck);
+
+		uint256 _avg = _lvlTeam/5;
+		uint8 range = 5;
+
+		require(
+			onDefence[_opponent].averageLvl >= _avg-range &&
+			onDefence[_opponent].averageLvl <= _avg+range
+		);
+
+		uint _winner = startMatch(_team, onDefence[_opponent].deck);
+		emit Results (msg.sender,
+			_opponent,
+			(_winner == 1)? msg.sender:(_winner == 2)? _opponent: address(0),
+			msg.value.add(onDefence[_opponent].bet)
+		);
+		return true;
 	}
 
 	function sellMonster(

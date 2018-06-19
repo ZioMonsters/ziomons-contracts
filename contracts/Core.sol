@@ -4,6 +4,7 @@ import "./Interfaces.sol";
 import "./State.sol";
 
 contract Core is State, ERC721, ERC165, ERC721Receiver {
+	using SafeMath for uint8;
 
 	enum Rarity {common, rare, epic, legendary}
 
@@ -19,6 +20,8 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 	struct Defender {
 		Monster[5] deck;
 		bool isDefending;
+		uint256 bet;
+		uint256 averageLvl;
 	}
 
 	Monster[] monsters;
@@ -42,30 +45,31 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 
     function startMatch(Monster[5] _team1, Monster[5] _team2)
 			internal
-			returns (uint[5])
+			returns (uint)
 		{
-			uint8[5] _results;
-			uint _score1 = 0;
-			uint8 _score2 = 0;
-			uint8 i = 0;
+			uint256 _score1 = 0;
+			uint256 _score2 = 0;
+			uint256 i = 0;
 
 			for(i=0; i<5; i++){
 				if (_team1[i].spd > _team2[i].spd) {
-					if(_team1[i].atk > _team2[i].def) _results.push(1);
-					else _results.push(2);
+					if(_team1[i].atk > _team2[i].def) _score1 = _score1.add(1);
+					else _score2 = _score2.add(1);
 				} else if (_team1[i].spd < _team2[i].spd) {
-					if(_team2[i].atk > _team1[i].def) _results.push(2);
-					else _results.push(1);
+					if(_team2[i].atk > _team1[i].def) _score2 = _score2.add(1);
+					else _score1 = _score1.add(1);
 				} else {
-					if (_team1[i].atk > _team2[i].atk) _results.push(1);
-					else if (_team1[i].atk < _team2[i].atk) _results.push(2);
+					if (_team1[i].atk > _team2[i].atk) _score1 = _score1.add(1);
+					else if (_team1[i].atk < _team2[i].atk) _score2 = _score2.add(1);
 					else {
-						if (_team1[i].def > _team2[i].def) _results.push(1);
-						else if (_team1[i].def < _team2[i].def) _results.push(2);
-						else _results.push(0);  //tied, same monster
+						if (_team1[i].def > _team2[i].def) _score1 = _score1.add(1);
+						else if (_team1[i].def < _team2[i].def) _score2 = _score2.add(1);
+					 //else tied, same monster, no points
 					}
 				}
 			}
+
+			return (_score1 > _score2)? 1: (_score1 < _score2)? 2:0;
 		}
 
     function random()
