@@ -81,24 +81,33 @@ contract CryptoMon is ERCCore {
         return _id;
 	}
 
-	function defend(uint256[5] _team)
+	function defend(uint256[5] _teamId)
 		public
 		running
 		returns(bool)
 	{
+		Monster[5] _team;
+		uint8 i;
+		for(i = 0; i<5; i++){
+			_team[i] = monsters[_teamId[i]];
+		}
 		onDefence[msg.sender] = Defender(_team, true);
 		return true;
 	}
 
 	function attack(
-		uint256[5] _team,
+		uint256[5] _teamId,
 		address _opponent
 	)
 		public
 		running
 		returns(bool)
 	{
-        
+    Monster[5] _team;
+		uint8 i;
+		for(i = 0; i<5; i++){
+			_team[i] = monsters[_teamId[i]];
+		}
 		startMatch(_team, onDefence[_opponent].deck);
 	}
 
