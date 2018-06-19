@@ -17,7 +17,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 	}
 
 	struct Defender {
-		uint[5] deck;
+		Monster[5] deck;
 		bool isDefending;
 	}
 
@@ -41,7 +41,33 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 		_;
 	}
 
-    function startMatch(uint[5] t1, uint[5] t2) { uint8 a;}
+    function startMatch(Monster[5] _team1, Monster[5] _team2)
+			internal
+			returns (uint[5])
+		{
+			uint8[5] _results;
+			uint _score1 = 0;
+			uint8 _score2 = 0;
+			uint8 i = 0;
+
+			for(i=0; i<5; i++){
+				if (_team1[i].spd > _team2[i].spd) {
+					if(_team1[i].atk > _team2[i].def) _results.push(1);
+					else _results.push(2);
+				} else if (_team1[i].spd < _team2[i].spd) {
+					if(_team2[i].atk > _team1[i].def) _results.push(2);
+					else _results.push(1);
+				} else {
+					if (_team1[i].atk > _team2[i].atk) _results.push(1);
+					else if (_team1[i].atk < _team2[i].atk) _results.push(2);
+					else {
+						if (_team1[i].def > _team2[i].def) _results.push(1);
+						else if (_team1[i].def < _team2[i].def) _results.push(2);
+						else _results.push(0);  //tied, same monster
+					}
+				}
+			}
+		}
 
     function random() public returns(uint256) {
         seed = (4832897258932085 * seed + 34732894208) % 4325352;
