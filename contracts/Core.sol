@@ -19,18 +19,18 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 
 	struct Defender {
 		uint256[5] deck;
-        uint256 bet;
-        uint8 level;
-        bool defending;
+    uint256 bet;
+    uint8 level;
+    bool defending;
 	}
 
-	Monster[] monsters;
+	Monster[] public monsters;
 	mapping(uint256 => address) owner;
 	mapping(address => uint256) balances;
 	mapping(address => mapping(address => bool)) approvedForAll;
 	mapping(uint256 => address) approved;
 	mapping(address => uint256) money;
-    mapping(address => Defender) onDefence;
+  mapping(address => Defender) onDefence;
 
 	mapping(uint256 => uint256) inSale;
     uint256 seed;
