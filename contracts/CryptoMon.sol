@@ -68,12 +68,12 @@ contract CryptoMon is ERCCore {
         else
             revert();
 
-        uint256[6] _id;
+        uint256[6] memory _id;
 
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
             monsters.push(generateMonster(_modifier));
-            _id.push(monsters.length.sub(1));
+            _id[i] = monsters.length - 1;
             balance[msg.sender] = balance[msg.sender].add(1);
         }
 
