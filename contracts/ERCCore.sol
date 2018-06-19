@@ -22,7 +22,7 @@ contract ERCCore is Core {
         returns(uint256)
     {
         require(_owner != address(0));
-        return balance[_owner];
+        return balances[_owner];
     }
 
     function ownerOf(uint256 _tokenId)
