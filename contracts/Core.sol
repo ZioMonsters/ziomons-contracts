@@ -45,7 +45,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 	}
 
     function startMatch(uint256[5] _team1, uint256[5] _team2)
-			internal
+			public
 			returns (uint)
 		{
 			uint256 _score1 = 0;
@@ -81,7 +81,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
     }
 
     function random() public returns(uint256) {
-        seed = (4832897258932085 * seed + 34732894208) % 4325352;
+        seed = (456736574209475983759587439975973457287552780923 * seed + 35987348957843750734098534098534732894208) % 498327498732984732984732897443257676352;
         return seed;
     }
 
