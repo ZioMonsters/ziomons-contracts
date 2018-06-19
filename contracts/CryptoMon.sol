@@ -122,6 +122,7 @@ using SafeMath for uint8;
 		address _opponent
 	)
 		public
+		payable
 		running
 		returns(bool)
 	{

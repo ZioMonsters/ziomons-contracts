@@ -115,10 +115,9 @@ contract Core is State, ERC721, ERC165, ERC721Receiver {
 						}
 					 //else tied, same monster, no points
 					}
-					/*  TODO bonus e levelUp*/
 				}
 			}
-
+			/* TODO lvlUp */
 			return (_score1 > _score2)? 1:(_score1 < _score2)? 2:0;
 		}
 
