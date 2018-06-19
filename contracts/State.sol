@@ -3,7 +3,7 @@ pragma solidity ^0.4.24;
 import "./Mortal.sol";
 
 contract State is Mortal{
-	bool public isRunning;
+	bool public isRunning = true;
 
 	event RunningStateChanged(bool indexed _state);
 
