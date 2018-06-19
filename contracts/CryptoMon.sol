@@ -163,7 +163,7 @@ using SafeMath for uint8;
         private
         returns(Monster)
     {
-        //TODO better format
+        //FIXME random numbers
         uint256 _tmp = randInt(0, 10000);
         uint256 _modRarity;
         if (_tmp == 0)
