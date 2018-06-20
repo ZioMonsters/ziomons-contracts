@@ -24,7 +24,7 @@ using SafeMath for uint8;
         address _player,
         uint256 indexed _bet,
         uint256 indexed _level,
-				bool indexed _onDefence
+				address indexed target
     );
     event Results(
         address indexed _attacker,
@@ -129,7 +129,7 @@ using SafeMath for uint8;
 		onDefence[msg.sender] = Defender(_ids, msg.value, uint8(_level), true);
         money[contractOwner] += msg.value;
 
-        emit Ready(msg.sender, msg.value, _level, true);
+        emit Ready(msg.sender, msg.value, _level, address(0));
 		return true;
 	}
 
@@ -160,7 +160,7 @@ using SafeMath for uint8;
 
         money[contractOwner] += msg.value;
         onDefence[_opponent].defending = false;
-		emit Ready(msg.sender, msg.value, _level ,false);
+		emit Ready(msg.sender, msg.value, _level , _opponent);
 		uint _winner = startMatch(_ids, onDefence[_opponent].deck);
 
 		emit Results (
@@ -199,4 +199,10 @@ using SafeMath for uint8;
         emit Bought(owner_, msg.sender, _id);
 	}
 
+	function withdraw () {
+		require(money[msg.sender] > 0 );
+		uint256 _amount = money[msg.sender];
+		money[msg.sender] = 0;
+		msg.sender.transfer(money[msg.sender]);
+	}
 }
