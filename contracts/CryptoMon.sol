@@ -7,38 +7,6 @@ contract CryptoMon is ERCCore {
 
 using SafeMath for uint8;
 
-	event Unboxed(
-		address indexed _player,
-		uint256[6] _monsters
-    );
-    event ForSale(
-        address indexed _player,
-        uint256 indexed _price
-    );
-    event Bought(
-        address indexed _from,
-        address indexed _to,
-        uint256 _id
-    );
-    event Ready(
-        address _player,
-        uint256 indexed _bet,
-        uint256 indexed _level,
-				address indexed target
-    );
-    event Results(
-        address indexed _attacker,
-        address indexed _defender,
-        address indexed _winner,
-        uint256 _price
-    );
-
-	uint8 standardBoxPrice = 2;
-	uint8 plusBoxPrice = 5;
-	uint8 maxiBoxPrice  = 8;
-
-    uint256 matchmakingRange = 5;
-
     constructor() public {
         seed = now;
     }
@@ -66,28 +34,28 @@ using SafeMath for uint8;
             //FIXME random numbers
             uint256 _tmp = randInt(0, 1000);
             uint256 _modRarityMin;
-						uint256 _modRarityMax;
-						Rarity _rare;
+            uint256 _modRarityMax;
+            uint8 _rare;
 
             if (_tmp == 0) {
 							_modRarityMin = 17;
 							_modRarityMax = 21;
-							_rare = Rarity.legendary;
+							_rare = 3;
 						}
             else if (_tmp < 11) {
 							_modRarityMin = 14;
 							_modRarityMax = 17;
-							_rare = Rarity.epic;
+							_rare = 2;
 						}
             else if (_tmp < 200) {
 							_modRarityMin = 11;
 							_modRarityMax = 14;
-							_rare = Rarity.uncommon;
+							_rare = 1;
 						}
             else {
 							_modRarityMin = 8;
 							_modRarityMax = 11;
-							_rare = Rarity.common;
+							_rare = 0;
 						}
 
             monsters.push(
@@ -138,7 +106,7 @@ using SafeMath for uint8;
 		public
 		payable
 		running
-		returns(bool)
+		returns(uint)
 	{
         require(notDuplicate(_ids));
         uint256 _level;
@@ -164,12 +132,12 @@ using SafeMath for uint8;
 		uint _winner = startMatch(_ids, onDefence[_opponent].deck);
 
 		emit Results (
-      msg.sender,
+             msg.sender,
 			_opponent,
 			(_winner == 1)? msg.sender:(_winner == 2)? _opponent: address(0),
 			msg.value.add(onDefence[_opponent].bet)
 		);
-		return true;
+		return _winner;
 	}
 
 	function sellMonster(
@@ -199,10 +167,11 @@ using SafeMath for uint8;
         emit Bought(owner_, msg.sender, _id);
 	}
 
-	function withdraw () {
+	function withdraw () public returns(uint) {
 		require(money[msg.sender] > 0 );
 		uint256 _amount = money[msg.sender];
 		money[msg.sender] = 0;
 		msg.sender.transfer(_amount);
+        return _amount;
 	}
 }
