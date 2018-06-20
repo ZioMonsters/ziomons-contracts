@@ -33,12 +33,12 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     //VARIABLES/////////////////////////////////////////////////////
 	Monster[] public monsters;
     uint256 seed;
-    uint8 standardBoxPrice = 2; 	/* TODO  */
-    uint8 plusBoxPrice = 5;				/* TODO  */
-    uint8 maxiBoxPrice  = 8;			/* TODO  */
+    uint8 standardBoxPrice = 2;
+    uint8 plusBoxPrice = 5;
+    uint8 maxiBoxPrice  = 8;
     uint256 modifierStandard = 0;	/* TODO  */
     uint256 modifierPlus = 100;		/* TODO  */
-    uint256 modifierMaxi = 980; 	/* TODO  */
+    uint256 modifierMaxi = 200; 	/* TODO  */
     uint256 matchmakingRange = 5;	/* TODO  */
 
     mapping(uint256 => address) owner;

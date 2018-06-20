@@ -1,9 +1,9 @@
 pragma solidity ^0.4.24;
 
-import "./ERCCore.sol";
+import "./AdminPanel.sol";
 import "./SafeMath.sol";
 
-contract CryptoMon is ERCCore {
+contract CryptoMon is AdminPanel {
 
 using SafeMath for uint8;
 
@@ -50,9 +50,9 @@ using SafeMath for uint8;
             _modRarityMax = 14;
             _rare = 1;
 		} else {
-				_modRarityMin = 8;
-                _modRarityMax = 11;
-				_rare = 0;
+    		_modRarityMin = 8;
+            _modRarityMax = 11;
+    		_rare = 0;
         }
 
       monsters.push(
@@ -62,7 +62,7 @@ using SafeMath for uint8;
               uint8(randInt(_modRarityMin, _modRarityMax)),
               1,
               0,
-		          _rare
+	          _rare
           )
       );
       _ids[i] = monsters.length - 1;
@@ -79,7 +79,7 @@ using SafeMath for uint8;
 		public
 		payable
 		running
-		returns(bool)
+        returns(bool)
     {
         require(notDuplicate(_ids));
         uint256 _level;
