@@ -138,7 +138,7 @@ using SafeMath for uint8;
 		public
 		payable
 		running
-		returns(bool)
+		returns(uint)
 	{
         require(_opponent != msg.sender);
         require(notDuplicate(_ids));
@@ -165,12 +165,12 @@ using SafeMath for uint8;
 		uint _winner = startMatch(_ids, onDefence[_opponent].deck);
 
 		emit Results (
-      msg.sender,
+             msg.sender,
 			_opponent,
 			(_winner == 1)? msg.sender:(_winner == 2)? _opponent: address(0),
 			msg.value.add(onDefence[_opponent].bet)
 		);
-		return true;
+		return _winner;
 	}
 
 	function sellMonster(

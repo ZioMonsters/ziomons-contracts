@@ -56,7 +56,6 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 		{
 			uint256 _score1 = 0;
 			uint256 _score2 = 0;
-			uint256 i;
 
 			tmp[6] memory _team1;
 			tmp[6] memory _team2;
@@ -75,7 +74,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 					);
 			}
 
-			for(i=0; i<5; i++) {
+			for(uint256 i=0; i<5; i++) {
 				if (_team1[i].spd > _team2[i].spd) {
 					if(_team1[i].atk > _team2[i].def) {
 						_score1++;
