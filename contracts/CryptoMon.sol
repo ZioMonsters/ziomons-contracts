@@ -20,10 +20,11 @@ using SafeMath for uint8;
         address indexed _to,
         uint256 _id
     );
-    event Defending(
-        address indexed _defender,
+    event Ready(
+        address _player,
         uint256 indexed _bet,
-        uint256 indexed _level
+        uint256 indexed _level,
+				address indexed target
     );
     event Results(
         address indexed _attacker,
@@ -64,24 +65,39 @@ using SafeMath for uint8;
             owner[monsters.length] = msg.sender;
             //FIXME random numbers
             uint256 _tmp = randInt(0, 10000);
-            uint256 _modRarity;
-            if (_tmp == 0)
-                _modRarity = 9;
-            else if (_tmp < 11)
-                _modRarity = 8;
-            else if (_tmp < 2000)
-                _modRarity = 6;
-            else
-                _modRarity = 5;
+            uint256 _modRarityMin;
+						uint256 _modRarityMax;
+						Rarity _rare;
+
+            if (_tmp == 0) {
+							_modRarityMin = 17;
+							_modRarityMax = 21;
+							_rare = Rarity.legendary;
+						}
+            else if (_tmp < 11) {
+							_modRarityMin = 14;
+							_modRarityMax = 17;
+							_rare = Rarity.epic;
+						}
+            else if (_tmp < 2000) {
+							_modRarityMin = 11;
+							_modRarityMax = 14;
+							_rare = Rarity.uncommon;
+						}
+            else {
+							_modRarityMin = 8;
+							_modRarityMax = 11;
+							_rare = Rarity.common;
+						}
 
             monsters.push(
                 Monster(
-                    uint8(randInt(0+_modRarity, 5+_modRarity)),
-                    uint8(randInt(0+_modRarity, 5+_modRarity)),
-                    uint8(randInt(0+_modRarity, 5+_modRarity)),
+                    uint8(randInt(_modRarityMin, _modRarityMax)),
+                    uint8(randInt(_modRarityMin, _modRarityMax)),
+                    uint8(randInt(_modRarityMin, _modRarityMax)),
                     1,
                     0,
-                    (_modRarity == 9)? Rarity.legendary: (_modRarity == 8)? Rarity.epic: (_modRarity == 6)? Rarity.rare: Rarity.common //Rarity.common
+					_rare
                 )
             );
             _ids[i] = monsters.length - 1;
@@ -111,7 +127,7 @@ using SafeMath for uint8;
 		onDefence[msg.sender] = Defender(_ids, msg.value, uint8(_level), true);
         money[contractOwner] += msg.value;
 
-        emit Defending(msg.sender, msg.value, _level);
+        emit Ready(msg.sender, msg.value, _level, address(0));
 		return true;
 	}
 
@@ -144,10 +160,11 @@ using SafeMath for uint8;
 
         money[contractOwner] += msg.value;
         onDefence[_opponent].defending = false;
+		emit Ready(msg.sender, msg.value, _level , _opponent);
 		uint _winner = startMatch(_ids, onDefence[_opponent].deck);
 
 		emit Results (
-            msg.sender,
+      msg.sender,
 			_opponent,
 			(_winner == 1)? msg.sender:(_winner == 2)? _opponent: address(0),
 			msg.value.add(onDefence[_opponent].bet)
@@ -182,4 +199,10 @@ using SafeMath for uint8;
         emit Bought(owner_, msg.sender, _id);
 	}
 
+	function withdraw () {
+		require(money[msg.sender] > 0 );
+		uint256 _amount = money[msg.sender];
+		money[msg.sender] = 0;
+		msg.sender.transfer(_amount);
+	}
 }

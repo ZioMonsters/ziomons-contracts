@@ -134,7 +134,7 @@ contract ERCCore is Core {
     }
 
     function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256) {
-        return 1; //TODO
+        return 1; /*TODO*/
     }
 
     function supportsInterface(bytes4 interfaceID)
@@ -164,4 +164,6 @@ contract ERCCore is Core {
             interfaceID == InterfaceSignature_ERC721
         );
     }
+
+
 }
