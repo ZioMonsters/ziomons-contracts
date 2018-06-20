@@ -31,7 +31,6 @@ using SafeMath for uint8;
 
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
-            //FIXME random numbers
             uint256 _tmp = randInt(0, 1000-_modifier);
             uint256 _modRarityMin;
             uint256 _modRarityMax;
