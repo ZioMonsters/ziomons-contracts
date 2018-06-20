@@ -3,6 +3,7 @@ pragma solidity ^0.4.24;
 import "./Core.sol";
 
 contract CoreFunctions is Core {
+
     function startMatch(uint256[5] _team1Id, uint256[5] _team2Id)
     public /** TODO set to internal **/
     returns (uint)
@@ -64,12 +65,33 @@ contract CoreFunctions is Core {
                         _score2++;
                         _team2[i+1].def++;
                     }
-                    //else tied, same monster, no points
+                    else {
+                        expUp(_team1Id, _team2Id, true);
+                        return 0;
+                    }
                 }
             }
+
+        expUp(
+            (_score1>_score2)? _team1Id:_team2Id,
+            (_score1<_score2)? _team1Id:_team2Id,
+            false
+        );
+        return (_score1 > _score2)? 1:2;
         }
-        /* TODO lvlUp */
-        return (_score1 > _score2)? 1:(_score1 < _score2)? 2:0;
+    }
+
+    function expUp(uint256[5] _team1Id, uint256[5] _team2Id, bool _draw)
+        internal
+    {
+        uint256 _helpLoser = expUpLoser;
+        if(_draw) _helpLoser = expUpWinner;
+
+        for(uint256 i = 0; i<5; i++) {
+
+            monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp.add(expUpWinner);
+            monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp.add(_helpLoser);
+        }
     }
 
     function notDuplicate(uint256[5] _ids) internal returns(bool) {

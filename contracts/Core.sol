@@ -12,7 +12,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 		uint8 def;
 		uint8 spd;
 		uint8 lvl;
-		uint16 exp;
+		uint256 exp;
 		uint8 rarity;
 	}
 
@@ -40,6 +40,8 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     uint256 modifierPlus = 100;
     uint256 modifierMaxi = 200;
     uint256 matchmakingRange = 5;
+    uint256 expUpWinner = 100;
+    uint256 expUpLoser = 20;
 
     mapping(uint256 => address) owner;
     mapping(address => uint256) balances;

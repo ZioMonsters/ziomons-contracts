@@ -172,4 +172,9 @@ using SafeMath for uint8;
 		msg.sender.transfer(_amount);
         return _amount;
 	}
+
+    /* function lvlUp () public {
+
+    } */
+
 }
