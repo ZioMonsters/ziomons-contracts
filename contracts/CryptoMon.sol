@@ -31,7 +31,6 @@ using SafeMath for uint8;
 
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
-            //FIXME random numbers
             uint256 _tmp = randInt(0, 1000-_modifier);
             uint256 _modRarityMin;
             uint256 _modRarityMax;
@@ -67,20 +66,21 @@ using SafeMath for uint8;
       );
       _ids[i] = monsters.length - 1;
       emit Transfer(address(0), msg.sender, monsters.length);
-        }
+    }
         balances[msg.sender] = balances[msg.sender].add(6);
-        money[contractOwner] += msg.value;
+        money[contractOwner] = money[contractOwner].add(msg.value);
 
         emit Unboxed(msg.sender, _ids);
         return _ids;
 	}
 
-	function defend(uint256[5] _ids)
+	function defend(uint256[5] _ids, uint256 _minBet)
 		public
 		payable
 		running
         returns(bool)
     {
+        require(_minBet <= msg.value);
         require(notDuplicate(_ids));
         uint256 _level;
         for (uint8 i = 0; i < 5; i++) {
@@ -89,22 +89,29 @@ using SafeMath for uint8;
                 _level = monsters[_ids[i]].lvl;
         }
 
-		onDefence[msg.sender] = Defender(_ids, msg.value, uint8(_level), true);
-        money[contractOwner] += msg.value;
+		onDefence[msg.sender] = Defender(
+            _ids,
+            _minBet,
+             msg.value,
+             uint8(_level),
+             true
+        );
+        moneyPending = moneyPending.add(msg.value);
 
-        emit Ready(msg.sender, msg.value, _level, address(0));
+        emit Ready(msg.sender, _minBet, msg.value, _level, address(0));
 		return true;
 	}
 
 	function attack(
 		uint256[5] _ids,
-		address _opponent
+		address _opponent,
+        uint256 _minBet
 	)
 		public
 		payable
 		running
-		returns(uint)
 	{
+        require(_minBet <= msg.value);
         require(notDuplicate(_ids));
         uint256 _level;
         for (uint8 i = 0; i < 5; i++) {
@@ -112,29 +119,65 @@ using SafeMath for uint8;
             if (monsters[_ids[i]].lvl > _level)
                 _level = monsters[_ids[i]].lvl;
         }
-        //FIXME FIX REQUIRE
 		require(
             (
                 matchmakingRange > _level ||
                 onDefence[_opponent].level >= _level - matchmakingRange
-            ) && //FIXME Overfloqw
+            ) &&
 			//onDefence[_opponent].level <= _level + matchmakingRange && //cazzi tuoi
-            //onDefence[_opponent].bet <= msg.value && //TODO money rewards system
+            onDefence[_opponent].bet >= _minBet &&
+            onDefence[_opponent].minBet <= msg.value &&
             onDefence[_opponent].defending == true
 		);
 
-        money[contractOwner] += msg.value;
+        moneyPending = moneyPending.add(msg.value);
         onDefence[_opponent].defending = false;
-		emit Ready(msg.sender, msg.value, _level , _opponent);
-		uint _winner = startMatch(_ids, onDefence[_opponent].deck);
+		emit Ready(msg.sender, _minBet, msg.value, _level , _opponent);
+		uint256 _winnerId = startMatch(_ids, onDefence[_opponent].deck);
+        address _winner;
+        address _loser;
+        uint256 _betWinner;
+        uint256 _betLoser;
+        if (_winnerId == 1) {
+            _winner = msg.sender;
+            _betWinner = msg.value;
+            _betLoser = onDefence[_opponent].bet;
+        } else if (_winnerId == 2) {
+            _winner = _opponent;
+            _betLoser = msg.value;
+            _betWinner = onDefence[_opponent].bet;
+        } else {
+            _winner = address(0);
+        }
+
+        moneyPending = moneyPending.sub(msg.value).sub(onDefence[_opponent].bet); //TODO fee
+
+        uint256 _moneyWon;
+        if (_winner == address(0)) {
+            money[_opponent] = money[_opponent].add(onDefence[_opponent].bet);
+            money[msg.sender] = money[msg.sender].add(msg.value);
+            emit Results (
+                msg.sender,
+                _opponent,
+                _winner,
+                0
+            );
+            return;
+        } else if (onDefence[_opponent].bet > msg.value) {
+            _moneyWon = msg.value;
+        } else {
+            _moneyWon = onDefence[_opponent].bet;
+        }
+
+        money[_winner] = money[_winner].add(_moneyWon).add(_betWinner);
+        money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
 
 		emit Results (
              msg.sender,
 			_opponent,
 			(_winner == 1)? msg.sender:(_winner == 2)? _opponent: address(0),
-			msg.value.add(onDefence[_opponent].bet)
+            _moneyWon
 		);
-		return _winner;
 	}
 
 	function sellMonster(

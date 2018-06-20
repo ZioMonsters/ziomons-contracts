@@ -5,7 +5,7 @@ import "./Core.sol";
 contract CoreFunctions is Core {
 
     function startMatch(uint256[5] _team1Id, uint256[5] _team2Id)
-    public /** TODO set to internal **/
+        public /** TODO set to internal **/
     returns (uint)
     {
         uint256 _score1 = 0;
