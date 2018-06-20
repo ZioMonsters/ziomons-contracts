@@ -18,6 +18,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 
 	struct Defender {
 		uint256[5] deck;
+        uint256 minBet;
         uint256 bet;
         uint8 level;
         bool defending;
@@ -45,9 +46,10 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     mapping(address => uint256) balances;
     mapping(address => mapping(address => bool)) approvedForAll;
     mapping(uint256 => address) approved;
-    mapping(address => uint256) money;
+    mapping(address => uint256) public money;
+    uint256 moneyPending;
     mapping(address => Defender) public onDefence; /*TODO remove public*/
-    mapping(uint256 => uint256) public inSale; //TODO SET PRIVATE
+    mapping(uint256 => uint256) public inSale;
     ////////////////////////////////////////////////////////////////
 
     //EVENTS////////////////////////////////////////////////////////
@@ -66,15 +68,16 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     );
     event Ready(
         address _player,
-        uint256 indexed _bet,
+        uint256 indexed _minBet,
+        uint256 _bet,
         uint256 indexed _level,
-        address indexed target
+        address indexed _opponent
     );
     event Results(
         address indexed _attacker,
         address indexed _defender,
         address indexed _winner,
-        uint256 _price
+        uint256 _moneyWon
     );
     ///////////////////////////////////////////////////////////////
 
