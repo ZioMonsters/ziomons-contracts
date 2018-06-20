@@ -20,8 +20,8 @@ contract AdminPanel is ERCCore {
         returns (uint256)
     {
         require(_newValue>=0);
-        PlueBoxPrice = _newValue;
-        return PlusBoxPrice;
+        plusBoxPrice = _newValue;
+        return plusBoxPrice;
     }
 
     function changeMaxiBoxPrice (uint256 _newValue)
@@ -63,4 +63,15 @@ contract AdminPanel is ERCCore {
         modifierMaxi = _newValue;
         return modifierMaxi;
     }
+
+    function changeMatchMakingRange (uint256 _newValue)
+        public
+        isOwner
+        returns (uint256)
+    {
+        require(_newValue>=0);
+        matchmakingRange = _newValue;
+        return matchmakingRange;
+    }
+
 }
