@@ -15,14 +15,13 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 		uint8 lvl;
 		uint16 exp;
 		Rarity rarity;
-        uint32 genome;
 	}
 
 	struct Defender {
 		uint256[5] deck;
-    uint256 bet;
-    uint8 level;
-    bool defending;
+        uint256 bet;
+        uint8 level;
+        bool defending;
 	}
 
 	Monster[] public monsters;

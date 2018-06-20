@@ -81,8 +81,7 @@ using SafeMath for uint8;
                     uint8(randInt(0+_modRarity, 5+_modRarity)),
                     1,
                     0,
-                    (_modRarity == 9)? Rarity.legendary: (_modRarity == 8)? Rarity.epic: (_modRarity == 6)? Rarity.rare: Rarity.common, //Rarity.common
-                    uint32(NRrandInt(monsters.length))
+                    (_modRarity == 9)? Rarity.legendary: (_modRarity == 8)? Rarity.epic: (_modRarity == 6)? Rarity.rare: Rarity.common //Rarity.common
                 )
             );
             _ids[i] = monsters.length - 1;
@@ -101,14 +100,13 @@ using SafeMath for uint8;
 		running
 		returns(bool)
     {
-        //require(notDuplicate(_ids));
-        //TODO Fix matchmaking level
+        require(notDuplicate(_ids));
         uint256 _level;
         for (uint8 i = 0; i < 5; i++) {
             require(owner[_ids[i]] == msg.sender);
-            _level += monsters[_ids[i]].lvl;
+            if (monsters[_ids[i]].lvl > _level)
+                _level = monsters[_ids[i]].lvl;
         }
-        _level = _level / 5;
 
 		onDefence[msg.sender] = Defender(_ids, msg.value, uint8(_level), true);
         money[contractOwner] += msg.value;
@@ -127,18 +125,20 @@ using SafeMath for uint8;
 		returns(bool)
 	{
         require(notDuplicate(_ids));
-        //TODO fix matchmaking level
         uint256 _level;
         for (uint8 i = 0; i < 5; i++) {
             require(owner[_ids[i]] == msg.sender);
-            _level += monsters[_ids[i]].lvl;
+            if (monsters[_ids[i]].lvl > _level)
+                _level = monsters[_ids[i]].lvl;
         }
-        _level = _level / 5;
         //FIXME FIX REQUIRE
 		require(
-			onDefence[_opponent].level >= _level - matchmakingRange && //FIXME Overfloqw
-			onDefence[_opponent].level <= _level + matchmakingRange &&
-            onDefence[_opponent].bet <= msg.value &&
+            (
+                matchmakingRange > _level ||
+                onDefence[_opponent].level >= _level - matchmakingRange
+            ) && //FIXME Overfloqw
+			//onDefence[_opponent].level <= _level + matchmakingRange && //cazzi tuoi
+            //onDefence[_opponent].bet <= msg.value && //TODO money rewards system
             onDefence[_opponent].defending == true
 		);
 
