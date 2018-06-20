@@ -41,7 +41,7 @@ contract AdminPanel is ERCCore {
             emit Changed(_parameter, _newValue);
             return matchmakingRange;
         } else {
-            return 400;
+            return 42;
         }
     }
 
