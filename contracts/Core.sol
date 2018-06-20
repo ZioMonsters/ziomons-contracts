@@ -38,7 +38,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     uint8 maxiBoxPrice  = 8;			/* TODO  */
 		uint256 modifierStandard = 0;	/* TODO  */
 		uint256 modifierPlus = 100;		/* TODO  */
-		uint256 modifierMaxi = 500; 	/* TODO  */
+		uint256 modifierMaxi = 980; 	/* TODO  */
 		uint256 matchmakingRange = 5;	/* TODO  */
 
     mapping(uint256 => address) owner;
