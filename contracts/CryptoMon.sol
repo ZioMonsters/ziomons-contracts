@@ -117,7 +117,7 @@ using SafeMath for uint8;
 		running
 		returns(bool)
     {
-        require(notDuplicate(_ids));
+        //require(notDuplicate(_ids));
         //TODO Fix matchmaking level
         uint256 _level;
         for (uint8 i = 0; i < 5; i++) {
@@ -150,9 +150,9 @@ using SafeMath for uint8;
             _level += monsters[_ids[i]].lvl;
         }
         _level = _level / 5;
-
+        //FIXME FIX REQUIRE
 		require(
-			onDefence[_opponent].level >= _level - matchmakingRange &&
+			onDefence[_opponent].level >= _level - matchmakingRange && //FIXME Overfloqw
 			onDefence[_opponent].level <= _level + matchmakingRange &&
             onDefence[_opponent].bet <= msg.value &&
             onDefence[_opponent].defending == true

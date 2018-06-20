@@ -3,7 +3,7 @@ pragma solidity ^0.4.24;
 import "./Interfaces.sol";
 import "./State.sol";
 
-contract Core is State, ERC721, ERC165, ERC721Receiver {
+contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 	using SafeMath for uint8;
 
 	enum Rarity {common, uncommon, epic, legendary}
