@@ -64,7 +64,7 @@ using SafeMath for uint8;
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
             //FIXME random numbers
-            uint256 _tmp = randInt(0, 10000);
+            uint256 _tmp = randInt(0, 1000);
             uint256 _modRarityMin;
 						uint256 _modRarityMax;
 						Rarity _rare;
@@ -79,7 +79,7 @@ using SafeMath for uint8;
 							_modRarityMax = 17;
 							_rare = Rarity.epic;
 						}
-            else if (_tmp < 2000) {
+            else if (_tmp < 200) {
 							_modRarityMin = 11;
 							_modRarityMax = 14;
 							_rare = Rarity.uncommon;
@@ -140,7 +140,6 @@ using SafeMath for uint8;
 		running
 		returns(bool)
 	{
-        require(_opponent != msg.sender);
         require(notDuplicate(_ids));
         uint256 _level;
         for (uint8 i = 0; i < 5; i++) {
