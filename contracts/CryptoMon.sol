@@ -203,6 +203,6 @@ using SafeMath for uint8;
 		require(money[msg.sender] > 0 );
 		uint256 _amount = money[msg.sender];
 		money[msg.sender] = 0;
-		msg.sender.transfer(money[msg.sender]);
+		msg.sender.transfer(_amount);
 	}
 }
