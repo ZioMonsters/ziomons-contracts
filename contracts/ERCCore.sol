@@ -148,4 +148,6 @@ contract ERCCore is Core {
             interfaceID == InterfaceSignature_ERC721
         );
     }
+
+    
 }

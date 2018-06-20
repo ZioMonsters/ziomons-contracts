@@ -6,7 +6,7 @@ import "./State.sol";
 contract Core is State, ERC721, ERC165, ERC721Receiver {
 	using SafeMath for uint8;
 
-	enum Rarity {common, rare, epic, legendary}
+	enum Rarity {common, uncommon, epic, legendary}
 
 	struct Monster {
 		uint8 atk;
