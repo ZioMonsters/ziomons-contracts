@@ -51,7 +51,7 @@ using SafeMath for uint8;
 				_rare = 1;
 			} else {
 				_modRarityMin = 8;
-				_modRarityMax = 11;
+                _modRarityMax = 11;
 				_rare = 0;
 			}
 
