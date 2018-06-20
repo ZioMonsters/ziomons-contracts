@@ -38,25 +38,22 @@ using SafeMath for uint8;
             uint8 _rare;
 
             if (_tmp == 0) {
-							_modRarityMin = 17;
-							_modRarityMax = 21;
-							_rare = 3;
-						}
-            else if (_tmp < 11) {
-							_modRarityMin = 14;
-							_modRarityMax = 17;
-							_rare = 2;
-						}
-            else if (_tmp < 200) {
-							_modRarityMin = 11;
-							_modRarityMax = 14;
-							_rare = 1;
-						}
-            else {
-							_modRarityMin = 8;
-							_modRarityMax = 11;
-							_rare = 0;
-						}
+				_modRarityMin = 17;
+				_modRarityMax = 21;
+				_rare = 3;
+			} else if (_tmp < 11) {
+				_modRarityMin = 14;
+				_modRarityMax = 17;
+				_rare = 2;
+			} else if (_tmp < 200) {
+				_modRarityMin = 11;
+				_modRarityMax = 14;
+				_rare = 1;
+			} else {
+				_modRarityMin = 8;
+				_modRarityMax = 11;
+				_rare = 0;
+			}
 
             monsters.push(
                 Monster(
