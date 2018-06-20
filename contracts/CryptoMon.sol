@@ -140,6 +140,7 @@ using SafeMath for uint8;
 		running
 		returns(bool)
 	{
+        require(_opponent != msg.sender);
         require(notDuplicate(_ids));
         uint256 _level;
         for (uint8 i = 0; i < 5; i++) {
