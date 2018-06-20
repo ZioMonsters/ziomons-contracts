@@ -17,13 +17,13 @@ using SafeMath for uint8;
 		running
 		returns(uint256[6])
 	{
-        uint8 _modifier;
+        uint256 _modifier;
         if (msg.value >= maxiBoxPrice)
-            _modifier = 200;
+            _modifier = modifierMaxi;
         else if (msg.value >= plusBoxPrice)
-            _modifier = 100;
+            _modifier = modifierPlus;
         else if (msg.value >= standardBoxPrice)
-            _modifier = 0;
+            _modifier = modifierStandard;
         else
             revert();
 
