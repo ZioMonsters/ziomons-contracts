@@ -17,13 +17,13 @@ using SafeMath for uint8;
 		running
 		returns(uint256[6])
 	{
-        uint8 _modifier;
+        uint256 _modifier;
         if (msg.value >= maxiBoxPrice)
-            _modifier = 20;
+            _modifier = modifierMaxi;
         else if (msg.value >= plusBoxPrice)
-            _modifier = 10;
+            _modifier = modifierPlus;
         else if (msg.value >= standardBoxPrice)
-            _modifier = 0;
+            _modifier = modifierStandard;
         else
             revert();
 
@@ -32,41 +32,41 @@ using SafeMath for uint8;
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
             //FIXME random numbers
-            uint256 _tmp = randInt(0, 1000);
+            uint256 _tmp = randInt(0, 1000-_modifier);
             uint256 _modRarityMin;
             uint256 _modRarityMax;
             uint8 _rare;
 
-            if (_tmp == 0) {
-				_modRarityMin = 17;
-				_modRarityMax = 21;
-				_rare = 3;
-			} else if (_tmp < 11) {
-				_modRarityMin = 14;
-				_modRarityMax = 17;
-				_rare = 2;
-			} else if (_tmp < 200) {
-				_modRarityMin = 11;
-				_modRarityMax = 14;
-				_rare = 1;
-			} else {
+        if (_tmp == 1) {
+            _modRarityMin = 17;
+            _modRarityMax = 21;
+            _rare = 3;
+        } else if (_tmp < 11) {
+            _modRarityMin = 14;
+            _modRarityMax = 17;
+            _rare = 2;
+		} else if (_tmp < 200) {
+            _modRarityMin = 11;
+            _modRarityMax = 14;
+            _rare = 1;
+		} else {
 				_modRarityMin = 8;
                 _modRarityMax = 11;
 				_rare = 0;
-			}
+        }
 
-            monsters.push(
-                Monster(
-                    uint8(randInt(_modRarityMin, _modRarityMax)),
-                    uint8(randInt(_modRarityMin, _modRarityMax)),
-                    uint8(randInt(_modRarityMin, _modRarityMax)),
-                    1,
-                    0,
-					_rare
-                )
-            );
-            _ids[i] = monsters.length - 1;
-            emit Transfer(address(0), msg.sender, monsters.length);
+      monsters.push(
+          Monster(
+              uint8(randInt(_modRarityMin, _modRarityMax)),
+              uint8(randInt(_modRarityMin, _modRarityMax)),
+              uint8(randInt(_modRarityMin, _modRarityMax)),
+              1,
+              0,
+		          _rare
+          )
+      );
+      _ids[i] = monsters.length - 1;
+      emit Transfer(address(0), msg.sender, monsters.length);
         }
         balances[msg.sender] = balances[msg.sender].add(6);
         money[contractOwner] += msg.value;

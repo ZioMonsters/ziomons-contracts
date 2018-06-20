@@ -33,17 +33,20 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     //VARIABLES/////////////////////////////////////////////////////
 	Monster[] public monsters;
     uint256 seed;
-    uint8 standardBoxPrice = 2;
-    uint8 plusBoxPrice = 5;
-    uint8 maxiBoxPrice  = 8;
-    uint256 matchmakingRange = 5;
+    uint8 standardBoxPrice = 2; 	/* TODO  */
+    uint8 plusBoxPrice = 5;				/* TODO  */
+    uint8 maxiBoxPrice  = 8;			/* TODO  */
+    uint256 modifierStandard = 0;	/* TODO  */
+    uint256 modifierPlus = 100;		/* TODO  */
+    uint256 modifierMaxi = 980; 	/* TODO  */
+    uint256 matchmakingRange = 5;	/* TODO  */
 
     mapping(uint256 => address) owner;
     mapping(address => uint256) balances;
     mapping(address => mapping(address => bool)) approvedForAll;
     mapping(uint256 => address) approved;
     mapping(address => uint256) money;
-    mapping(address => Defender) public onDefence; //TODO remove public
+    mapping(address => Defender) public onDefence; /*TODO remove public*/
     mapping(uint256 => uint256) inSale;
     ////////////////////////////////////////////////////////////////
 
