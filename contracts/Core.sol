@@ -68,9 +68,9 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 				);
 
 					_team2[i] = tmp(
-						monsters[_team1Id[i]].atk,
-						monsters[_team1Id[i]].def,
-						monsters[_team1Id[i]].spd
+						monsters[_team2Id[i]].atk,
+						monsters[_team2Id[i]].def,
+						monsters[_team2Id[i]].spd
 					);
 			}
 
