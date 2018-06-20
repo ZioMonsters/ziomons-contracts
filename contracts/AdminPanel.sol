@@ -40,7 +40,7 @@ contract AdminPanel is ERCCore {
         returns (uint256)
     {
         require(_newValue>=0);
-        modifierStandard = _newValue;
+        require(_newValue>=0 && _newValue < 1000);
         return modifierStandard;
     }
 
@@ -49,7 +49,7 @@ contract AdminPanel is ERCCore {
         isOwner
         returns (uint256)
     {
-        require(_newValue>=0);
+        require(_newValue>=0 && _newValue < 1000);
         modifierPlus = _newValue;
         return modifierPlus;
     }
@@ -59,7 +59,7 @@ contract AdminPanel is ERCCore {
         isOwner
         returns (uint256)
     {
-        require(_newValue>=0);
+        require(_newValue>=0 && _newValue < 1000);
         modifierMaxi = _newValue;
         return modifierMaxi;
     }
