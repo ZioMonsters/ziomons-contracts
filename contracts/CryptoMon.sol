@@ -61,8 +61,7 @@ using SafeMath for uint8;
               uint8(randInt(_modRarityMin, _modRarityMax)),
               uint8(randInt(_modRarityMin, _modRarityMax)),
               1,
-              0,
-		          _rare
+              0, _rare
           )
       );
       _ids[i] = monsters.length - 1;
@@ -158,8 +157,9 @@ using SafeMath for uint8;
     {
 		require(inSale[_id] > 0 && msg.value >= inSale[_id]);
         inSale[_id] = 0;
-        approve(msg.sender, _id);
         address owner_ = owner[_id];
+        approved[_id] = msg.sender;
+        emit Approval(owner_, msg.sender, _id);
         transferFrom(owner_, msg.sender, _id);
         emit Bought(owner_, msg.sender, _id);
 	}
