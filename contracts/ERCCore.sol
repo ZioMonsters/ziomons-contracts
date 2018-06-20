@@ -124,6 +124,19 @@ contract ERCCore is Core {
         return approvedForAll[_owner][_operator];
     }
 
+    function totalSupply() external view returns (uint256) {
+        return monsters.length;
+    }
+
+    function tokenByIndex(uint256 _index) external view returns (uint256) {
+        require(_index < this.totalSupply());
+        return _index;
+    }
+
+    function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256) {
+        return 1; //TODO
+    }
+
     function supportsInterface(bytes4 interfaceID)
         external
         view
@@ -141,7 +154,10 @@ contract ERCCore is Core {
             bytes4(keccak256('isApprovedForAll(address,address)')) ^
             bytes4(keccak256('transferFrom(address,address,uint256)')) ^
             bytes4(keccak256('safeTransferFrom(address,address,uint256)')) ^
-            bytes4(keccak256('safeTransferFrom(address,address,uint256,bytes)'));
+            bytes4(keccak256('safeTransferFrom(address,address,uint256,bytes)')) ^
+            bytes4(keccak256('totalSupply()')) ^
+            bytes4(keccak256('tokenByIndex(uint256)')) ^
+            bytes4(keccak256('tokenOfOwnerByIndex(address,uint256)'));
 
         return(
             interfaceID == InterfaceSignature_ERC165 ||

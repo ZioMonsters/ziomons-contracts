@@ -98,17 +98,6 @@ interface ERC721 /* is ERC165 */ {
 }
 
 
-interface ERC165 {
-    /// @notice Query if a contract implements an interface
-    /// @param interfaceID The interface identifier, as specified in ERC-165
-    /// @dev Interface identification is specified in ERC-165. This function
-    ///  uses less than 30,000 gas.
-    /// @return `true` if the contract implements `interfaceID` and
-    ///  `interfaceID` is not 0xffffffff, `false` otherwise
-    function supportsInterface(bytes4 interfaceID) external view returns(bool);
-}
-
-
 /**
  * @title ERC721 token receiver interface
  * @dev Interface for any contract that wants to support safeTransfers
@@ -145,4 +134,44 @@ contract ERC721Receiver {
         bytes4(keccak256("onERC721Received(address,uint256,bytes)"));
     }
 
+}
+
+
+/// @title ERC-721 Non-Fungible Token Standard, optional enumeration extension
+/// @dev See https://github.com/ethereum/EIPs/blob/master/EIPS/eip-721.md
+///  Note: the ERC-165 identifier for this interface is 0x780e9d63.
+interface ERC721Enumerable /* is ERC721 */ {
+    /// @notice Count NFTs tracked by this contract
+    /// @return A count of valid NFTs tracked by this contract, where each one of
+    ///  them has an assigned and queryable owner not equal to the zero address
+    function totalSupply() external view returns (uint256);
+
+    /// @notice Enumerate valid NFTs
+    /// @dev Throws if `_index` >= `totalSupply()`.
+    /// @param _index A counter less than `totalSupply()`
+    /// @return The token identifier for the `_index`th NFT,
+    ///  (sort order not specified)
+    function tokenByIndex(uint256 _index) external view returns (uint256);
+
+    /// @notice Enumerate NFTs assigned to an owner
+    /// @dev Throws if `_index` >= `balanceOf(_owner)` or if
+    ///  `_owner` is the zero address, representing invalid NFTs.
+    /// @param _owner An address where we are interested in NFTs owned by them
+    /// @param _index A counter less than `balanceOf(_owner)`
+    /// @return The token identifier for the `_index`th NFT assigned to `_owner`,
+    ///   (sort order not specified)
+    function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256);
+}
+
+
+
+
+interface ERC165 {
+    /// @notice Query if a contract implements an interface
+    /// @param interfaceID The interface identifier, as specified in ERC-165
+    /// @dev Interface identification is specified in ERC-165. This function
+    ///  uses less than 30,000 gas.
+    /// @return `true` if the contract implements `interfaceID` and
+    ///  `interfaceID` is not 0xffffffff, `false` otherwise
+    function supportsInterface(bytes4 interfaceID) external view returns(bool);
 }
