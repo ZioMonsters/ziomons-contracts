@@ -76,6 +76,10 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
         address indexed _winner,
         uint256 _price
     );
+    event Changed(
+        uint8 indexed _parameter,
+        uint256 _newValue
+    );
     ///////////////////////////////////////////////////////////////
 
     //MODIFIERS////////////////////////////////////////////////////
