@@ -19,9 +19,9 @@ using SafeMath for uint8;
 	{
         uint8 _modifier;
         if (msg.value >= maxiBoxPrice)
-            _modifier = 20;
+            _modifier = 200;
         else if (msg.value >= plusBoxPrice)
-            _modifier = 10;
+            _modifier = 100;
         else if (msg.value >= standardBoxPrice)
             _modifier = 0;
         else
@@ -32,7 +32,7 @@ using SafeMath for uint8;
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
             //FIXME random numbers
-            uint256 _tmp = randInt(0, 1000);
+            uint256 _tmp = randInt(0, 1000-_modifier);
             uint256 _modRarityMin;
             uint256 _modRarityMax;
             uint8 _rare;
