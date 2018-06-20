@@ -4,74 +4,46 @@ import "./ERCCore.sol";
 
 contract AdminPanel is ERCCore {
 
-    function changeStandardBoxPrice (uint256 _newValue)
+    function changeParameter (uint8 _parameter ,uint256 _newValue)
         public
         isOwner
         returns (uint256)
     {
+
         require(_newValue>=0);
-        standardBoxPrice = _newValue;
-        return standardBoxPrice;
+
+        if(_parameter == 0) {                                       //standardBoxPrice
+            standardBoxPrice = _newValue;
+            emit Changed(_parameter, _newValue);
+            return standardBoxPrice;
+        } else if (_parameter == 1) {                               //plusBoxPrice
+            plusBoxPrice = _newValue;
+            emit Changed(_parameter, _newValue);
+            return plusBoxPrice;
+        } else if (_parameter == 2) {                               //maxiBoxPrice
+            maxiBoxPrice = _newValue;
+            emit Changed(_parameter, _newValue);
+            return maxiBoxPrice;
+        } else if (_parameter == 3) {                               //modifierStandard
+            modifierStandard = _newValue;
+            emit Changed(_parameter, _newValue);
+            return modifierStandard;
+        } else if (_parameter == 4) {                               //modifierPlus
+            modifierPlus = _newValue;
+            emit Changed(_parameter, _newValue);
+            return modifierPlus;
+        } else if (_parameter == 5) {                               //modifierMaxi
+            modifierMaxi = _newValue;
+            emit Changed(_parameter, _newValue);
+            return modifierMaxi;
+        } else if (_parameter == 6) {                               //matchmakingRange
+            matchmakingRange = _newValue;
+            emit Changed(_parameter, _newValue);
+            return matchmakingRange;
+        } else {
+            return 42;
+        }
     }
 
-    function changePlusBoxPrice (uint256 _newValue)
-        public
-        isOwner
-        returns (uint256)
-    {
-        require(_newValue>=0);
-        plusBoxPrice = _newValue;
-        return plusBoxPrice;
-    }
-
-    function changeMaxiBoxPrice (uint256 _newValue)
-        public
-        isOwner
-        returns (uint256)
-    {
-        require(_newValue>=0);
-        maxiBoxPrice = _newValue;
-        return maxiBoxPrice;
-    }
-
-    function changeModifierStandard (uint256 _newValue)
-        public
-        isOwner
-        returns (uint256)
-    {
-        require(_newValue>=0);
-        require(_newValue>=0 && _newValue < 1000);
-        return modifierStandard;
-    }
-
-    function changeModifierPlus (uint256 _newValue)
-        public
-        isOwner
-        returns (uint256)
-    {
-        require(_newValue>=0 && _newValue < 1000);
-        modifierPlus = _newValue;
-        return modifierPlus;
-    }
-
-    function changeModifierMaxi (uint256 _newValue)
-        public
-        isOwner
-        returns (uint256)
-    {
-        require(_newValue>=0 && _newValue < 1000);
-        modifierMaxi = _newValue;
-        return modifierMaxi;
-    }
-
-    function changeMatchMakingRange (uint256 _newValue)
-        public
-        isOwner
-        returns (uint256)
-    {
-        require(_newValue>=0);
-        matchmakingRange = _newValue;
-        return matchmakingRange;
-    }
 
 }
