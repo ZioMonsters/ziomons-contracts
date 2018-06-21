@@ -112,4 +112,8 @@ contract CoreFunctions is Core {
     function randInt(uint256 _min, uint256 _max) internal returns(uint256) {
         return random() % (_max-_min) + _min;
     }
+
+    function calculateFees(uint256 _price) internal view returns (uint256) {
+        return _price.mul(fees) / 10000;
+    }
 }
