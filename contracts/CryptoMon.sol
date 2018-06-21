@@ -216,8 +216,35 @@ using SafeMath for uint8;
         return _amount;
 	}
 
-    /* function lvlUp () public {
+    function lvlUp (
+        uint256[] _ids,
+        uint8[] _atkMod,
+        uint8[] _defMod,
+        uint8[] _spdMod
+        )
+        public
+    {
+        require(
+            _ids.length == _atkMod.length &&
+            _atkMod.length == _defMod.length &&
+            _defMod.length == _spdMod.length
+        );
+        for(uint256 i = 0; i<_ids.length; i++) {
+            require(
+                owner[_ids[i]] == msg.sender &&
+                monsters[_ids[i]].exp >= ((monsters[_ids[i]].lvl**3)/5) &&  /* TODO parametrizzare */
+                monsters[_ids[i]].lvl < 100 &&
+                _atkMod[i] + _defMod[i] + _spdMod[i] == possibleUpgrade
+            ); /* TODO definire ogni quanto aumenta */
 
-    } */
+            monsters[_ids[i]].lvl++;
+            /*  TODO CAP require(monsters[_ids[i]].atk + _atkMod[i] < monsters[_ids[i]].lvl*2 + monsters[_ids[i]].atkI );  */
+            monsters[_ids[i]].atk += _atkMod[i];
+            /* TODO CAP def*/
+            monsters[_ids[i]].def += _defMod[i];
+            /* TODO CAP spd */
+            monsters[_ids[i]].spd += _spdMod[i];
+        }
+    }
 
 }

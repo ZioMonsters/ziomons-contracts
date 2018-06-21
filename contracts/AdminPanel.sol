@@ -25,21 +25,29 @@ contract AdminPanel is ERCCore {
             emit Changed(_parameter, _newValue);
             return maxiBoxPrice;
         } else if (_parameter == 3) {                               //modifierStandard
+            require(_newValue < 1000);
             modifierStandard = _newValue;
             emit Changed(_parameter, _newValue);
             return modifierStandard;
-        } else if (_parameter == 4) {                               //modifierPlus
+        } else if (_parameter == 4) {
+            require(_newValue < 1000);                              //modifierPlus
             modifierPlus = _newValue;
             emit Changed(_parameter, _newValue);
             return modifierPlus;
-        } else if (_parameter == 5) {                               //modifierMaxi
+        } else if (_parameter == 5) {
+            require(_newValue < 1000);                              //modifierMaxi
             modifierMaxi = _newValue;
             emit Changed(_parameter, _newValue);
             return modifierMaxi;
-        } else if (_parameter == 6) {                               //matchmakingRange
+        } else if (_parameter == 6) {
+            require(_newValue < 100);                         //matchmakingRange
             matchmakingRange = _newValue;
             emit Changed(_parameter, _newValue);
             return matchmakingRange;
+        } else if (_parameter == 7) {
+            possibleUpgrade = _newValue;
+            emit Changed(_parameter, _newValue);
+            return _newValue;
         } else {
             return 42;
         }

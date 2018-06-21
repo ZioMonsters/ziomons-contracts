@@ -43,7 +43,8 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     uint256 matchmakingRange = 5;
     uint256 expUpWinner = 100;
     uint256 expUpLoser = 20;
-
+    uint256 possibleUpgrade = 1;
+    
     mapping(uint256 => address) owner;
     mapping(address => uint256) balances;
     mapping(address => mapping(address => bool)) approvedForAll;
