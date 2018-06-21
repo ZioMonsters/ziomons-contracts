@@ -159,7 +159,7 @@ using SafeMath for uint8;
             emit Results (
                 msg.sender,
                 _opponent,
-                _winner,
+                0,
                 0
             );
             return;
@@ -175,7 +175,7 @@ using SafeMath for uint8;
 		emit Results (
              msg.sender,
 			_opponent,
-			(_winner == 1)? msg.sender:(_winner == 2)? _opponent: address(0),
+			_winnerId,
             _moneyWon
 		);
 	}

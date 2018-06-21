@@ -34,6 +34,9 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     //VARIABLES/////////////////////////////////////////////////////
 	Monster[] public monsters;
     uint256 seed;
+    uint256 moneyPending;
+
+    //PARAMS//
     uint256 standardBoxPrice = 2;
     uint256 plusBoxPrice = 5;
     uint256 maxiBoxPrice  = 8;
@@ -49,7 +52,6 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     mapping(address => mapping(address => bool)) approvedForAll;
     mapping(uint256 => address) approved;
     mapping(address => uint256) public money;
-    uint256 moneyPending;
     mapping(address => Defender) public onDefence; /*TODO remove public*/
     mapping(uint256 => uint256) public inSale;
     ////////////////////////////////////////////////////////////////
@@ -78,7 +80,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     event Results(
         address indexed _attacker,
         address indexed _defender,
-        address indexed _winner,
+        uint256 indexed _winnerId,
         uint256 _moneyWon
     );
     event Changed(
