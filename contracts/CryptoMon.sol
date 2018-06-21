@@ -98,7 +98,6 @@ using SafeMath for uint8;
         );
         moneyPending = moneyPending.add(msg.value);
 
-        emit Ready(msg.sender, _minBet, msg.value, _level, address(0));
 		return true;
 	}
 
@@ -111,28 +110,14 @@ using SafeMath for uint8;
 		payable
 		running
 	{
-        require(_minBet <= msg.value);
-        require(notDuplicate(_ids));
         uint256 _level;
         for (uint8 i = 0; i < 5; i++) {
-            require(owner[_ids[i]] == msg.sender);
             if (monsters[_ids[i]].lvl > _level)
                 _level = monsters[_ids[i]].lvl;
         }
-		require(
-            (
-                matchmakingRange > _level ||
-                onDefence[_opponent].level >= _level - matchmakingRange
-            ) &&
-			//onDefence[_opponent].level <= _level + matchmakingRange && //cazzi tuoi
-            onDefence[_opponent].bet >= _minBet &&
-            onDefence[_opponent].minBet <= msg.value &&
-            onDefence[_opponent].defending == true
-		);
 
         moneyPending = moneyPending.add(msg.value);
         onDefence[_opponent].defending = false;
-		emit Ready(msg.sender, _minBet, msg.value, _level , _opponent);
 		uint256 _winnerId = startMatch(_ids, onDefence[_opponent].deck);
         address _winner;
         address _loser;
@@ -156,12 +141,6 @@ using SafeMath for uint8;
         if (_winner == address(0)) {
             money[_opponent] = money[_opponent].add(onDefence[_opponent].bet);
             money[msg.sender] = money[msg.sender].add(msg.value);
-            emit Results (
-                msg.sender,
-                _opponent,
-                0,
-                0
-            );
             return;
         } else if (onDefence[_opponent].bet > msg.value) {
             _moneyWon = msg.value;
@@ -172,13 +151,6 @@ using SafeMath for uint8;
         money[_winner] = money[_winner].add(_moneyWon).add(_betWinner).sub(_fees);
         money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
         money[contractOwner] = money[contractOwner].add(_fees); //TODO CHECK if working
-
-		emit Results (
-             msg.sender,
-			_opponent,
-			_winnerId,
-            _moneyWon
-		);
 	}
 
 	function sellMonster(
@@ -236,21 +208,29 @@ using SafeMath for uint8;
             _atkMod.length == _defMod.length &&
             _defMod.length == _spdMod.length
         );
+
         for(uint256 i = 0; i<_ids.length; i++) {
             require(
                 owner[_ids[i]] == msg.sender &&
-                monsters[_ids[i]].exp >= ((monsters[_ids[i]].lvl**3)/5) &&  /* TODO parametrizzare */
-                monsters[_ids[i]].lvl < 100 &&
-                _atkMod[i] + _defMod[i] + _spdMod[i] == possibleUpgrade
-            ); /* TODO definire ogni quanto aumenta */
+                _atkMod[i] + _defMod[i] + _spdMod[i] >= possibleUpgrade &&
+                monsters[_ids[i]].lvl < 100
+                );
 
-            monsters[_ids[i]].lvl++;
-            require(monsters[_ids[i]].atk <= (monsters[_ids[i]].lvl/11)*10+20);
-            monsters[_ids[i]].atk += _atkMod[i];
-            require(monsters[_ids[i]].def <= (monsters[_ids[i]].lvl/11)*10+20);
-            monsters[_ids[i]].def += _defMod[i];
-            require(monsters[_ids[i]].spd <= (monsters[_ids[i]].lvl/11)*10+20);
-            monsters[_ids[i]].spd += _spdMod[i];
+            while(true){
+                if(
+                    monsters[_ids[i]].lvl < 100 &&
+                    monsters[_ids[i]].exp >= ((monsters[_ids[i]].lvl**3)/5) &&
+                    _atkMod[i] + _defMod[i] + _spdMod[i] >= possibleUpgrade
+                    )
+                monsters[_ids[i]].lvl++;
+                else break;
+                if(monsters[_ids[i]].atk <= (monsters[_ids[i]].lvl/11)*10+20)
+                    monsters[_ids[i]].atk += _atkMod[i];
+                if(monsters[_ids[i]].def <= (monsters[_ids[i]].lvl/11)*10+20)
+                    monsters[_ids[i]].def += _defMod[i];
+                if(monsters[_ids[i]].spd <= (monsters[_ids[i]].lvl/11)*10+20)
+                    monsters[_ids[i]].spd += _spdMod[i];
+            }
         }
     }
 
