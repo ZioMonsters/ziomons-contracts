@@ -112,4 +112,5 @@ contract CoreFunctions is Core {
     function randInt(uint256 _min, uint256 _max) internal returns(uint256) {
         return random() % (_max-_min) + _min;
     }
+    
 }
