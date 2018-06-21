@@ -48,6 +48,12 @@ contract AdminPanel is ERCCore {
             possibleUpgrade = _newValue;
             emit Changed(_parameter, _newValue);
             return _newValue;
+        }
+        else if (_parameter == 8) {
+            require(_newValue <= 1000);
+            fees = _newValue;
+            emit Changed(_parameter, _newValue);
+            return _newValue;
         } else {
             return 42;
         }
