@@ -159,7 +159,7 @@ using SafeMath for uint8;
             emit Results (
                 msg.sender,
                 _opponent,
-                _winner,
+                0,
                 0
             );
             return;
@@ -168,14 +168,15 @@ using SafeMath for uint8;
         } else {
             _moneyWon = onDefence[_opponent].bet;
         }
-
-        money[_winner] = money[_winner].add(_moneyWon).add(_betWinner);
+        uint256 _fees = calculateFees(_moneyWon.add(_betWinner));
+        money[_winner] = money[_winner].add(_moneyWon).add(_betWinner).sub(_fees);
         money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
+        money[contractOwner] = money[contractOwner].add(_fees); //TODO CHECK if working
 
 		emit Results (
              msg.sender,
 			_opponent,
-			(_winner == 1)? msg.sender:(_winner == 2)? _opponent: address(0),
+			_winnerId,
             _moneyWon
 		);
 	}
@@ -202,8 +203,14 @@ using SafeMath for uint8;
 		require(inSale[_id] > 0 && msg.value >= inSale[_id]);
         inSale[_id] = 0;
         address owner_ = owner[_id];
+
+        uint256 _fees = calculateFees(msg.value);
+        money[owner_] = money[owner_].sub(_fees).add(msg.value);
+        money[contractOwner] = money[contractOwner].add(_fees);
+
         approved[_id] = msg.sender;
         emit Approval(owner_, msg.sender, _id);
+
         transferFrom(owner_, msg.sender, _id);
         emit Bought(owner_, msg.sender, _id);
 	}
@@ -245,6 +252,11 @@ using SafeMath for uint8;
             /* TODO CAP spd */
             monsters[_ids[i]].spd += _spdMod[i];
         }
+    }
+
+    function test_getContractMoney() public returns(uint256) {
+
+        return this.balance;
     }
 
 }
