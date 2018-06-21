@@ -48,6 +48,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     uint256 expUpLoser = 40;
     uint256 possibleUpgrade = 1;
     uint256 fees = 375;
+    uint8 bonusWinner = 1;
 
     mapping(uint256 => address) owner;
     mapping(address => uint256) balances;
@@ -82,10 +83,9 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     event Results(
         address indexed _attacker,
         address indexed _defender,
-        /*Monster[5] _attackDeck,
+        Monster[5] _attackerDeck,
         Monster[5] _defenderDeck,
-        uint8[5] _log,
-        uint256 */
+        uint8 bonusWinner,
         uint256 indexed _winnerId,
         uint256 _moneyWon
     );

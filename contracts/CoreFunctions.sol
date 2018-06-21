@@ -32,38 +32,38 @@ contract CoreFunctions is Core {
             if (_team1[i].spd > _team2[i].spd) {
                 if(_team1[i].atk > _team2[i].def) {
                     _score1++;
-                    _team1[i+1].atk++;
+                    _team1[i+1].atk+=bonusWinner;
                 }
                 else {
                     _score2++;
-                    _team2[i+1].def++;
+                    _team2[i+1].def+=bonusWinner;
                 }
             } else if (_team1[i].spd < _team2[i].spd) {
                 if(_team2[i].atk > _team1[i].def) {
                     _score2++;
-                    _team2[i+1].atk++;
+                    _team2[i+1].atk+=bonusWinner;
                 }
                 else {
                     _score1++;
-                    _team1[i+1].def++;
+                    _team1[i+1].def+=bonusWinner;
                 }
             } else {
                 if (_team1[i].atk > _team2[i].atk) {
                     _score1++;
-                    _team1[i+1].atk++;
+                    _team1[i+1].atk+=bonusWinner;
                 }
                 else if (_team1[i].atk < _team2[i].atk) {
                     _score2++;
-                    _team2[i+1].def++;
+                    _team2[i+1].def+=bonusWinner;
                 }
                 else {
                     if (_team1[i].def > _team2[i].def) {
                         _score1++;
-                        _team1[i+1].def++;
+                        _team1[i+1].def+=bonusWinner;
                     }
                     else if (_team1[i].def < _team1[i].def) {
                         _score2++;
-                        _team2[i+1].def++;
+                        _team2[i+1].def+=bonusWinner;
                     }
                     else {
                         expUp(_team1Id, _team2Id, true);
