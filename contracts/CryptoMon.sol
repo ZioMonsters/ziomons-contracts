@@ -62,7 +62,7 @@ using SafeMath for uint8;
               1,
               0,
 	          _rare
-          )
+            )
       );
       _ids[i] = monsters.length - 1;
       emit Transfer(address(0), msg.sender, monsters.length);
@@ -245,11 +245,11 @@ using SafeMath for uint8;
             ); /* TODO definire ogni quanto aumenta */
 
             monsters[_ids[i]].lvl++;
-            /*  TODO CAP require(monsters[_ids[i]].atk + _atkMod[i] < monsters[_ids[i]].lvl*2 + monsters[_ids[i]].atkI );  */
+            require(monsters[_ids[i]].atk <= (monsters[_ids[i]].lvl/11)*10+20);
             monsters[_ids[i]].atk += _atkMod[i];
-            /* TODO CAP def*/
+            require(monsters[_ids[i]].def <= (monsters[_ids[i]].lvl/11)*10+20);
             monsters[_ids[i]].def += _defMod[i];
-            /* TODO CAP spd */
+            require(monsters[_ids[i]].spd <= (monsters[_ids[i]].lvl/11)*10+20);
             monsters[_ids[i]].spd += _spdMod[i];
         }
     }
