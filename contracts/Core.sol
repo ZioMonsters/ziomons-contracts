@@ -84,12 +84,14 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
         address indexed _defender,
         /*Monster[5] _attackDeck,
         Monster[5] _defenderDeck,
-        uint8[5] _log,*/
+        uint8[5] _log,
+        uint256 */
         uint256 indexed _winnerId,
         uint256 _moneyWon
     );
     event Changed(
         uint8 indexed _parameter,
+        uint256 _oldValue,
         uint256 _newValue
     );
     ///////////////////////////////////////////////////////////////
