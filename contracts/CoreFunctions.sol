@@ -39,7 +39,7 @@ contract CoreFunctions is Core {
                     _team2[i+1].def++;
                 }
             } else if (_team1[i].spd < _team2[i].spd) {
-                if(_team1[i].atk > _team2[i].atk) {
+                if(_team2[i].atk > _team1[i].def) {
                     _score2++;
                     _team2[i+1].atk++;
                 }

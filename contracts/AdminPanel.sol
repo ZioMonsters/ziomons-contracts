@@ -58,6 +58,4 @@ contract AdminPanel is ERCCore {
             return 42;
         }
     }
-
-
 }
