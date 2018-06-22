@@ -163,7 +163,7 @@ using SafeMath for uint8;
 		public
 		payable
 		running
-		returns(bool)
+		returns(bool) //TODO Set busy stuff
     {
 		require(inSale[_id] > 0 && msg.value >= inSale[_id]);
         inSale[_id] = 0;
