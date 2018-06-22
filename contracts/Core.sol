@@ -25,10 +25,11 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
         uint8 level;
 	}
 
-    struct tmpTeam {
+    struct Team {
         uint8 atk;
         uint8 def;
         uint8 spd;
+        uint32 id;
     }
     ////////////////////////////////////////////////////////////////
 
@@ -79,8 +80,8 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     event Results(
         address indexed _attacker,
         address indexed _defender,
-        Monster[5] _attackerDeck,
-        Monster[5] _defenderDeck,
+        Team[5] _attackerDeck,
+        Team[5] _defenderDeck,
         uint8 bonusWinner,
         uint256 indexed _winnerId,
         uint256 _moneyWon

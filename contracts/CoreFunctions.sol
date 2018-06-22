@@ -91,8 +91,8 @@ contract CoreFunctions is Core {
         }
 
         //Gives back the unused money (if any) to the loser, and pays the winner
-        money[_winner] = money[_winner].add(_moneyWon).add(_betWinner);
-        money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
+        //money[_winner] = money[_winner].add(_moneyWon).add(_betWinner); fixme error
+        //money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
 
         //TODO Fees
 
@@ -119,20 +119,22 @@ contract CoreFunctions is Core {
         uint256 _score1 = 0;
         uint256 _score2 = 0;
 
-        tmpTeam[6] memory _team1;
-        tmpTeam[6] memory _team2;
+        Team[6] memory _team1;
+        Team[6] memory _team2;
 
         for(i=0; i<5; i++){
-            _team1[i] = tmpTeam(
+            _team1[i] = Team(
                 monsters[_team1Id[i]].atk,
                 monsters[_team1Id[i]].def,
-                monsters[_team1Id[i]].spd
+                monsters[_team1Id[i]].spd,
+                0
             );
 
-            _team2[i] = tmpTeam(
+            _team2[i] = Team(
                 monsters[_team2Id[i]].atk,
                 monsters[_team2Id[i]].def,
-                monsters[_team2Id[i]].spd
+                monsters[_team2Id[i]].spd,
+                0
             );
         }
 
