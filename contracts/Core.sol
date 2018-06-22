@@ -70,6 +70,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     );
     event ForSale(
         address indexed _player,
+        uint32 _id,
         uint256 indexed _price
     );
     event Bought(

@@ -147,7 +147,7 @@ using SafeMath for uint8;
 
 
     function sellMonster(
-		uint256 _id,
+		uint32 _id,
 		uint256 _price
 	)
 		public
@@ -156,10 +156,10 @@ using SafeMath for uint8;
 	{
         require(!monsters[_id].busy && owner[_id] == msg.sender);
 		inSale[_id] = _price;
-        emit ForSale(msg.sender, _price);
+        emit ForSale(msg.sender, _id, _price);
 	}
 
-	function buyMonster(uint256 _id)
+	function buyMonster(uint32 _id)
 		public
 		payable
 		running
@@ -193,7 +193,7 @@ using SafeMath for uint8;
         uint8[] _atkMod,
         uint8[] _defMod,
         uint8[] _spdMod
-        )
+    )
         external
     {
         require(

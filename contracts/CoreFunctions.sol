@@ -46,21 +46,21 @@ contract CoreFunctions is Core {
         moneyPending = moneyPending.sub(_defender.bet);
         Team[5] memory _attackerTeam;
         Team[5] memory _defenderTeam;
-        /*/creates _attackerTeam and _defenderTeam to be used on events. j is reused
+        //creates _attackerTeam and _defenderTeam to be used on events. j is reused
         for (j = 0; j < 5; j++) {
             _attackerTeam[j] = Team(
-                monsters[_ids[i]].atk,
-                monsters[_ids[i]].def,
-                monsters[_ids[i]].spd,
-                _ids[i]
+                monsters[_ids[j]].atk,
+                monsters[_ids[j]].def,
+                monsters[_ids[j]].spd,
+                _ids[j]
             );
             _defenderTeam[j] = Team(
-                monsters[_defender.deck[i]].atk,
-                monsters[_defender.deck[i]].def,
-                monsters[_defender.deck[i]].spd,
-                _defender.deck[i]
+                monsters[_defender.deck[j]].atk,
+                monsters[_defender.deck[j]].def,
+                monsters[_defender.deck[j]].spd,
+                _defender.deck[j]
             );
-        }*/
+        }
 
         //If it's a draw, give back the money to both opponents, without taking fees.
         if (_winner == address(0)) {
