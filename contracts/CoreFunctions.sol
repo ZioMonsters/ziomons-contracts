@@ -91,8 +91,8 @@ contract CoreFunctions is Core {
         }
 
         //Gives back the unused money (if any) to the loser, and pays the winner
-        //money[_winner] = money[_winner].add(_moneyWon).add(_betWinner); fixme error
-        //money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
+        money[_winner] = money[_winner].add(_moneyWon).add(_betWinner); //fixme error
+        money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
 
         //TODO Fees
 

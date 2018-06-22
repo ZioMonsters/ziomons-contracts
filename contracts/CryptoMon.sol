@@ -76,7 +76,7 @@ using SafeMath for uint8;
         return _ids;
 	}
 
-    function fight(uint32[5] _ids, uint256 _minBet) public {
+    function fight(uint32[5] _ids, uint256 _minBet) public payable running{
         //Check that you actually payed at least your minimum bet
         require(msg.value >= _minBet);
         for (uint256 i = 0; i < 5; i++) {
