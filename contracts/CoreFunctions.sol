@@ -82,7 +82,7 @@ contract CoreFunctions is Core {
     }
 
     function expUp(uint256[5] _team1Id, uint256[5] _team2Id, bool _draw)
-        internal
+        public  /* TODO set internal */
     {
         uint256 _helpLoser = expUpLoser;
         if(_draw) _helpLoser = expUpWinner;

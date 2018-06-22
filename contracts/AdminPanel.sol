@@ -46,7 +46,7 @@ contract AdminPanel is ERCCore {
             return matchmakingRange;
         } else if (_parameter == 7) {
             emit Changed(_parameter, possibleUpgrade,_newValue);
-            possibleUpgrade = _newValue;
+            possibleUpgrade = uint8(_newValue);
             return _newValue;
         }
         else if (_parameter == 8) {
