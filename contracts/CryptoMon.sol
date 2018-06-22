@@ -183,13 +183,20 @@ using SafeMath for uint8;
         return _amount;
 	}
 
+    function pow (uint256 _a, uint256 _b) returns (uint256) {
+        uint256 _R = 1;
+        for (uint8 i = 1; i<_b; i++) {
+            _R = _R* _a;
+        }
+    }
+
     function lvlUp (
         uint256[] _ids,
         uint8[] _atkMod,
         uint8[] _defMod,
         uint8[] _spdMod
         )
-        public
+        external
     {
         require(
             _ids.length == _atkMod.length &&
@@ -197,36 +204,27 @@ using SafeMath for uint8;
             _defMod.length == _spdMod.length
         );
 
+        uint8 skillsAvailable;
+
         for(uint256 i = 0; i<_ids.length; i++) {
+            skillsAvailable = 0;
             require(
                 owner[_ids[i]] == msg.sender &&
-                //_atkMod[i] + _defMod[i] + _spdMod[i] >= possibleUpgrade &&
                 monsters[_ids[i]].lvl < 100
                 );
-
-            while(true){
-                if(
-                    monsters[_ids[i]].lvl < 100 &&
-                    monsters[_ids[i]].exp >= ((monsters[_ids[i]].lvl**3)/5) &&
-                    _atkMod[i] + _defMod[i] + _spdMod[i] >= possibleUpgrade
+            while(
+                    (pow(monsters[1].lvl, 3)/5) <= monsters[1].exp &&
+                    monsters[1].lvl < 100
                     ) {
-                monsters[_ids[i]].lvl++;
-                } else {
-                    break;
+                    monsters[1].lvl++;
+                    skillsAvailable += 1;
                 }
-                if(monsters[_ids[i]].atk <= (monsters[_ids[i]].lvl/11)*10+20) {
-                    monsters[_ids[i]].atk++;
-                    _atkMod[i]--;
-                }
-                if(monsters[_ids[i]].def <= (monsters[_ids[i]].lvl/11)*10+20) {
-                    monsters[_ids[i]].def++;
-                    _defMod[i]--;
-                }
-                if(monsters[_ids[i]].spd <= (monsters[_ids[i]].lvl/11)*10+20) {
-                    monsters[_ids[i]].spd++;
-                    _spdMod[i]--;
-                }
-            }
+
+
+            require(_atkMod[i] + _defMod[i] + _spdMod[i] <= skillsAvailable);
+            monsters[_ids[i]].atk += _atkMod[i];
+            monsters[_ids[i]].def += _defMod[i];
+            monsters[_ids[i]].spd += _spdMod[i];
         }
     }
 
