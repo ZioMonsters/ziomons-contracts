@@ -90,9 +90,11 @@ contract CoreFunctions is Core {
             _moneyWon = _defender.bet;
         }
 
-        //Gives back the unused money (if any) to the loser, and pays the winner
-        money[_winner] = money[_winner].add(_moneyWon).add(_betWinner);
+        //Gives back the unused money (if any) to the loser, and pays the winner, taking developer fees.
+        uint256 _fees = calculateFees(_moneyWon);
+        money[_winner] = money[_winner].add(_moneyWon).sub(_fees).add(_betWinner);
         money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
+        money[contractOwner] = money[contractOwner].add(_fees);
 
         //TODO Fees
 
