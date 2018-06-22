@@ -58,7 +58,7 @@ contract AdminPanel is ERCCore {
             emit Changed(_parameter, bonusWinner, _newValue);
             bonusWinner = uint8(_newValue);
             return _newValue;
-        }else {
+        } else {
             return 42;
         }
     }

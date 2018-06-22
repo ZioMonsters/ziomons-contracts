@@ -62,8 +62,7 @@ using SafeMath for uint8;
                 1,
                 _rarity,
                 0,
-                false,
-                "" //TODO add name
+                false
             )
         );
 
@@ -202,15 +201,13 @@ using SafeMath for uint8;
 
         for(uint256 i = 0; i<_ids.length; i++) {
             _skillsAvailable = 0;
-            require(
-                owner[_ids[i]] == msg.sender &&
-                monsters[_ids[i]].lvl < 100
-            );
+            require(owner[_ids[i]] == msg.sender);
+
             while (
-                (monsters[1].lvl/5) <= monsters[1].exp &&
-                monsters[1].lvl < 100
+                ((uint256(monsters[_ids[i]].lvl)**3)/5) <= monsters[_ids[i]].exp &&
+                monsters[_ids[i]].lvl < 100
             ) {
-                monsters[1].lvl++;
+                monsters[_ids[i]].lvl++;
                 _skillsAvailable += 1;
             }
 

@@ -192,7 +192,7 @@ contract CoreFunctions is Core {
     }
 
     function expUp(uint32[5] _team1Id, uint32[5] _team2Id, bool _draw)
-        internal
+        public
     {
         uint256 _helpLoser = expUpLoser;
         if(_draw) _helpLoser = expUpWinner;
@@ -202,16 +202,6 @@ contract CoreFunctions is Core {
             monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp.add(expUpWinner);
             monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp.add(_helpLoser);
         }
-    }
-
-    function notDuplicate(uint256[5] _ids) internal returns(bool) {
-        for (uint256 i = 0; i < 5; i++) {
-            for (uint256 j = 0; j < 5; j++) {
-                if (_ids[i] == _ids[j] && j != i)
-                    return false;
-            }
-        }
-        return true;
     }
 
     function random() internal returns(uint256) {
