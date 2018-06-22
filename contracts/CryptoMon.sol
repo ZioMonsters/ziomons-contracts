@@ -103,6 +103,10 @@ using SafeMath for uint8;
         //Checks for every level in range.
         for (i = _level - matchmakingRange; i <= _level + matchmakingRange && i < 100; i++) {
 
+            //Skips current range to save gas and prevent errors when using %0
+            if (waitingLength[i] == 0)
+                continue;
+
             //Checks for every person in the current waiting level to find someone who has the same bet range as you.
             //Starts to check from a random position in the array, to prevent unlucky people from never playing.
             //Note that waiting is an array of mappings, this is because arrays are broken, and .length is not
@@ -142,7 +146,7 @@ using SafeMath for uint8;
 
 
     function sellMonster(
-		uint256 _id,
+		uint32 _id,
 		uint256 _price
 	)
 		public
@@ -151,14 +155,14 @@ using SafeMath for uint8;
 	{
         require(!monsters[_id].busy && owner[_id] == msg.sender);
 		inSale[_id] = _price;
-        emit ForSale(msg.sender, _price);
+        emit ForSale(msg.sender, _id, _price);
 	}
 
-	function buyMonster(uint256 _id)
+	function buyMonster(uint32 _id)
 		public
 		payable
 		running
-		returns(bool)
+		returns(bool) //TODO Set busy stuff
     {
 		require(inSale[_id] > 0 && msg.value >= inSale[_id]);
         inSale[_id] = 0;
@@ -188,7 +192,7 @@ using SafeMath for uint8;
         uint8[] _atkMod,
         uint8[] _defMod,
         uint8[] _spdMod
-        )
+    )
         external
     {
         require(
