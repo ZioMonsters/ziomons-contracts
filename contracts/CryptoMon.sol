@@ -147,9 +147,9 @@ using SafeMath for uint8;
 	)
 		public
 		running
-        isAuthorized(msg.sender, _id)
         returns(bool)
 	{
+        require(!monsters[_id].busy && owner[_id] == msg.sender);
 		inSale[_id] = _price;
         emit ForSale(msg.sender, _price);
 	}
@@ -165,7 +165,7 @@ using SafeMath for uint8;
         address owner_ = owner[_id];
 
         uint256 _fees = calculateFees(msg.value);
-        money[owner_] = money[owner_].sub(_fees).add(msg.value);
+        money[owner_] = money[owner_].add(msg.value).sub(_fees);
         money[contractOwner] = money[contractOwner].add(_fees);
 
         approved[_id] = msg.sender;
