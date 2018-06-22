@@ -46,7 +46,7 @@ contract CoreFunctions is Core {
         moneyPending = moneyPending.sub(_defender.bet);
         Team[5] memory _attackerTeam;
         Team[5] memory _defenderTeam;
-        //creates _attackerTeam and _defenderTeam to be used on events. j is reused
+        /*/creates _attackerTeam and _defenderTeam to be used on events. j is reused
         for (j = 0; j < 5; j++) {
             _attackerTeam[j] = Team(
                 monsters[_ids[i]].atk,
@@ -60,7 +60,7 @@ contract CoreFunctions is Core {
                 monsters[_defender.deck[i]].spd,
                 _defender.deck[i]
             );
-        }
+        }*/
 
         //If it's a draw, give back the money to both opponents, without taking fees.
         if (_winner == address(0)) {

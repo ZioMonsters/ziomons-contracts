@@ -104,6 +104,10 @@ using SafeMath for uint8;
         //Checks for every level in range.
         for (i = _level - matchmakingRange; i <= _level + matchmakingRange && i < 100; i++) {
 
+            //Skips current range to save gas and prevent errors when using %0
+            if (waitingLength[i] == 0)
+                continue;
+
             //Checks for every person in the current waiting level to find someone who has the same bet range as you.
             //Starts to check from a random position in the array, to prevent unlucky people from never playing.
             //Note that waiting is an array of mappings, this is because arrays are broken, and .length is not
