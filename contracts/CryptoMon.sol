@@ -212,7 +212,7 @@ using SafeMath for uint8;
         for(uint256 i = 0; i<_ids.length; i++) {
             require(
                 owner[_ids[i]] == msg.sender &&
-                _atkMod[i] + _defMod[i] + _spdMod[i] >= possibleUpgrade &&
+                //_atkMod[i] + _defMod[i] + _spdMod[i] >= possibleUpgrade &&
                 monsters[_ids[i]].lvl < 100
                 );
 
@@ -221,18 +221,23 @@ using SafeMath for uint8;
                     monsters[_ids[i]].lvl < 100 &&
                     monsters[_ids[i]].exp >= ((monsters[_ids[i]].lvl**3)/5) &&
                     _atkMod[i] + _defMod[i] + _spdMod[i] >= possibleUpgrade
-                    )
+                    ) {
                 monsters[_ids[i]].lvl++;
-                else break;
-                if(monsters[_ids[i]].atk <= (monsters[_ids[i]].lvl/11)*10+20)
+                } else {
+                    break;
+                }
+                if(monsters[_ids[i]].atk <= (monsters[_ids[i]].lvl/11)*10+20) {
                     monsters[_ids[i]].atk++;
                     _atkMod[i]--;
-                if(monsters[_ids[i]].def <= (monsters[_ids[i]].lvl/11)*10+20)
+                }
+                if(monsters[_ids[i]].def <= (monsters[_ids[i]].lvl/11)*10+20) {
                     monsters[_ids[i]].def++;
                     _defMod[i]--;
-                if(monsters[_ids[i]].spd <= (monsters[_ids[i]].lvl/11)*10+20)
+                }
+                if(monsters[_ids[i]].spd <= (monsters[_ids[i]].lvl/11)*10+20) {
                     monsters[_ids[i]].spd++;
                     _spdMod[i]--;
+                }
             }
         }
     }
