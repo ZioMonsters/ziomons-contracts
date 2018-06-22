@@ -62,8 +62,7 @@ using SafeMath for uint8;
                 1,
                 _rarity,
                 0,
-                false,
-                "" //TODO add name
+                false
             )
         );
 
@@ -120,7 +119,8 @@ using SafeMath for uint8;
                 //If it finds someone the fight starts and the functions returns.
                 if (
                     waiting[i][j_].minBet <= msg.value &&
-                    waiting[i][j_].bet >= _minBet
+                    waiting[i][j_].bet >= _minBet &&
+                    waiting[i][j_].addr != msg.sender
                 ) return computeBattleResults(i, j_, _ids);
             }
         }

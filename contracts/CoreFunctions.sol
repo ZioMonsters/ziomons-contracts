@@ -96,8 +96,6 @@ contract CoreFunctions is Core {
         money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
         money[contractOwner] = money[contractOwner].add(_fees);
 
-        //TODO Fees
-
         //Emits the result. The squads are logged, together with the winnerBonus to allow
         //people to recreate the fight in case they want to.
         emit Results(
