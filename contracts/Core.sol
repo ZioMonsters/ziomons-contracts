@@ -44,7 +44,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     uint256 modifierPlus = 100;
     uint256 modifierMaxi = 200;
     uint256 matchmakingRange = 5;
-    uint256 expUpWinner = 200;
+    uint256 expUpWinner = 100;
     uint256 expUpLoser = 40;
     uint256 possibleUpgrade = 1;
     uint256 fees = 375;

@@ -225,11 +225,14 @@ using SafeMath for uint8;
                 monsters[_ids[i]].lvl++;
                 else break;
                 if(monsters[_ids[i]].atk <= (monsters[_ids[i]].lvl/11)*10+20)
-                    monsters[_ids[i]].atk += _atkMod[i];
+                    monsters[_ids[i]].atk++;
+                    _atkMod[i]--;
                 if(monsters[_ids[i]].def <= (monsters[_ids[i]].lvl/11)*10+20)
-                    monsters[_ids[i]].def += _defMod[i];
+                    monsters[_ids[i]].def++;
+                    _defMod[i]--;
                 if(monsters[_ids[i]].spd <= (monsters[_ids[i]].lvl/11)*10+20)
-                    monsters[_ids[i]].spd += _spdMod[i];
+                    monsters[_ids[i]].spd++;
+                    _spdMod[i]--;
             }
         }
     }
