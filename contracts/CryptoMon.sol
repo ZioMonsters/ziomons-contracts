@@ -61,7 +61,8 @@ using SafeMath for uint8;
               uint8(randInt(_modRarityMin, _modRarityMax)),
               1,
               0,
-	          _rare
+	          _rare,
+              ""
           )
       );
       _ids[i] = monsters.length - 1;

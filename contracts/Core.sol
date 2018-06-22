@@ -14,6 +14,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 		uint8 lvl;
 		uint256 exp;
 		uint8 rarity;
+        string name;
 	}
 
 	struct Defender {
