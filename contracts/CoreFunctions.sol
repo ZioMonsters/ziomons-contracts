@@ -87,7 +87,7 @@ contract CoreFunctions is Core {
         } else if (_defender.bet > msg.value) {
             _moneyWon = msg.value;
         } else {
-            _moneyWon = onDefence[_defender.addr].bet;
+            _moneyWon = _defender.bet;
         }
 
         //Gives back the unused money (if any) to the loser, and pays the winner
@@ -181,7 +181,7 @@ contract CoreFunctions is Core {
                     }
                 }
             }
-
+        //if(score) //TODO FICX
         expUp(
             (_score1>_score2)? _team1Id:_team2Id,
             (_score1<_score2)? _team1Id:_team2Id,
@@ -220,6 +220,7 @@ contract CoreFunctions is Core {
     }
 
     function randInt(uint256 _min, uint256 _max) internal returns(uint256) {
+        if (_min == _max) return 0;
         return random() % (_max-_min) + _min;
     }
 

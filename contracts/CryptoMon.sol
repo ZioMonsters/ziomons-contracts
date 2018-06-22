@@ -84,7 +84,7 @@ using SafeMath for uint8;
             require(owner[_ids[i]] == msg.sender && !monsters[_ids[i]].busy);
             for (uint256 j = 0; j < 5; j++) {
                 //check that there aren't any duplicates in your squad
-                require(_ids[i] != _ids[j] && i != j);
+                require(_ids[i] != _ids[j] || i == j);
             }
         }
 
@@ -101,7 +101,7 @@ using SafeMath for uint8;
             _level = matchmakingRange;
 
         //Checks for every level in range.
-        for (i = _level - matchmakingRange; i <= matchmakingRange && i <= 100; i++) {
+        for (i = _level - matchmakingRange; i <= _level + matchmakingRange && i < 100; i++) {
 
             //Checks for every person in the current waiting level to find someone who has the same bet range as you.
             //Starts to check from a random position in the array, to prevent unlucky people from never playing.
@@ -116,7 +116,7 @@ using SafeMath for uint8;
                 if (
                     waiting[i][j_].minBet <= msg.value &&
                     waiting[i][j_].bet >= _minBet
-                ) return; //computeBattleResults(i, j_, _ids);
+                ) return computeBattleResults(i, j_, _ids);
             }
         }
 
@@ -183,13 +183,6 @@ using SafeMath for uint8;
         return _amount;
 	}
 
-    function pow (uint256 _a, uint256 _b) returns (uint256) {
-        uint256 _R = 1;
-        for (uint8 i = 1; i<_b; i++) {
-            _R = _R* _a;
-        }
-    }
-
     function lvlUp (
         uint256[] _ids,
         uint8[] _atkMod,
@@ -204,24 +197,24 @@ using SafeMath for uint8;
             _defMod.length == _spdMod.length
         );
 
-        uint8 skillsAvailable;
+        uint8 _skillsAvailable;
 
         for(uint256 i = 0; i<_ids.length; i++) {
-            skillsAvailable = 0;
+            _skillsAvailable = 0;
             require(
                 owner[_ids[i]] == msg.sender &&
                 monsters[_ids[i]].lvl < 100
-                );
-            while(
-                    (pow(monsters[1].lvl, 3)/5) <= monsters[1].exp &&
-                    monsters[1].lvl < 100
-                    ) {
-                    monsters[1].lvl++;
-                    skillsAvailable += 1;
-                }
+            );
+            while (
+                (monsters[1].lvl/5) <= monsters[1].exp &&
+                monsters[1].lvl < 100
+            ) {
+                monsters[1].lvl++;
+                _skillsAvailable += 1;
+            }
 
 
-            require(_atkMod[i] + _defMod[i] + _spdMod[i] <= skillsAvailable);
+            require(_atkMod[i] + _defMod[i] + _spdMod[i] <= _skillsAvailable);
             monsters[_ids[i]].atk += _atkMod[i];
             monsters[_ids[i]].def += _defMod[i];
             monsters[_ids[i]].spd += _spdMod[i];

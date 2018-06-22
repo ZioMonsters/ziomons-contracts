@@ -59,7 +59,6 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     mapping(address => mapping(address => bool)) approvedForAll;
     mapping(uint256 => address) approved;
     mapping(address => uint256) public money;
-    mapping(address => Defender) public onDefence; /*TODO remove public*/
     mapping(uint256 => uint256) public inSale;
     ////////////////////////////////////////////////////////////////
 
