@@ -14,14 +14,15 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 		uint8 lvl;
 		uint256 exp;
 		uint8 rarity;
+        bool busy;
 	}
 
 	struct Defender {
-		uint256[5] deck;
+        address addr;
+		uint32[5] deck;
         uint256 minBet;
         uint256 bet;
         uint8 level;
-        bool defending;
 	}
 
     struct tmpTeam {
@@ -35,6 +36,8 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 	Monster[] public monsters;
     uint256 seed;
     uint256 moneyPending;
+    mapping (uint256 => Defender)[100] public waiting; //TODO remove public
+    uint256[100] public waitingLength; //todo remove public
 
     //PARAMS//
     uint256 standardBoxPrice = 2;
@@ -72,13 +75,6 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
         address indexed _from,
         address indexed _to,
         uint256 _id
-    );
-    event Ready(
-        address _player,
-        uint256 indexed _minBet,
-        uint256 _bet,
-        uint256 indexed _level,
-        address indexed _opponent
     );
     event Results(
         address indexed _attacker,

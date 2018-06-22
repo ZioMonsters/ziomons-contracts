@@ -4,7 +4,115 @@ import "./Core.sol";
 
 contract CoreFunctions is Core {
 
-    function startMatch(uint256[5] _team1Id, uint256[5] _team2Id)
+    function computeBattleResults(uint256 i, uint256 j, uint32[5] _ids) {
+        //If it finds someone, the match starts.
+        //First, it removes the defender from the list, and replaces it with the last element of the mapping.
+        Defender memory _defender = waiting[i][j];
+        delete waiting[i][j];
+        //Length is reset
+        waitingLength[i]--;
+        waiting[i][j] = waiting[i][waitingLength[i]];
+
+        //Resets the busy state of the defender's monsters. No for-loop is used to save gas.
+        monsters[_defender.deck[0]].busy = false;
+        monsters[_defender.deck[1]].busy = false;
+        monsters[_defender.deck[2]].busy = false;
+        monsters[_defender.deck[3]].busy = false;
+        monsters[_defender.deck[4]].busy = false;
+
+        //Then it computes the result of the match.
+        uint256 _winnerId = startMatch(_ids, _defender.deck);
+
+        //Converts the result from the startMatch functions into addresses and saves their bet
+        address _winner;
+        address _loser;
+        uint256 _betWinner;
+        uint256 _betLoser;
+        if (_winnerId == 1) {
+            _winner = msg.sender;
+            _loser = _defender.addr;
+            _betWinner = msg.value;
+            _betLoser = _defender.bet;
+        } else if (_winnerId == 2) {
+            _winner = _defender.addr;
+            _loser = msg.sender;
+            _betWinner = _defender.bet;
+            _betLoser = msg.value;
+        } else {
+            _winner = address(0);
+        }
+
+        //removes the defender's money from pending state.
+        moneyPending = moneyPending.sub(_defender.bet);
+        Team[5] memory _attackerTeam;
+        Team[5] memory _defenderTeam;
+        //creates _attackerTeam and _defenderTeam to be used on events. j is reused
+        for (j = 0; j < 5; j++) {
+            _attackerTeam[j] = Team(
+                monsters[_ids[i]].atk,
+                monsters[_ids[i]].def,
+                monsters[_ids[i]].spd,
+                _ids[i]
+            );
+            _defenderTeam[j] = Team(
+                monsters[_defender.deck[i]].atk,
+                monsters[_defender.deck[i]].def,
+                monsters[_defender.deck[i]].spd,
+                _defender.deck[i]
+            );
+        }
+
+        //If it's a draw, give back the money to both opponents, without taking fees.
+        if (_winner == address(0)) {
+            money[_defender.addr] = money[_defender.addr].add(_defender.bet);
+            money[msg.sender] = money[msg.sender].add(msg.value);
+
+            //Emits the result. The squads are logged, together with the winnerBonus to allow
+            //people to recreate the fight in case they want to.
+            emit Results(
+                msg.sender,
+                _defender.addr,
+                _attackerTeam,
+                _defenderTeam,
+                bonusWinner,
+                _winnerId,
+                _moneyWon
+            );
+
+            //The functions returns.
+            return;
+
+            //Otherwise, it computes the money won.
+            uint256 _moneyWon;
+        } else if (_defender.bet > msg.value) {
+            _moneyWon = msg.value;
+        } else {
+            _moneyWon = onDefence[_defender.addr].bet;
+        }
+
+        //Gives back the unused money (if any) to the loser, and pays the winner
+        money[_winner] = money[_winner].add(_moneyWon).add(_betWinner);
+        money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
+
+        //TODO Fees
+
+        //Emits the result. The squads are logged, together with the winnerBonus to allow
+        //people to recreate the fight in case they want to.
+        emit Results(
+            msg.sender,
+            _defender.addr,
+            _attackerTeam,
+            _defenderTeam,
+            bonusWinner,
+            _winnerId,
+            _moneyWon
+        );
+
+        //At the end, the function returns to prevent multiple fights
+        return;
+    }
+
+    function startMatch(uint32[5] _team1Id, uint32[5] _team2Id)
         public /** TODO set to internal **/
     returns (uint)
     {
@@ -81,7 +189,7 @@ contract CoreFunctions is Core {
         }
     }
 
-    function expUp(uint256[5] _team1Id, uint256[5] _team2Id, bool _draw)
+    function expUp(uint32[5] _team1Id, uint32[5] _team2Id, bool _draw)
         internal
     {
         uint256 _helpLoser = expUpLoser;
