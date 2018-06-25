@@ -12,22 +12,24 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 		uint8 def;
 		uint8 spd;
 		uint8 lvl;
-		uint256 exp;
-		uint8 rarity;
+        uint8 rarity;
+        uint256 exp;
+        bool busy;
 	}
 
 	struct Defender {
-		uint256[5] deck;
+        address addr;
+		uint32[5] deck;
         uint256 minBet;
         uint256 bet;
         uint8 level;
-        bool defending;
 	}
 
-    struct tmpTeam {
+    struct Team {
         uint8 atk;
         uint8 def;
         uint8 spd;
+        uint32 id;
     }
     ////////////////////////////////////////////////////////////////
 
@@ -35,6 +37,8 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 	Monster[] public monsters;
     uint256 seed;
     uint256 moneyPending;
+    mapping (uint256 => Defender)[100] public waiting; //TODO remove public
+    uint256[100] public waitingLength; //todo remove public
 
     //PARAMS//
     uint256 standardBoxPrice = 2;
@@ -45,14 +49,16 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     uint256 modifierMaxi = 200;
     uint256 matchmakingRange = 5;
     uint256 expUpWinner = 100;
-    uint256 expUpLoser = 20;
+    uint256 expUpLoser = 40;
+    uint256 fees = 375;
+    uint8 possibleUpgrade = 1;
+    uint8 bonusWinner = 1;
 
     mapping(uint256 => address) owner;
     mapping(address => uint256) balances;
     mapping(address => mapping(address => bool)) approvedForAll;
     mapping(uint256 => address) approved;
     mapping(address => uint256) public money;
-    mapping(address => Defender) public onDefence; /*TODO remove public*/
     mapping(uint256 => uint256) public inSale;
     ////////////////////////////////////////////////////////////////
 
@@ -63,6 +69,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     );
     event ForSale(
         address indexed _player,
+        uint32 _id,
         uint256 indexed _price
     );
     event Bought(
@@ -70,21 +77,16 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
         address indexed _to,
         uint256 _id
     );
-    event Ready(
-        address _player,
-        uint256 indexed _minBet,
-        uint256 _bet,
-        uint256 indexed _level,
-        address indexed _opponent
-    );
     event Results(
         address indexed _attacker,
         address indexed _defender,
+        uint8 bonusWinner,
         uint256 indexed _winnerId,
         uint256 _moneyWon
     );
     event Changed(
         uint8 indexed _parameter,
+        uint256 _oldValue,
         uint256 _newValue
     );
     ///////////////////////////////////////////////////////////////
