@@ -3,7 +3,7 @@ pragma solidity ^0.4.24;
 import "./SafeMath.sol";
 
 contract Owned {
-    using SafeMath for uint;
+    using SafeMath for uint256;
 
     address contractOwner;
     address newOwner;
@@ -18,7 +18,7 @@ contract Owned {
     }
 
     modifier isOwner {
-        require(msg.sender == contractOwner, "You are not the owner");
+        require(msg.sender == contractOwner);
         _;
     }
 
@@ -27,9 +27,8 @@ contract Owned {
     }
 
     function acceptOwnership() external {
-        require(msg.sender == newOwner, "You are not the designated god");
+        require(msg.sender == newOwner);
         emit OwnershipTransferred(contractOwner, newOwner);
         contractOwner = newOwner;
-        newOwner = address(0);
     }
 }

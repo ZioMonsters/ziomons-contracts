@@ -15,7 +15,6 @@ using SafeMath for uint8;
 		public
 		payable
 		running
-		returns(uint256[6])
 	{
         uint256 _modifier;
         if (msg.value >= maxiBoxPrice)
@@ -71,9 +70,6 @@ using SafeMath for uint8;
     }
         balances[msg.sender] = balances[msg.sender].add(6);
         money[contractOwner] = money[contractOwner].add(msg.value);
-
-        emit Unboxed(msg.sender, _ids);
-        return _ids;
 	}
 
     function fight(uint32[5] _ids, uint256 _minBet) public payable running{

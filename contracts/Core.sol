@@ -1,10 +1,9 @@
 pragma solidity ^0.4.24;
 
 import "./Interfaces.sol";
-import "./State.sol";
+import "./Owned.sol";
 
-contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
-	using SafeMath for uint8;
+contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 
     //STRUCTS///////////////////////////////////////////////////////
 	struct Monster {
@@ -22,7 +21,6 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 		uint32[5] deck;
         uint256 minBet;
         uint256 bet;
-        uint8 level;
 	}
 
     struct Team {
@@ -63,10 +61,6 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     ////////////////////////////////////////////////////////////////
 
     //EVENTS////////////////////////////////////////////////////////
-    event Unboxed(
-        address indexed _player,
-        uint256[6] _monsters
-    );
     event ForSale(
         address indexed _player,
         uint32 _id,
