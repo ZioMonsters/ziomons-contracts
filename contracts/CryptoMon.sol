@@ -267,10 +267,4 @@ using SafeMath for uint8;
                 monsters[_ids[i]].spd += _spdMod[i];
         }
     }
-
-    function test_getContractMoney() public returns(uint256) {
-
-        return this.balance;
-    }
-
 }
