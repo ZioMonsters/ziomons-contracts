@@ -4,7 +4,9 @@ import "./Core.sol";
 
 contract CoreFunctions is Core {
 
-    function computeBattleResults(uint256 i, uint256 j, uint32[5] _ids) {
+    function computeBattleResults(uint256 i, uint256 j, uint32[5] _ids)
+        internal
+    {
         //If it finds someone, the match starts.
         //First, it removes the defender from the list, and replaces it with the last element of the mapping.
         Defender memory _defender = waiting[i][j];

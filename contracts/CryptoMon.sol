@@ -89,9 +89,45 @@ using SafeMath for uint8;
         }
 
         //Sets the matchmaking level. TODO: matchmaking using median
-        for (i = 0; i < 5; i++)
-            if (monsters[_ids[i]].lvl > _level)
-                uint256 _level = monsters[_ids[i]].lvl;
+        uint256 _level;
+        uint8[5] _a;
+
+        for(i=0; i<5; i++) {
+            _a[i] = monsters[_ids[i]].lvl;
+        }
+
+        if(_a[0] > _a[1]) {
+            _a[0] = _a[0] ^ _a[1];
+            _a[1] = _a[0] ^ _a[1];
+            _a[0] = _a[0] ^ _a[1];
+        }
+
+        if(_a[3] > _a[4]) {
+            _a[3] = _a[3] ^ _a[4];
+            _a[4] = _a[3] ^ _a[4];
+            _a[3] = _a[3] ^ _a[4];
+        }
+
+        if(_a[0] > _a[3]) {
+            _a[0] = _a[0] ^ _a[3];
+            _a[3] = _a[0] ^ _a[3];
+            _a[0] = _a[0] ^ _a[3];
+
+            _a[1] = _a[1] ^ _a[4];
+            _a[4] = _a[1] ^ _a[4];
+            _a[1] = _a[1] ^ _a[4];
+        }
+
+        if(_a[2] > _a[1])
+            if(_a[1] < _a[3])
+                _level = (_a[2] < _a[3])? _a[2]:_a[3];
+            else
+                _level = (_a[1] < _a[4])? _a[1]:_a[4];
+            else
+            if(_a[2] > _a[3])
+                _level = (_a[2] < _a[4])? _a[2]:_a[4];
+            else
+                _level = (_a[1] < _a[3])? _a[1]:_a[3];
 
         //The waiting queue has only 100 spaces, this means that its last index is 99.
         _level--;
@@ -218,9 +254,17 @@ using SafeMath for uint8;
 
 
             require(_atkMod[i] + _defMod[i] + _spdMod[i] <= _skillsAvailable);
-            monsters[_ids[i]].atk += _atkMod[i];
-            monsters[_ids[i]].def += _defMod[i];
-            monsters[_ids[i]].spd += _spdMod[i];
+
+            uint256 _cap = monsters[_ids[i]].lvl/11*12+20;
+
+            require(
+                _cap>=monsters[_ids[i]].atk+_atkMod[i] &&
+                _cap>=monsters[_ids[i]].def+_defMod[i] &&
+                _cap>=monsters[_ids[i]].spd+_spdMod[i]
+                );
+                monsters[_ids[i]].atk += _atkMod[i];
+                monsters[_ids[i]].def += _defMod[i];
+                monsters[_ids[i]].spd += _spdMod[i];
         }
     }
 
