@@ -46,23 +46,6 @@ contract CoreFunctions is Core {
 
         //removes the defender's money from pending state.
         moneyPending = moneyPending.sub(_defender.bet);
-        Team[5] memory _attackerTeam;
-        Team[5] memory _defenderTeam;
-        //creates _attackerTeam and _defenderTeam to be used on events. j is reused
-        for (j = 0; j < 5; j++) {
-            _attackerTeam[j] = Team(
-                monsters[_ids[j]].atk,
-                monsters[_ids[j]].def,
-                monsters[_ids[j]].spd,
-                _ids[j]
-            );
-            _defenderTeam[j] = Team(
-                monsters[_defender.deck[j]].atk,
-                monsters[_defender.deck[j]].def,
-                monsters[_defender.deck[j]].spd,
-                _defender.deck[j]
-            );
-        }
 
         //If it's a draw, give back the money to both opponents, without taking fees.
         if (_winner == address(0)) {
@@ -74,8 +57,6 @@ contract CoreFunctions is Core {
             emit Results(
                 msg.sender,
                 _defender.addr,
-                _attackerTeam,
-                _defenderTeam,
                 bonusWinner,
                 _winnerId,
                 _moneyWon
@@ -103,8 +84,6 @@ contract CoreFunctions is Core {
         emit Results(
             msg.sender,
             _defender.addr,
-            _attackerTeam,
-            _defenderTeam,
             bonusWinner,
             _winnerId,
             _moneyWon

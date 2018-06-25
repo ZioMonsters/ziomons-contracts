@@ -77,7 +77,8 @@ contract ERCCore is CoreFunctions {
         require(
             _from == owner[_tokenId] &&
             _to != address(0) &&
-            _tokenId < monsters.length
+            _tokenId < monsters.length &&
+            !monsters[_tokenId].busy
         );
         owner[_tokenId] = _to;
         approve(address(0), _tokenId);
