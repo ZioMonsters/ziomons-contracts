@@ -4,6 +4,15 @@ import "./Core.sol";
 
 contract CoreFunctions is Core {
 
+    function tokenIdToOwnedTokensIndex(address _owner, uint32 _id) internal view returns(uint32) {
+        for (uint32 i = 0; i < balances[_owner]; i++)
+            if (ownedTokens[_owner][i] == _id)
+                return i;
+
+        //Execution should never get here
+        revert();
+    }
+
     function computeBattleResults(uint256 i, uint256 j, uint32[5] _ids)
         internal
     {
@@ -17,7 +26,7 @@ contract CoreFunctions is Core {
         isWaiting[_defender.addr] = [100, 0];
 
         //Builds data array, used for event logging.
-        uint32[40] _data;
+        uint32[40] memory _data;
         for (i = 0; i < 5; i++) {
             _data[i] = _ids[i];
             _data[i+5] = monsters[_ids[i]].atk;
@@ -32,6 +41,9 @@ contract CoreFunctions is Core {
         //Resets the busy state of the defender's monsters.
         for (i = 0; i < 5; i++)
             monsters[_defender.deck[i]].busy = false;
+
+        //removes the defender's money from pending state.
+        moneyPending = moneyPending.sub(_defender.bet);
 
         //Then it computes the result of the match.
         uint256 _winnerId = startMatch(_ids, _defender.deck);
@@ -51,15 +63,9 @@ contract CoreFunctions is Core {
             _loser = msg.sender;
             _betWinner = _defender.bet;
             _betLoser = msg.value;
+
+            //If it's a draw, give back the money to both opponents, without taking fees.
         } else {
-            _winner = address(0);
-        }
-
-        //removes the defender's money from pending state.
-        moneyPending = moneyPending.sub(_defender.bet);
-
-        //If it's a draw, give back the money to both opponents, without taking fees.
-        if (_winner == address(0)) {
             money[_defender.addr] = money[_defender.addr].add(_defender.bet);
             money[msg.sender] = money[msg.sender].add(msg.value);
 
@@ -69,7 +75,7 @@ contract CoreFunctions is Core {
                 msg.sender,
                 _defender.addr,
                 _data,
-                bonusWinner,
+                uint8(params[11]),
                 _winnerId,
                 _moneyWon
             );
@@ -77,16 +83,18 @@ contract CoreFunctions is Core {
             //The functions returns.
             return;
 
+        }
+
             //Otherwise, it computes the money won.
-            uint256 _moneyWon;
-        } else if (_defender.bet > msg.value) {
+        uint256 _moneyWon;
+        if (_defender.bet > msg.value) {
             _moneyWon = msg.value;
         } else {
             _moneyWon = _defender.bet;
         }
 
         //Gives back the unused money (if any) to the loser, and pays the winner, taking developer fees.
-        uint256 _fees = calculateFees(_moneyWon);
+        uint256 _fees = _moneyWon.mul(params[9])/10000;
         money[_winner] = money[_winner].add(_moneyWon).sub(_fees).add(_betWinner);
         money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
         money[contractOwner] = money[contractOwner].add(_fees);
@@ -97,7 +105,7 @@ contract CoreFunctions is Core {
             msg.sender,
             _defender.addr,
             _data,
-            bonusWinner,
+            uint8(params[11]),
             _winnerId,
             _moneyWon
         );
@@ -136,38 +144,38 @@ contract CoreFunctions is Core {
             if (_team1[i].spd > _team2[i].spd) {
                 if(_team1[i].atk > _team2[i].def) {
                     _score1++;
-                    _team1[i+1].atk+=bonusWinner;
+                    _team1[i+1].atk+=uint8(params[11]);
                 }
                 else {
                     _score2++;
-                    _team2[i+1].def+=bonusWinner;
+                    _team2[i+1].def+=uint8(params[11]);
                 }
             } else if (_team1[i].spd < _team2[i].spd) {
                 if(_team2[i].atk > _team1[i].def) {
                     _score2++;
-                    _team2[i+1].atk+=bonusWinner;
+                    _team2[i+1].atk+=uint8(params[11]);
                 }
                 else {
                     _score1++;
-                    _team1[i+1].def+=bonusWinner;
+                    _team1[i+1].def+=uint8(params[11]);
                 }
             } else {
                 if (_team1[i].atk > _team2[i].atk) {
                     _score1++;
-                    _team1[i+1].atk+=bonusWinner;
+                    _team1[i+1].atk+=uint8(params[11]);
                 }
                 else if (_team1[i].atk < _team2[i].atk) {
                     _score2++;
-                    _team2[i+1].def+=bonusWinner;
+                    _team2[i+1].def+=uint8(params[11]);
                 }
                 else {
                     if (_team1[i].def > _team2[i].def) {
                         _score1++;
-                        _team1[i+1].def+=bonusWinner;
+                        _team1[i+1].def+=uint8(params[11]);
                     }
                     else if (_team1[i].def < _team1[i].def) {
                         _score2++;
-                        _team2[i+1].def+=bonusWinner;
+                        _team2[i+1].def+=uint8(params[11]);
                     }
                     else {
                         expUp(_team1Id, _team2Id, true);
@@ -190,9 +198,9 @@ contract CoreFunctions is Core {
     {
         for(uint256 i = 0; i<5; i++) {
             if (monsters[_team1Id[i]].lvl < 100)
-                monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp + expUpWinner;
+                monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp + params[7];
             if (monsters[_team2Id[i]].lvl < 100)
-                monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp + (_draw? expUpWinner : expUpLoser);
+                monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp + (_draw? params[7] : params[8]);
         }
     }
 
@@ -202,9 +210,5 @@ contract CoreFunctions is Core {
             return 0;
         else
             return seed % (_max-_min) + _min;
-    }
-
-    function calculateFees(uint256 _price) internal view returns (uint256) {
-        return _price.mul(fees) / 10000;
     }
 }

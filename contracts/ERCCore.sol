@@ -74,7 +74,7 @@ contract ERCCore is CoreFunctions {
         payable
         isAuthorized(msg.sender, _tokenId)
     {
-        require(
+        require( //todo require everywhere that uint32(_tokenId) == _tokenId
             _from == owner[_tokenId] &&
             _to != address(0) &&
             _tokenId < monsters.length &&
@@ -82,6 +82,10 @@ contract ERCCore is CoreFunctions {
         );
         owner[_tokenId] = _to;
         approve(address(0), _tokenId);
+        ownedTokens[_to][balances[_to]] = uint32(_tokenId);
+        ownedTokens[_from][tokenIdToOwnedTokensIndex(_from, uint32(_tokenId))] = ownedTokens[_from][balances[_from] - 1];
+        balances[_to]++;
+        balances[_from]--;
         emit Transfer(_from, _to, _tokenId);
     }
 
@@ -135,7 +139,8 @@ contract ERCCore is CoreFunctions {
     }
 
     function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256) {
-        return 1; /*TODO*/
+        require(_owner != address(0) && _index < balances[_owner]);
+        return ownedTokens[_owner][uint32(_index)];
     }
 
     function supportsInterface(bytes4 interfaceID)
