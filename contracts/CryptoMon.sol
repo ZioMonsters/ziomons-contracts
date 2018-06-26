@@ -14,7 +14,6 @@ using SafeMath for uint8;
 	function unbox()
 		public
 		payable
-		running
 	{
         uint256 _modifier;
         if (msg.value >= maxiBoxPrice)
@@ -72,7 +71,7 @@ using SafeMath for uint8;
         money[contractOwner] = money[contractOwner].add(msg.value);
 	}
 
-    function fight(uint32[5] _ids, uint256 _minBet) public payable running{
+    function fight(uint32[5] _ids, uint256 _minBet) public payable {
         //Check that you actually payed at least your minimum bet
         require(msg.value >= _minBet);
         for (uint256 i = 0; i < 5; i++) {
@@ -86,7 +85,7 @@ using SafeMath for uint8;
 
         //Sets the matchmaking level. TODO: matchmaking using median
         uint256 _level;
-        uint8[5] _a;
+        uint8[5] memory _a;
 
         for(i=0; i<5; i++) {
             _a[i] = monsters[_ids[i]].lvl;
@@ -158,19 +157,15 @@ using SafeMath for uint8;
         }
 
         //If the contract couldn't find anyone, it puts you in the waiting list and puts your money
-        //In pending state. All of your monsters are marked as busy. Again, a for loop isn't used to
-        //save gas.
-        monsters[_ids[0]].busy = true;
-        monsters[_ids[1]].busy = true;
-        monsters[_ids[2]].busy = true;
-        monsters[_ids[3]].busy = true;
-        monsters[_ids[4]].busy = true;
+        //In pending state. All of your monsters are marked as busy.
+        for (i = 0; i < 5; i++)
+            monsters[_ids[0]].busy = true;
+
         waiting[_level][waitingLength[_level]] = Defender(
             msg.sender,
             _ids,
             _minBet,
-            msg.value,
-            uint8(_level)
+            msg.value
         );
 
         waitingLength[_level]++;
@@ -183,18 +178,17 @@ using SafeMath for uint8;
 		uint256 _price
 	)
 		public
-		running
         returns(bool)
 	{
-        require(!monsters[_id].busy && owner[_id] == msg.sender);
+        require((!monsters[_id].busy || _price == 0) && owner[_id] == msg.sender);
 		inSale[_id] = _price;
+        monsters[_id].busy = (_price == 0)? false : true;
         emit ForSale(msg.sender, _id, _price);
 	}
 
 	function buyMonster(uint32 _id)
 		public
 		payable
-		running
 		returns(bool) //TODO Set busy stuff
     {
 		require(inSale[_id] > 0 && msg.value >= inSale[_id]);
@@ -209,7 +203,6 @@ using SafeMath for uint8;
         emit Approval(owner_, msg.sender, _id);
 
         transferFrom(owner_, msg.sender, _id);
-        emit Bought(owner_, msg.sender, _id);
 	}
 
 	function withdraw () public returns(uint) {
@@ -221,7 +214,7 @@ using SafeMath for uint8;
 	}
 
     function lvlUp (
-        uint256[] _ids,
+        uint32[] _ids,
         uint8[] _atkMod,
         uint8[] _defMod,
         uint8[] _spdMod

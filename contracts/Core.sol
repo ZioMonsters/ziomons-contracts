@@ -66,11 +66,6 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
         uint32 _id,
         uint256 indexed _price
     );
-    event Bought(
-        address indexed _from,
-        address indexed _to,
-        uint256 _id
-    );
     event Results(
         address indexed _attacker,
         address indexed _defender,
