@@ -68,6 +68,7 @@ contract CoreFunctions is Core {
             emit Results(
                 msg.sender,
                 _defender.addr,
+                _data,
                 uint8(params[11]),
                 _winnerId,
                 _moneyWon
@@ -95,6 +96,7 @@ contract CoreFunctions is Core {
         emit Results(
             msg.sender,
             _defender.addr,
+            _data,
             uint8(params[11]),
             _winnerId,
             _moneyWon
@@ -188,9 +190,9 @@ contract CoreFunctions is Core {
     {
         for(uint256 i = 0; i<5; i++) {
             if (monsters[_team1Id[i]].lvl < 100)
-                monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp + expUpWinner;
+                monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp + params[7];
             if (monsters[_team2Id[i]].lvl < 100)
-                monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp + (_draw? expUpWinner : expUpLoser);
+                monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp + (_draw? params[7] : params[8]);
         }
     }
 
