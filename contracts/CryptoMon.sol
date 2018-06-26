@@ -143,6 +143,22 @@ using SafeMath for uint8;
 
         waitingLength[_level]++;
         moneyPending= moneyPending.add(msg.value);
+
+        //Sets waiting state
+        isWaiting[msg.sender] = [_level, waitingLength[_level]];
+    }
+
+    function stopWaiting() public {
+        uint256 _x = isWaiting[msg.sender][0];
+        require(_x != 100);
+        uint256 _y = isWaiting[msg.sender][1];
+
+        for (uint256 i = 0; i < 5; i++)
+            monsters[waiting[_x][_y].deck[i]].busy = false;
+
+        waiting[_x][_y] = waiting[_x][waitingLength[_x] - 1];
+        waitingLength[_x]--;
+        isWaiting[msg.sender] = [100, 0];
     }
 
 

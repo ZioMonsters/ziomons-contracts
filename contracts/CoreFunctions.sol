@@ -11,9 +11,10 @@ contract CoreFunctions is Core {
         //First, it removes the defender from the list, and replaces it with the last element of the mapping.
         Defender memory _defender = waiting[i][j];
 
-        //Length is reset
+        //Length and waiting state are reset
         waitingLength[i]--;
         waiting[i][j] = waiting[i][waitingLength[i]];
+        isWaiting[_defender.addr] = [100, 0];
 
         //Builds data array, used for event logging.
         uint32[40] _data;
