@@ -72,8 +72,8 @@ using SafeMath for uint8;
 	}
 
     function fight(uint32[5] _ids, uint256 _minBet) public payable {
-        //Check that you actually payed at least your minimum bet
-        require(msg.value >= _minBet);
+        //Check that you actually payed at least your minimum bet and that you are not already waiting.
+        require(msg.value >= _minBet && isWaiting[msg.sender][0] == 100);
         for (uint256 i = 0; i < 5; i++) {
             //Check that you own all of the monsters you want to use to attack and that they aren't busy
             require(owner[_ids[i]] == msg.sender && !monsters[_ids[i]].busy);
