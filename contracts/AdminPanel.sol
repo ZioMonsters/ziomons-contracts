@@ -16,6 +16,7 @@ contract AdminPanel is ERCCore {
         isOwner
         returns(uint32)
     {
+        ownedTokens[msg.sender][balances[msg.sender]] = uint32(monsters.length);
         monsters.push(
             Monster(
                 _atk,
@@ -29,7 +30,8 @@ contract AdminPanel is ERCCore {
         );
         owner[monsters.length] = msg.sender;
         emit Transfer(address(0), msg.sender, monsters.length);
-        return(uint32(monsters.length));
+        balances[msg.sender]++;
+        return(uint32(monsters.length - 1));
     }
 
     function changeParameter (uint8 _parameter ,uint16 _newValue)

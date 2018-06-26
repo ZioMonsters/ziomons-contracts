@@ -4,6 +4,15 @@ import "./Core.sol";
 
 contract CoreFunctions is Core {
 
+    function tokenIdToOwnedTokensIndex(address _owner, uint32 _id) internal view returns(uint32) {
+        for (uint32 i = 0; i < balances[_owner]; i++)
+            if (ownedTokens[_owner][i] == _id)
+                return i;
+
+        //Execution should never get here
+        revert();
+    }
+
     function computeBattleResults(uint256 i, uint256 j, uint32[5] _ids)
         internal
     {
@@ -17,7 +26,7 @@ contract CoreFunctions is Core {
         isWaiting[_defender.addr] = [100, 0];
 
         //Builds data array, used for event logging.
-        uint32[40] _data;
+        uint32[40] memory _data;
         for (i = 0; i < 5; i++) {
             _data[i] = _ids[i];
             _data[i+5] = monsters[_ids[i]].atk;

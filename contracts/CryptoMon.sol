@@ -15,6 +15,7 @@ using SafeMath for uint8;
 		public
 		payable
 	{
+        //todo check max
         uint256 _modifier;
         if (msg.value >= params[2])
             _modifier = params[5];
@@ -24,8 +25,6 @@ using SafeMath for uint8;
             _modifier = params[3];
         else
             revert();
-
-        uint256[6] memory _ids;
 
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
@@ -52,6 +51,8 @@ using SafeMath for uint8;
     		_rarity = 0;
         }
 
+            ownedTokens[msg.sender][balances[msg.sender] + i] = uint32(monsters.length);
+
         monsters.push(
             Monster(
                 uint8(randInt(_modRarityMin, _modRarityMax)),
@@ -64,10 +65,9 @@ using SafeMath for uint8;
             )
         );
 
-      _ids[i] = monsters.length - 1;
-      emit Transfer(address(0), msg.sender, monsters.length);
+        emit Transfer(address(0), msg.sender, monsters.length);
     }
-        balances[msg.sender] = balances[msg.sender].add(6);
+        balances[msg.sender] += 6;
         money[contractOwner] = money[contractOwner].add(msg.value);
 	}
 

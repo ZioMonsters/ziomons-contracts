@@ -35,9 +35,9 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 	Monster[] public monsters;
     uint256 seed;
     uint256 moneyPending;
-    mapping (uint256 => Defender)[100] public waiting; //TODO remove public
+    mapping(uint256 => Defender)[100] public waiting; //TODO remove public
     uint256[100] public waitingLength; //todo remove public
-    mapping (address => uint256[2]) isWaiting;
+    mapping(address => uint256[2]) isWaiting;
 
     //PARAMS//
     uint16[12] params = [2, 5, 8, 0, 100, 200, 5, 100, 40, 375, 1, 1];
@@ -55,7 +55,8 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     uint8 bonusWinner = 1; */
 
     mapping(uint256 => address) owner;
-    mapping(address => uint256) balances;
+    mapping(address => mapping(uint32 => uint32)) ownedTokens;
+    mapping(address => uint32) balances;
     mapping(address => mapping(address => bool)) approvedForAll;
     mapping(uint256 => address) approved;
     mapping(address => uint256) public money;
