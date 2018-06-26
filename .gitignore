@@ -3,4 +3,4 @@ build/
 index.js
 *.swp
 *.log
-node_modules
+node_modules/*

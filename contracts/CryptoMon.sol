@@ -14,8 +14,6 @@ using SafeMath for uint8;
 	function unbox()
 		public
 		payable
-		running
-		returns(uint256[6])
 	{
         uint256 _modifier;
         if (msg.value >= params[2])
@@ -71,12 +69,9 @@ using SafeMath for uint8;
     }
         balances[msg.sender] = balances[msg.sender].add(6);
         money[contractOwner] = money[contractOwner].add(msg.value);
-
-        emit Unboxed(msg.sender, _ids);
-        return _ids;
 	}
 
-    function fight(uint32[5] _ids, uint256 _minBet) public payable running{
+    function fight(uint32[5] _ids, uint256 _minBet) public payable {
         //Check that you actually payed at least your minimum bet
         require(msg.value >= _minBet);
         for (uint256 i = 0; i < 5; i++) {
@@ -88,49 +83,22 @@ using SafeMath for uint8;
             }
         }
 
-        //Sets the matchmaking level. TODO: matchmaking using median
+        //Sets the matchmaking level.
         uint256 _level;
-        uint8[5] _a;
+        uint8[5] memory _tmp;
+        for (i = 0; i < 5; i++)
+            _tmp[i] = monsters[_ids[i]].lvl;
 
-        for(i=0; i<5; i++) {
-            _a[i] = monsters[_ids[i]].lvl;
+        //Insertion sort algorithm
+        for (i = 1;i < 5;i++) {
+            uint8 temp = _tmp[i];
+            for (j = i -1; j >= 0 && temp < _tmp[j]; j--)
+                _tmp[j+1] = _tmp[j];
+            _tmp[j + 1] = temp;
         }
 
-        if(_a[0] > _a[1]) {
-            _a[0] = _a[0] ^ _a[1];
-            _a[1] = _a[0] ^ _a[1];
-            _a[0] = _a[0] ^ _a[1];
-        }
-
-        if(_a[3] > _a[4]) {
-            _a[3] = _a[3] ^ _a[4];
-            _a[4] = _a[3] ^ _a[4];
-            _a[3] = _a[3] ^ _a[4];
-        }
-
-        if(_a[0] > _a[3]) {
-            _a[0] = _a[0] ^ _a[3];
-            _a[3] = _a[0] ^ _a[3];
-            _a[0] = _a[0] ^ _a[3];
-
-            _a[1] = _a[1] ^ _a[4];
-            _a[4] = _a[1] ^ _a[4];
-            _a[1] = _a[1] ^ _a[4];
-        }
-
-        if(_a[2] > _a[1])
-            if(_a[1] < _a[3])
-                _level = (_a[2] < _a[3])? _a[2]:_a[3];
-            else
-                _level = (_a[1] < _a[4])? _a[1]:_a[4];
-            else
-            if(_a[2] > _a[3])
-                _level = (_a[2] < _a[4])? _a[2]:_a[4];
-            else
-                _level = (_a[1] < _a[3])? _a[1]:_a[3];
-
-        //The waiting queue has only 100 spaces, this means that its last index is 99.
-        _level--;
+        //The waiting queue has only 100 spaces, this means that its last index is 99, not 100.
+        _level = _tmp[2] - 1;
 
         //Used to prevent underflows. More efficient than doing other checks
         if (_level < params[6])
@@ -162,23 +130,35 @@ using SafeMath for uint8;
         }
 
         //If the contract couldn't find anyone, it puts you in the waiting list and puts your money
-        //In pending state. All of your monsters are marked as busy. Again, a for loop isn't used to
-        //save gas.
-        monsters[_ids[0]].busy = true;
-        monsters[_ids[1]].busy = true;
-        monsters[_ids[2]].busy = true;
-        monsters[_ids[3]].busy = true;
-        monsters[_ids[4]].busy = true;
+        //In pending state. All of your monsters are marked as busy.
+        for (i = 0; i < 5; i++)
+            monsters[_ids[0]].busy = true;
+
         waiting[_level][waitingLength[_level]] = Defender(
             msg.sender,
             _ids,
             _minBet,
-            msg.value,
-            uint8(_level)
+            msg.value
         );
 
         waitingLength[_level]++;
         moneyPending= moneyPending.add(msg.value);
+
+        //Sets waiting state
+        isWaiting[msg.sender] = [_level, waitingLength[_level]];
+    }
+
+    function stopWaiting() public {
+        uint256 _x = isWaiting[msg.sender][0];
+        require(_x != 100);
+        uint256 _y = isWaiting[msg.sender][1];
+
+        for (uint256 i = 0; i < 5; i++)
+            monsters[waiting[_x][_y].deck[i]].busy = false;
+
+        waiting[_x][_y] = waiting[_x][waitingLength[_x] - 1];
+        waitingLength[_x]--;
+        isWaiting[msg.sender] = [100, 0];
     }
 
 
@@ -187,18 +167,17 @@ using SafeMath for uint8;
 		uint256 _price
 	)
 		public
-		running
         returns(bool)
 	{
-        require(!monsters[_id].busy && owner[_id] == msg.sender);
+        require((!monsters[_id].busy || _price == 0) && owner[_id] == msg.sender);
 		inSale[_id] = _price;
+        monsters[_id].busy = (_price == 0)? false : true;
         emit ForSale(msg.sender, _id, _price);
 	}
 
 	function buyMonster(uint32 _id)
 		public
 		payable
-		running
 		returns(bool) //TODO Set busy stuff
     {
 		require(inSale[_id] > 0 && msg.value >= inSale[_id]);
@@ -213,6 +192,8 @@ using SafeMath for uint8;
         emit Approval(owner_, msg.sender, _id);
 
         transferFrom(owner_, msg.sender, _id);
+
+        monsters[_id].busy = false;
 	}
 
 	function withdraw () public returns(uint) {
@@ -224,7 +205,7 @@ using SafeMath for uint8;
 	}
 
     function lvlUp (
-        uint256[] _ids,
+        uint32[] _ids,
         uint8[] _atkMod,
         uint8[] _defMod,
         uint8[] _spdMod

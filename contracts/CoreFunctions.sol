@@ -10,17 +10,28 @@ contract CoreFunctions is Core {
         //If it finds someone, the match starts.
         //First, it removes the defender from the list, and replaces it with the last element of the mapping.
         Defender memory _defender = waiting[i][j];
-        delete waiting[i][j];
-        //Length is reset
+
+        //Length and waiting state are reset
         waitingLength[i]--;
         waiting[i][j] = waiting[i][waitingLength[i]];
+        isWaiting[_defender.addr] = [100, 0];
 
-        //Resets the busy state of the defender's monsters. No for-loop is used to save gas.
-        monsters[_defender.deck[0]].busy = false;
-        monsters[_defender.deck[1]].busy = false;
-        monsters[_defender.deck[2]].busy = false;
-        monsters[_defender.deck[3]].busy = false;
-        monsters[_defender.deck[4]].busy = false;
+        //Builds data array, used for event logging.
+        uint32[40] _data;
+        for (i = 0; i < 5; i++) {
+            _data[i] = _ids[i];
+            _data[i+5] = monsters[_ids[i]].atk;
+            _data[i+10] = monsters[_ids[i]].def;
+            _data[i+15] = monsters[_ids[i]].spd;
+            _data[i+20] = _defender.deck[i];
+            _data[i+25] = monsters[_defender.deck[i]].atk;
+            _data[i+30] = monsters[_defender.deck[i]].def;
+            _data[i+35] = monsters[_defender.deck[i]].spd;
+        }
+
+        //Resets the busy state of the defender's monsters.
+        for (i = 0; i < 5; i++)
+            monsters[_defender.deck[i]].busy = false;
 
         //Then it computes the result of the match.
         uint256 _winnerId = startMatch(_ids, _defender.deck);
@@ -95,7 +106,7 @@ contract CoreFunctions is Core {
 
     function startMatch(uint32[5] _team1Id, uint32[5] _team2Id)
         public /** TODO set to internal **/
-    returns (uint)
+        returns (uint256)
     {
         uint256 _score1 = 0;
         uint256 _score2 = 0;
@@ -103,7 +114,7 @@ contract CoreFunctions is Core {
         Team[6] memory _team1;
         Team[6] memory _team2;
 
-        for(i=0; i<5; i++){
+        for(uint256 i=0; i<5; i++){
             _team1[i] = Team(
                 monsters[_team1Id[i]].atk,
                 monsters[_team1Id[i]].def,
@@ -119,7 +130,7 @@ contract CoreFunctions is Core {
             );
         }
 
-        for(uint256 i=0; i<5; i++) {
+        for(i=0; i<5; i++) {
             if (_team1[i].spd > _team2[i].spd) {
                 if(_team1[i].atk > _team2[i].def) {
                     _score1++;
@@ -162,7 +173,7 @@ contract CoreFunctions is Core {
                     }
                 }
             }
-        //if(score) //TODO FICX
+
         expUp(
             (_score1>_score2)? _team1Id:_team2Id,
             (_score1<_score2)? _team1Id:_team2Id,
@@ -175,23 +186,19 @@ contract CoreFunctions is Core {
     function expUp(uint32[5] _team1Id, uint32[5] _team2Id, bool _draw)
         public
     {
-        uint256 _helpLoser = params[8];
-        if(_draw) _helpLoser = params[7];
-
         for(uint256 i = 0; i<5; i++) {
-
-            monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp.add(params[7]);
-            monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp.add(_helpLoser);
+            if (monsters[_team1Id[i]].lvl < 100)
+                monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp + expUpWinner;
+            if (monsters[_team2Id[i]].lvl < 100)
+                monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp + (_draw? expUpWinner : expUpLoser);
         }
     }
 
-    function random() internal returns(uint256) {
-        seed = (456736574209475983759587439975973457287552780923 * seed + 35987348957843750734098534098534732894208) % 498327498732984732984732897443257676352;
-        return seed;
-    }
-
     function randInt(uint256 _min, uint256 _max) internal returns(uint256) {
-        if (_min == _max) return 0;
-        return random() % (_max-_min) + _min;
+        seed = (45673657420947598375958743997 * seed + 359873489578437507340985340985347) % 984732984732897443257676352;
+        if (_min == _max)
+            return 0;
+        else
+            return seed % (_max-_min) + _min;
     }
 }
