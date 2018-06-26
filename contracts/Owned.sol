@@ -22,11 +22,16 @@ contract Owned {
         _;
     }
 
-    function nominateNewOwner(address _newOwner) external isOwner {
+    function nominateNewOwner(address _newOwner)
+        external
+        isOwner
+    {
         newOwner = _newOwner;
     }
 
-    function acceptOwnership() external {
+    function acceptOwnership()
+        external
+    {
         require(msg.sender == newOwner);
         emit OwnershipTransferred(contractOwner, newOwner);
         contractOwner = newOwner;

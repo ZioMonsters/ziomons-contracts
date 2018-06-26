@@ -12,7 +12,7 @@ contract AdminPanel is ERCCore {
         uint8 _rarity,
         uint256 _exp
     )
-        public
+        external
         isOwner
         returns(uint32)
     {
@@ -33,7 +33,7 @@ contract AdminPanel is ERCCore {
     }
 
     function changeParameter (uint8 _parameter ,uint16 _newValue)
-        public
+        external
         isOwner
         returns (uint256)
     {

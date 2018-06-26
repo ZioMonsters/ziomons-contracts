@@ -12,8 +12,8 @@ using SafeMath for uint8;
     }
 
 	function unbox()
-		public
-		payable
+        external
+	    payable
 	{
         uint256 _modifier;
         if (msg.value >= params[2])
@@ -71,7 +71,10 @@ using SafeMath for uint8;
         money[contractOwner] = money[contractOwner].add(msg.value);
 	}
 
-    function fight(uint32[5] _ids, uint256 _minBet) public payable {
+    function fight(uint32[5] _ids, uint256 _minBet)
+        external
+        payable
+    {
         //Check that you actually payed at least your minimum bet and that you are not already waiting.
         require(msg.value >= _minBet && isWaiting[msg.sender][0] == 100);
         for (uint256 i = 0; i < 5; i++) {
@@ -148,7 +151,9 @@ using SafeMath for uint8;
         isWaiting[msg.sender] = [_level, waitingLength[_level]];
     }
 
-    function stopWaiting() public {
+    function stopWaiting()
+        external
+    {
         uint256 _x = isWaiting[msg.sender][0];
         require(_x != 100);
         uint256 _y = isWaiting[msg.sender][1];
@@ -166,7 +171,7 @@ using SafeMath for uint8;
 		uint32 _id,
 		uint256 _price
 	)
-		public
+		external
         returns(bool)
 	{
         require((!monsters[_id].busy || _price == 0) && owner[_id] == msg.sender);
@@ -176,7 +181,7 @@ using SafeMath for uint8;
 	}
 
 	function buyMonster(uint32 _id)
-		public
+		external
 		payable
 		returns(bool) //TODO Set busy stuff
     {
@@ -196,7 +201,10 @@ using SafeMath for uint8;
         monsters[_id].busy = false;
 	}
 
-	function withdraw () public returns(uint) {
+	function withdraw ()
+        external
+        returns(uint)
+    {
 		require(money[msg.sender] > 0 );
 		uint256 _amount = money[msg.sender];
 		money[msg.sender] = 0;

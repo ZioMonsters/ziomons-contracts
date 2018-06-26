@@ -106,7 +106,8 @@ contract CoreFunctions is Core {
     }
 
     function startMatch(uint32[5] _team1Id, uint32[5] _team2Id)
-        public /** TODO set to internal **/
+        internal
+        view
         returns (uint256)
     {
         uint256 _score1 = 0;
@@ -185,7 +186,7 @@ contract CoreFunctions is Core {
     }
 
     function expUp(uint32[5] _team1Id, uint32[5] _team2Id, bool _draw)
-        public
+        internal
     {
         for(uint256 i = 0; i<5; i++) {
             if (monsters[_team1Id[i]].lvl < 100)
@@ -195,7 +196,10 @@ contract CoreFunctions is Core {
         }
     }
 
-    function randInt(uint256 _min, uint256 _max) internal returns(uint256) {
+    function randInt(uint256 _min, uint256 _max)
+        internal
+        returns(uint256)
+    {
         seed = (45673657420947598375958743997 * seed + 359873489578437507340985340985347) % 984732984732897443257676352;
         if (_min == _max)
             return 0;
