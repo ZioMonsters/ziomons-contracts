@@ -4,6 +4,22 @@ import "./ERCCore.sol";
 
 contract AdminPanel is ERCCore {
 
+    function createCustomMonster(uint8 _atk, uint8 _def, uint8 _spd, uint8 _lvl, uint8 _rarity, uint256 _exp) {
+        monsters.push(
+            Monster(
+                _atk,
+                _def,
+                _spd,
+                _lvl,
+                _rarity,
+                _exp,
+                false
+            )
+        );
+        owner[monsters.length] = msg.sender;
+        emit Transfer(address(0), msg.sender, monsters.length);
+    }
+
     function changeParameter (uint8 _parameter ,uint256 _newValue)
         public
         isOwner

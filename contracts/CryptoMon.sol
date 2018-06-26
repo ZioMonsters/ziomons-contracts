@@ -25,8 +25,6 @@ using SafeMath for uint8;
         else
             revert();
 
-        uint256[6] memory _ids;
-
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
             uint256 _tmp = randInt(0, 1000-_modifier);
@@ -64,8 +62,7 @@ using SafeMath for uint8;
             )
         );
 
-      _ids[i] = monsters.length - 1;
-      emit Transfer(address(0), msg.sender, monsters.length);
+        emit Transfer(address(0), msg.sender, monsters.length);
     }
         balances[msg.sender] = balances[msg.sender].add(6);
         money[contractOwner] = money[contractOwner].add(msg.value);
