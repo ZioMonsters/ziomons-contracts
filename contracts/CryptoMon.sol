@@ -15,13 +15,14 @@ using SafeMath for uint8;
 		public
 		payable
 	{
+        //todo check max
         uint256 _modifier;
-        if (msg.value >= maxiBoxPrice)
-            _modifier = modifierMaxi;
-        else if (msg.value >= plusBoxPrice)
-            _modifier = modifierPlus;
-        else if (msg.value >= standardBoxPrice)
-            _modifier = modifierStandard;
+        if (msg.value >= params[2])
+            _modifier = params[5];
+        else if (msg.value >= params[1])
+            _modifier = params[4];
+        else if (msg.value >= params[0])
+            _modifier = params[3];
         else
             revert();
 
@@ -50,6 +51,8 @@ using SafeMath for uint8;
     		_rarity = 0;
         }
 
+            ownedTokens[msg.sender][balances[msg.sender] + i] = uint32(monsters.length);
+
         monsters.push(
             Monster(
                 uint8(randInt(_modRarityMin, _modRarityMax)),
@@ -64,13 +67,13 @@ using SafeMath for uint8;
 
         emit Transfer(address(0), msg.sender, monsters.length);
     }
-        balances[msg.sender] = balances[msg.sender].add(6);
+        balances[msg.sender] += 6;
         money[contractOwner] = money[contractOwner].add(msg.value);
 	}
 
     function fight(uint32[5] _ids, uint256 _minBet) public payable {
-        //Check that you actually payed at least your minimum bet
-        require(msg.value >= _minBet);
+        //Check that you actually payed at least your minimum bet and that you are not already waiting.
+        require(msg.value >= _minBet && isWaiting[msg.sender][0] == 100);
         for (uint256 i = 0; i < 5; i++) {
             //Check that you own all of the monsters you want to use to attack and that they aren't busy
             require(owner[_ids[i]] == msg.sender && !monsters[_ids[i]].busy);
@@ -98,11 +101,11 @@ using SafeMath for uint8;
         _level = _tmp[2] - 1;
 
         //Used to prevent underflows. More efficient than doing other checks
-        if (_level < matchmakingRange)
-            _level = matchmakingRange;
+        if (_level < params[6])
+            _level = params[6];
 
         //Checks for every level in range.
-        for (i = _level - matchmakingRange; i <= _level + matchmakingRange && i < 100; i++) {
+        for (i = _level - params[6]; i <= _level + params[6] && i < 100; i++) {
 
             //Skips current range to save gas and prevent errors when using %0
             if (waitingLength[i] == 0)
@@ -181,7 +184,7 @@ using SafeMath for uint8;
         inSale[_id] = 0;
         address owner_ = owner[_id];
 
-        uint256 _fees = calculateFees(msg.value);
+        uint256 _fees = msg.value.mul(params[9]) / 10000;
         money[owner_] = money[owner_].add(msg.value).sub(_fees);
         money[contractOwner] = money[contractOwner].add(_fees);
 
@@ -226,7 +229,7 @@ using SafeMath for uint8;
                 monsters[_ids[i]].lvl < 100
             ) {
                 monsters[_ids[i]].lvl++;
-                _skillsAvailable += 1;
+                _skillsAvailable += uint8(params[10]);
             }
 
 
