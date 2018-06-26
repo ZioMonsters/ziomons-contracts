@@ -15,6 +15,20 @@ contract CoreFunctions is Core {
         waitingLength[i]--;
         waiting[i][j] = waiting[i][waitingLength[i]];
 
+        //Builds data array, used for event logging.
+        uint32[40] _data;
+        for (i = 0; i < 5; i++) {
+            _data[i] = _ids[i];
+            _data[i+5] = monsters[_ids[i]].atk;
+            _data[i+10] = monsters[_ids[i]].def;
+            _data[i+15] = monsters[_ids[i]].spd;
+            _data[i+20] = _defender.deck[i];
+            _data[i+25] = monsters[_defender.deck[i]].atk;
+            _data[i+30] = monsters[_defender.deck[i]].def;
+            _data[i+35] = monsters[_defender.deck[i]].spd;
+
+        }
+
         //Resets the busy state of the defender's monsters.
         for (i = 0; i < 5; i++)
             monsters[_defender.deck[i]].busy = false;
@@ -54,6 +68,7 @@ contract CoreFunctions is Core {
             emit Results(
                 msg.sender,
                 _defender.addr,
+                _data,
                 bonusWinner,
                 _winnerId,
                 _moneyWon
@@ -81,6 +96,7 @@ contract CoreFunctions is Core {
         emit Results(
             msg.sender,
             _defender.addr,
+            _data,
             bonusWinner,
             _winnerId,
             _moneyWon

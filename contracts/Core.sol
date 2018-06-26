@@ -69,7 +69,8 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     event Results(
         address indexed _attacker,
         address indexed _defender,
-        uint8 bonusWinner,
+        uint32[40] _data,
+        uint8 _bonusWinner,
         uint256 indexed _winnerId,
         uint256 _moneyWon
     );
