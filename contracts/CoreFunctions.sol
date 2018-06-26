@@ -33,6 +33,9 @@ contract CoreFunctions is Core {
         for (i = 0; i < 5; i++)
             monsters[_defender.deck[i]].busy = false;
 
+        //removes the defender's money from pending state.
+        moneyPending = moneyPending.sub(_defender.bet);
+
         //Then it computes the result of the match.
         uint256 _winnerId = startMatch(_ids, _defender.deck);
 
@@ -51,15 +54,9 @@ contract CoreFunctions is Core {
             _loser = msg.sender;
             _betWinner = _defender.bet;
             _betLoser = msg.value;
+
+            //If it's a draw, give back the money to both opponents, without taking fees.
         } else {
-            _winner = address(0);
-        }
-
-        //removes the defender's money from pending state.
-        moneyPending = moneyPending.sub(_defender.bet);
-
-        //If it's a draw, give back the money to both opponents, without taking fees.
-        if (_winner == address(0)) {
             money[_defender.addr] = money[_defender.addr].add(_defender.bet);
             money[msg.sender] = money[msg.sender].add(msg.value);
 
@@ -77,9 +74,11 @@ contract CoreFunctions is Core {
             //The functions returns.
             return;
 
+        }
+
             //Otherwise, it computes the money won.
-            uint256 _moneyWon;
-        } else if (_defender.bet > msg.value) {
+        uint256 _moneyWon;
+        if (_defender.bet > msg.value) {
             _moneyWon = msg.value;
         } else {
             _moneyWon = _defender.bet;
