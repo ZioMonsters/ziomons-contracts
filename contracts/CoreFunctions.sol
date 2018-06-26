@@ -26,7 +26,6 @@ contract CoreFunctions is Core {
             _data[i+25] = monsters[_defender.deck[i]].atk;
             _data[i+30] = monsters[_defender.deck[i]].def;
             _data[i+35] = monsters[_defender.deck[i]].spd;
-
         }
 
         //Resets the busy state of the defender's monsters.

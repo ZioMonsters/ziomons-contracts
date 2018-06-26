@@ -176,6 +176,8 @@ using SafeMath for uint8;
         emit Approval(owner_, msg.sender, _id);
 
         transferFrom(owner_, msg.sender, _id);
+
+        monsters[_id].busy = false;
 	}
 
 	function withdraw () public returns(uint) {
