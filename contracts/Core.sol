@@ -41,7 +41,8 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     uint256[100] public waitingLength; //todo remove public
 
     //PARAMS//
-    uint256 standardBoxPrice = 2;
+    uint16[12] params = [2, 5, 8, 0, 100, 200, 5, 100, 40, 375, 1, 1];
+    /* uint256 standardBoxPrice = 2;
     uint256 plusBoxPrice = 5;
     uint256 maxiBoxPrice  = 8;
     uint256 modifierStandard = 0;
@@ -52,7 +53,7 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     uint256 expUpLoser = 40;
     uint256 fees = 375;
     uint8 possibleUpgrade = 1;
-    uint8 bonusWinner = 1;
+    uint8 bonusWinner = 1; */
 
     mapping(uint256 => address) owner;
     mapping(address => uint256) balances;
@@ -71,11 +72,6 @@ contract Core is State, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
         address indexed _player,
         uint32 _id,
         uint256 indexed _price
-    );
-    event Bought(
-        address indexed _from,
-        address indexed _to,
-        uint256 _id
     );
     event Results(
         address indexed _attacker,

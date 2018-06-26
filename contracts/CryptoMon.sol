@@ -18,12 +18,12 @@ using SafeMath for uint8;
 		returns(uint256[6])
 	{
         uint256 _modifier;
-        if (msg.value >= maxiBoxPrice)
-            _modifier = modifierMaxi;
-        else if (msg.value >= plusBoxPrice)
-            _modifier = modifierPlus;
-        else if (msg.value >= standardBoxPrice)
-            _modifier = modifierStandard;
+        if (msg.value >= params[2])
+            _modifier = params[5];
+        else if (msg.value >= params[1])
+            _modifier = params[4];
+        else if (msg.value >= params[0])
+            _modifier = params[3];
         else
             revert();
 
@@ -133,11 +133,11 @@ using SafeMath for uint8;
         _level--;
 
         //Used to prevent underflows. More efficient than doing other checks
-        if (_level < matchmakingRange)
-            _level = matchmakingRange;
+        if (_level < params[6])
+            _level = params[6];
 
         //Checks for every level in range.
-        for (i = _level - matchmakingRange; i <= _level + matchmakingRange && i < 100; i++) {
+        for (i = _level - params[6]; i <= _level + params[6] && i < 100; i++) {
 
             //Skips current range to save gas and prevent errors when using %0
             if (waitingLength[i] == 0)
@@ -205,7 +205,7 @@ using SafeMath for uint8;
         inSale[_id] = 0;
         address owner_ = owner[_id];
 
-        uint256 _fees = calculateFees(msg.value);
+        uint256 _fees = msg.value.mul(params[9]) / 10000;
         money[owner_] = money[owner_].add(msg.value).sub(_fees);
         money[contractOwner] = money[contractOwner].add(_fees);
 
@@ -213,7 +213,6 @@ using SafeMath for uint8;
         emit Approval(owner_, msg.sender, _id);
 
         transferFrom(owner_, msg.sender, _id);
-        emit Bought(owner_, msg.sender, _id);
 	}
 
 	function withdraw () public returns(uint) {
@@ -249,7 +248,7 @@ using SafeMath for uint8;
                 monsters[_ids[i]].lvl < 100
             ) {
                 monsters[_ids[i]].lvl++;
-                _skillsAvailable += 1;
+                _skillsAvailable += uint8(params[10]);
             }
 
 

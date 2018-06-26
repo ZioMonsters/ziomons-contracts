@@ -57,7 +57,7 @@ contract CoreFunctions is Core {
             emit Results(
                 msg.sender,
                 _defender.addr,
-                bonusWinner,
+                uint8(params[11]),
                 _winnerId,
                 _moneyWon
             );
@@ -74,7 +74,7 @@ contract CoreFunctions is Core {
         }
 
         //Gives back the unused money (if any) to the loser, and pays the winner, taking developer fees.
-        uint256 _fees = calculateFees(_moneyWon);
+        uint256 _fees = _moneyWon.mul(params[9])/10000;
         money[_winner] = money[_winner].add(_moneyWon).sub(_fees).add(_betWinner);
         money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
         money[contractOwner] = money[contractOwner].add(_fees);
@@ -84,7 +84,7 @@ contract CoreFunctions is Core {
         emit Results(
             msg.sender,
             _defender.addr,
-            bonusWinner,
+            uint8(params[11]),
             _winnerId,
             _moneyWon
         );
@@ -123,38 +123,38 @@ contract CoreFunctions is Core {
             if (_team1[i].spd > _team2[i].spd) {
                 if(_team1[i].atk > _team2[i].def) {
                     _score1++;
-                    _team1[i+1].atk+=bonusWinner;
+                    _team1[i+1].atk+=uint8(params[11]);
                 }
                 else {
                     _score2++;
-                    _team2[i+1].def+=bonusWinner;
+                    _team2[i+1].def+=uint8(params[11]);
                 }
             } else if (_team1[i].spd < _team2[i].spd) {
                 if(_team2[i].atk > _team1[i].def) {
                     _score2++;
-                    _team2[i+1].atk+=bonusWinner;
+                    _team2[i+1].atk+=uint8(params[11]);
                 }
                 else {
                     _score1++;
-                    _team1[i+1].def+=bonusWinner;
+                    _team1[i+1].def+=uint8(params[11]);
                 }
             } else {
                 if (_team1[i].atk > _team2[i].atk) {
                     _score1++;
-                    _team1[i+1].atk+=bonusWinner;
+                    _team1[i+1].atk+=uint8(params[11]);
                 }
                 else if (_team1[i].atk < _team2[i].atk) {
                     _score2++;
-                    _team2[i+1].def+=bonusWinner;
+                    _team2[i+1].def+=uint8(params[11]);
                 }
                 else {
                     if (_team1[i].def > _team2[i].def) {
                         _score1++;
-                        _team1[i+1].def+=bonusWinner;
+                        _team1[i+1].def+=uint8(params[11]);
                     }
                     else if (_team1[i].def < _team1[i].def) {
                         _score2++;
-                        _team2[i+1].def+=bonusWinner;
+                        _team2[i+1].def+=uint8(params[11]);
                     }
                     else {
                         expUp(_team1Id, _team2Id, true);
@@ -175,12 +175,12 @@ contract CoreFunctions is Core {
     function expUp(uint32[5] _team1Id, uint32[5] _team2Id, bool _draw)
         public
     {
-        uint256 _helpLoser = expUpLoser;
-        if(_draw) _helpLoser = expUpWinner;
+        uint256 _helpLoser = params[8];
+        if(_draw) _helpLoser = params[7];
 
         for(uint256 i = 0; i<5; i++) {
 
-            monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp.add(expUpWinner);
+            monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp.add(params[7]);
             monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp.add(_helpLoser);
         }
     }
@@ -193,9 +193,5 @@ contract CoreFunctions is Core {
     function randInt(uint256 _min, uint256 _max) internal returns(uint256) {
         if (_min == _max) return 0;
         return random() % (_max-_min) + _min;
-    }
-
-    function calculateFees(uint256 _price) internal view returns (uint256) {
-        return _price.mul(fees) / 10000;
     }
 }
