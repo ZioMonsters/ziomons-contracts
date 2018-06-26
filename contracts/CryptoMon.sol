@@ -83,49 +83,22 @@ using SafeMath for uint8;
             }
         }
 
-        //Sets the matchmaking level. TODO: matchmaking using median
+        //Sets the matchmaking level.
         uint256 _level;
-        uint8[5] memory _a;
+        uint8[5] memory _tmp;
+        for (i = 0; i < 5; i++)
+            _tmp[i] = monsters[_ids[i]].lvl;
 
-        for(i=0; i<5; i++) {
-            _a[i] = monsters[_ids[i]].lvl;
+        //Insertion sort algorithm
+        for (i = 1;i < 5;i++) {
+            uint8 temp = _tmp[i];
+            for (j = i -1; j >= 0 && temp < _tmp[j]; j--)
+                _tmp[j+1] = _tmp[j];
+            _tmp[j + 1] = temp;
         }
 
-        if(_a[0] > _a[1]) {
-            _a[0] = _a[0] ^ _a[1];
-            _a[1] = _a[0] ^ _a[1];
-            _a[0] = _a[0] ^ _a[1];
-        }
-
-        if(_a[3] > _a[4]) {
-            _a[3] = _a[3] ^ _a[4];
-            _a[4] = _a[3] ^ _a[4];
-            _a[3] = _a[3] ^ _a[4];
-        }
-
-        if(_a[0] > _a[3]) {
-            _a[0] = _a[0] ^ _a[3];
-            _a[3] = _a[0] ^ _a[3];
-            _a[0] = _a[0] ^ _a[3];
-
-            _a[1] = _a[1] ^ _a[4];
-            _a[4] = _a[1] ^ _a[4];
-            _a[1] = _a[1] ^ _a[4];
-        }
-
-        if(_a[2] > _a[1])
-            if(_a[1] < _a[3])
-                _level = (_a[2] < _a[3])? _a[2]:_a[3];
-            else
-                _level = (_a[1] < _a[4])? _a[1]:_a[4];
-            else
-            if(_a[2] > _a[3])
-                _level = (_a[2] < _a[4])? _a[2]:_a[4];
-            else
-                _level = (_a[1] < _a[3])? _a[1]:_a[3];
-
-        //The waiting queue has only 100 spaces, this means that its last index is 99.
-        _level--;
+        //The waiting queue has only 100 spaces, this means that its last index is 99, not 100.
+        _level = _tmp[2] - 1;
 
         //Used to prevent underflows. More efficient than doing other checks
         if (_level < matchmakingRange)
