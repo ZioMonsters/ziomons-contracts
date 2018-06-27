@@ -166,5 +166,4 @@ contract ERCCore is CoreFunctions {
         );
     }
 
-
 }

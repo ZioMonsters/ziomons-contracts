@@ -4,21 +4,37 @@ import "./Core.sol";
 
 contract CoreFunctions is Core {
 
-    function computeBattleResults(uint256 i, uint256 j, uint32[5] _ids) {
+    function computeBattleResults(uint256 i, uint256 j, uint32[5] _ids)
+        internal
+    {
         //If it finds someone, the match starts.
         //First, it removes the defender from the list, and replaces it with the last element of the mapping.
         Defender memory _defender = waiting[i][j];
-        delete waiting[i][j];
-        //Length is reset
+
+        //Length and waiting state are reset
         waitingLength[i]--;
         waiting[i][j] = waiting[i][waitingLength[i]];
+        isWaiting[_defender.addr] = [100, 0];
 
-        //Resets the busy state of the defender's monsters. No for-loop is used to save gas.
-        monsters[_defender.deck[0]].busy = false;
-        monsters[_defender.deck[1]].busy = false;
-        monsters[_defender.deck[2]].busy = false;
-        monsters[_defender.deck[3]].busy = false;
-        monsters[_defender.deck[4]].busy = false;
+        //Builds data array, used for event logging.
+        uint32[40] _data;
+        for (i = 0; i < 5; i++) {
+            _data[i] = _ids[i];
+            _data[i+5] = monsters[_ids[i]].atk;
+            _data[i+10] = monsters[_ids[i]].def;
+            _data[i+15] = monsters[_ids[i]].spd;
+            _data[i+20] = _defender.deck[i];
+            _data[i+25] = monsters[_defender.deck[i]].atk;
+            _data[i+30] = monsters[_defender.deck[i]].def;
+            _data[i+35] = monsters[_defender.deck[i]].spd;
+        }
+
+        //Resets the busy state of the defender's monsters.
+        for (i = 0; i < 5; i++)
+            monsters[_defender.deck[i]].busy = false;
+
+        //removes the defender's money from pending state.
+        moneyPending = moneyPending.sub(_defender.bet);
 
         //Then it computes the result of the match.
         uint256 _winnerId = startMatch(_ids, _defender.deck);
@@ -38,15 +54,9 @@ contract CoreFunctions is Core {
             _loser = msg.sender;
             _betWinner = _defender.bet;
             _betLoser = msg.value;
+
+            //If it's a draw, give back the money to both opponents, without taking fees.
         } else {
-            _winner = address(0);
-        }
-
-        //removes the defender's money from pending state.
-        moneyPending = moneyPending.sub(_defender.bet);
-
-        //If it's a draw, give back the money to both opponents, without taking fees.
-        if (_winner == address(0)) {
             money[_defender.addr] = money[_defender.addr].add(_defender.bet);
             money[msg.sender] = money[msg.sender].add(msg.value);
 
@@ -55,7 +65,8 @@ contract CoreFunctions is Core {
             emit Results(
                 msg.sender,
                 _defender.addr,
-                bonusWinner,
+                _data,
+                uint8(params[11]),
                 _winnerId,
                 _moneyWon
             );
@@ -63,16 +74,18 @@ contract CoreFunctions is Core {
             //The functions returns.
             return;
 
+        }
+
             //Otherwise, it computes the money won.
-            uint256 _moneyWon;
-        } else if (_defender.bet > msg.value) {
+        uint256 _moneyWon;
+        if (_defender.bet > msg.value) {
             _moneyWon = msg.value;
         } else {
             _moneyWon = _defender.bet;
         }
 
         //Gives back the unused money (if any) to the loser, and pays the winner, taking developer fees.
-        uint256 _fees = calculateFees(_moneyWon);
+        uint256 _fees = _moneyWon.mul(params[9])/10000;
         money[_winner] = money[_winner].add(_moneyWon).sub(_fees).add(_betWinner);
         money[_loser] = money[_loser].add(_betLoser).sub(_moneyWon);
         money[contractOwner] = money[contractOwner].add(_fees);
@@ -82,7 +95,8 @@ contract CoreFunctions is Core {
         emit Results(
             msg.sender,
             _defender.addr,
-            bonusWinner,
+            _data,
+            uint8(params[11]),
             _winnerId,
             _moneyWon
         );
@@ -92,8 +106,9 @@ contract CoreFunctions is Core {
     }
 
     function startMatch(uint32[5] _team1Id, uint32[5] _team2Id)
-        public /** TODO set to internal **/
-    returns (uint)
+        internal
+        view
+        returns (uint256)
     {
         uint256 _score1 = 0;
         uint256 _score2 = 0;
@@ -101,7 +116,7 @@ contract CoreFunctions is Core {
         Team[6] memory _team1;
         Team[6] memory _team2;
 
-        for(i=0; i<5; i++){
+        for(uint256 i=0; i<5; i++){
             _team1[i] = Team(
                 monsters[_team1Id[i]].atk,
                 monsters[_team1Id[i]].def,
@@ -117,42 +132,42 @@ contract CoreFunctions is Core {
             );
         }
 
-        for(uint256 i=0; i<5; i++) {
+        for(i=0; i<5; i++) {
             if (_team1[i].spd > _team2[i].spd) {
                 if(_team1[i].atk > _team2[i].def) {
                     _score1++;
-                    _team1[i+1].atk+=bonusWinner;
+                    _team1[i+1].atk+=uint8(params[11]);
                 }
                 else {
                     _score2++;
-                    _team2[i+1].def+=bonusWinner;
+                    _team2[i+1].def+=uint8(params[11]);
                 }
             } else if (_team1[i].spd < _team2[i].spd) {
                 if(_team2[i].atk > _team1[i].def) {
                     _score2++;
-                    _team2[i+1].atk+=bonusWinner;
+                    _team2[i+1].atk+=uint8(params[11]);
                 }
                 else {
                     _score1++;
-                    _team1[i+1].def+=bonusWinner;
+                    _team1[i+1].def+=uint8(params[11]);
                 }
             } else {
                 if (_team1[i].atk > _team2[i].atk) {
                     _score1++;
-                    _team1[i+1].atk+=bonusWinner;
+                    _team1[i+1].atk+=uint8(params[11]);
                 }
                 else if (_team1[i].atk < _team2[i].atk) {
                     _score2++;
-                    _team2[i+1].def+=bonusWinner;
+                    _team2[i+1].def+=uint8(params[11]);
                 }
                 else {
                     if (_team1[i].def > _team2[i].def) {
                         _score1++;
-                        _team1[i+1].def+=bonusWinner;
+                        _team1[i+1].def+=uint8(params[11]);
                     }
                     else if (_team1[i].def < _team1[i].def) {
                         _score2++;
-                        _team2[i+1].def+=bonusWinner;
+                        _team2[i+1].def+=uint8(params[11]);
                     }
                     else {
                         expUp(_team1Id, _team2Id, true);
@@ -160,7 +175,7 @@ contract CoreFunctions is Core {
                     }
                 }
             }
-        //if(score) //TODO FICX
+
         expUp(
             (_score1>_score2)? _team1Id:_team2Id,
             (_score1<_score2)? _team1Id:_team2Id,
@@ -171,29 +186,24 @@ contract CoreFunctions is Core {
     }
 
     function expUp(uint32[5] _team1Id, uint32[5] _team2Id, bool _draw)
-        public
+        internal
     {
-        uint256 _helpLoser = expUpLoser;
-        if(_draw) _helpLoser = expUpWinner;
-
         for(uint256 i = 0; i<5; i++) {
-
-            monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp.add(expUpWinner);
-            monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp.add(_helpLoser);
+            if (monsters[_team1Id[i]].lvl < 100)
+                monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp + params[7];
+            if (monsters[_team2Id[i]].lvl < 100)
+                monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp + (_draw? params[7] : params[8]);
         }
     }
 
-    function random() internal returns(uint256) {
-        seed = (456736574209475983759587439975973457287552780923 * seed + 35987348957843750734098534098534732894208) % 498327498732984732984732897443257676352;
-        return seed;
-    }
-
-    function randInt(uint256 _min, uint256 _max) internal returns(uint256) {
-        if (_min == _max) return 0;
-        return random() % (_max-_min) + _min;
-    }
-
-    function calculateFees(uint256 _price) internal view returns (uint256) {
-        return _price.mul(fees) / 10000;
+    function randInt(uint256 _min, uint256 _max)
+        internal
+        returns(uint256)
+    {
+        seed = (45673657420947598375958743997 * seed + 359873489578437507340985340985347) % 984732984732897443257676352;
+        if (_min == _max)
+            return 0;
+        else
+            return seed % (_max-_min) + _min;
     }
 }
