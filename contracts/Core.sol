@@ -35,8 +35,8 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
 	Monster[] public monsters;
     uint256 seed;
     uint256 moneyPending;
-    mapping(uint256 => Defender)[100] public waiting; //TODO remove public
-    uint256[100] public waitingLength; //todo remove public
+    mapping(uint256 => Defender)[100] waiting; //TODO remove public
+    uint256[100] waitingLength; //todo remove public
     mapping(address => uint256[2]) isWaiting;
 
     //PARAMS//
