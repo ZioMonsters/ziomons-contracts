@@ -40,19 +40,20 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     mapping (address => uint256[2]) isWaiting;
 
     //PARAMS//
-    uint16[12] params = [2, 5, 8, 0, 100, 200, 5, 100, 40, 375, 1, 1];
-    /* uint256 standardBoxPrice = 2;
-    uint256 plusBoxPrice = 5;
-    uint256 maxiBoxPrice  = 8;
-    uint256 modifierStandard = 0;
-    uint256 modifierPlus = 100;
-    uint256 modifierMaxi = 200;
-    uint256 matchmakingRange = 5;
-    uint256 expUpWinner = 100;
-    uint256 expUpLoser = 40;
-    uint256 fees = 375;
-    uint8 possibleUpgrade = 1;
-    uint8 bonusWinner = 1; */
+    uint16[12] params = [
+        2,    //standardBoxPrice
+        5,    //plusBoxPrice
+        8,    //maxiBoxPrice
+        0,    //modifierStandard
+        100,  //modifierPlus
+        200,  //modifierMaxi
+        5,    //matchmakingRange
+        100,  //expUpWinner
+        40,   //expUpLoser
+        375,  //fees
+        1,    //possibleUpgrade
+        1     //bonusWinner
+    ];
 
     mapping(uint256 => address) owner;
     mapping(address => uint256) balances;

@@ -25,7 +25,8 @@ using SafeMath for uint8;
         else
             revert();
 
-        uint256[6] memory _ids;
+        if (balances[msg.sender] == 0)
+            isWaiting[msg.sender] = [100, 0];
 
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
@@ -64,7 +65,6 @@ using SafeMath for uint8;
             )
         );
 
-      _ids[i] = monsters.length - 1;
       emit Transfer(address(0), msg.sender, monsters.length);
     }
         balances[msg.sender] = balances[msg.sender].add(6);
@@ -76,7 +76,7 @@ using SafeMath for uint8;
         payable
     {
         //Check that you actually payed at least your minimum bet and that you are not already waiting.
-        //require(msg.value >= _minBet && isWaiting[msg.sender][0] == 100);
+        require(msg.value >= _minBet && isWaiting[msg.sender][0] == 100);
         for (uint256 i = 0; i < 5; i++) {
             //Check that you own all of the monsters you want to use to attack and that they aren't busy
             require(owner[_ids[i]] == msg.sender && !monsters[_ids[i]].busy);
@@ -172,7 +172,6 @@ using SafeMath for uint8;
 		uint256 _price
 	)
 		external
-        returns(bool)
 	{
         require((!monsters[_id].busy || _price == 0) && owner[_id] == msg.sender);
 		inSale[_id] = _price;
@@ -183,7 +182,6 @@ using SafeMath for uint8;
 	function buyMonster(uint32 _id)
 		external
 		payable
-		returns(bool) //TODO Set busy stuff
     {
 		require(inSale[_id] > 0 && msg.value >= inSale[_id]);
         inSale[_id] = 0;
@@ -201,7 +199,7 @@ using SafeMath for uint8;
         monsters[_id].busy = false;
 	}
 
-	function withdraw ()
+	function withdraw()
         external
         returns(uint)
     {
