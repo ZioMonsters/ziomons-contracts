@@ -60,7 +60,7 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     mapping(address => mapping(address => bool)) approvedForAll;
     mapping(uint256 => address) approved;
     mapping(address => uint256) public money;
-    mapping(uint256 => uint256) public inSale;
+    mapping(uint32 => uint256) public inSale;
     ////////////////////////////////////////////////////////////////
 
     //EVENTS////////////////////////////////////////////////////////
