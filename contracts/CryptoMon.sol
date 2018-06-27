@@ -25,8 +25,7 @@ using SafeMath for uint8;
         else
             revert();
 
-        if (balances[msg.sender] == 0)
-            isWaiting[msg.sender] = [100, 0];
+        firstLogin();
 
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
@@ -173,7 +172,7 @@ using SafeMath for uint8;
 	)
 		external
 	{
-        require((!monsters[_id].busy || _price == 0) && owner[_id] == msg.sender);
+        require((!monsters[_id].busy || inSale[_id] > 0) && owner[_id] == msg.sender);
 		inSale[_id] = _price;
         monsters[_id].busy = (_price == 0)? false : true;
         emit ForSale(msg.sender, _id, _price);
@@ -194,9 +193,9 @@ using SafeMath for uint8;
         approved[_id] = msg.sender;
         emit Approval(owner_, msg.sender, _id);
 
-        transferFrom(owner_, msg.sender, _id);
-
         monsters[_id].busy = false;
+
+        transferFrom(owner_, msg.sender, _id);
 	}
 
 	function withdraw()

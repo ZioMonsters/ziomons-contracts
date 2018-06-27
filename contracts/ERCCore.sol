@@ -75,13 +75,17 @@ contract ERCCore is CoreFunctions {
         isAuthorized(msg.sender, _tokenId)
     {
         require(
-            _from == owner[_tokenId] &&
             _to != address(0) &&
             _tokenId < monsters.length &&
             !monsters[_tokenId].busy
         );
+
+        firstLogin();
+
         owner[_tokenId] = _to;
-        approve(address(0), _tokenId);
+        balances[_to]++;
+        balances[_from]--;
+
         emit Transfer(_from, _to, _tokenId);
     }
 

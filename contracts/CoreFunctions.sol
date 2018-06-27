@@ -4,6 +4,11 @@ import "./Core.sol";
 
 contract CoreFunctions is Core {
 
+    function firstLogin() internal {
+        if (balances[msg.sender] == 0)
+            isWaiting[msg.sender] = [100, 0];
+    }
+
     function computeBattleResults(uint256 i, uint256 j, uint32[5] _ids)
         internal
     {
