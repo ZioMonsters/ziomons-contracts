@@ -17,16 +17,17 @@ contract CoreFunctions is Core {
         isWaiting[_defender.addr] = [100, 0];
 
         //Builds data array, used for event logging.
-        uint32[40] _data;
+        uint32[20] memory _team1;
+        uint32[20] memory _team2;
         for (i = 0; i < 5; i++) {
-            _data[i] = _ids[i];
-            _data[i+5] = monsters[_ids[i]].atk;
-            _data[i+10] = monsters[_ids[i]].def;
-            _data[i+15] = monsters[_ids[i]].spd;
-            _data[i+20] = _defender.deck[i];
-            _data[i+25] = monsters[_defender.deck[i]].atk;
-            _data[i+30] = monsters[_defender.deck[i]].def;
-            _data[i+35] = monsters[_defender.deck[i]].spd;
+            _team1[i] = _ids[i];
+            _team1[i+5] = uint32(monsters[_ids[i]].atk);
+            _team1[i+10] = uint32(monsters[_ids[i]].def);
+            _team1[i+15] = uint32(monsters[_ids[i]].spd);
+            _team2[i] = _defender.deck[i];
+            _team2[i+5] = uint32(monsters[_defender.deck[i]].atk);
+            _team2[i+10] = uint32(monsters[_defender.deck[i]].def);
+            _team2[i+15] = uint32(monsters[_defender.deck[i]].spd);
         }
 
         //Resets the busy state of the defender's monsters.
@@ -65,7 +66,8 @@ contract CoreFunctions is Core {
             emit Results(
                 msg.sender,
                 _defender.addr,
-                _data,
+                _team1,
+                _team2,
                 uint8(params[11]),
                 _winnerId,
                 _moneyWon
@@ -95,7 +97,8 @@ contract CoreFunctions is Core {
         emit Results(
             msg.sender,
             _defender.addr,
-            _data,
+            _team1,
+            _team2,
             uint8(params[11]),
             _winnerId,
             _moneyWon

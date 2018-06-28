@@ -71,7 +71,8 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     event Results(
         address indexed _attacker,
         address indexed _defender,
-        uint32[40] _data,
+        uint32[20] _team1,
+        uint32[20] _team2,
         uint8 _bonusWinner,
         uint256 indexed _winnerId,
         uint256 _moneyWon
@@ -81,6 +82,12 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
         uint256 _oldValue,
         uint256 _newValue
     );
+    event Upgraded(
+        uint32[] _ids,
+        uint8[] _atkMod,
+        uint8[] _defMod,
+        uint8[] _spdMod
+        );
     ///////////////////////////////////////////////////////////////
 
     //MODIFIERS////////////////////////////////////////////////////

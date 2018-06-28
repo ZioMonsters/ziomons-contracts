@@ -76,13 +76,13 @@ using SafeMath for uint8;
         payable
     {
         //Check that you actually payed at least your minimum bet and that you are not already waiting.
-        require(msg.value >= _minBet && isWaiting[msg.sender][0] == 100);
+        /* require(msg.value >= _minBet && isWaiting[msg.sender][0] == 100); */
         for (uint256 i = 0; i < 5; i++) {
             //Check that you own all of the monsters you want to use to attack and that they aren't busy
-            require(owner[_ids[i]] == msg.sender && !monsters[_ids[i]].busy);
+            /* require(owner[_ids[i]] == msg.sender && !monsters[_ids[i]].busy); */
             for (uint256 j = 0; j < 5; j++) {
                 //check that there aren't any duplicates in your squad
-                require(_ids[i] != _ids[j] || i == j);
+                /* require(_ids[i] != _ids[j] || i == j); */
             }
         }
 
@@ -254,5 +254,11 @@ using SafeMath for uint8;
                 monsters[_ids[i]].def += _defMod[i];
                 monsters[_ids[i]].spd += _spdMod[i];
         }
+        emit Upgraded(
+            _ids,
+            _atkMod,
+            _defMod,
+            _spdMod
+            );
     }
 }
