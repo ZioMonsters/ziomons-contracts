@@ -25,7 +25,7 @@ using SafeMath for uint8;
         else
             revert();
 
-        uint256[6] memory _ids;
+        firstLogin();
 
         for (uint8 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
@@ -64,7 +64,6 @@ using SafeMath for uint8;
             )
         );
 
-      _ids[i] = monsters.length - 1;
       emit Transfer(address(0), msg.sender, monsters.length);
     }
         balances[msg.sender] = balances[msg.sender].add(6);
@@ -172,9 +171,8 @@ using SafeMath for uint8;
 		uint256 _price
 	)
 		external
-        returns(bool)
 	{
-        require((!monsters[_id].busy || _price == 0) && owner[_id] == msg.sender);
+        require((!monsters[_id].busy || inSale[_id] > 0) && owner[_id] == msg.sender);
 		inSale[_id] = _price;
         monsters[_id].busy = (_price == 0)? false : true;
         emit ForSale(msg.sender, _id, _price);
@@ -183,7 +181,6 @@ using SafeMath for uint8;
 	function buyMonster(uint32 _id)
 		external
 		payable
-		returns(bool) //TODO Set busy stuff
     {
 		require(inSale[_id] > 0 && msg.value >= inSale[_id]);
         inSale[_id] = 0;
@@ -196,12 +193,12 @@ using SafeMath for uint8;
         approved[_id] = msg.sender;
         emit Approval(owner_, msg.sender, _id);
 
-        transferFrom(owner_, msg.sender, _id);
-
         monsters[_id].busy = false;
+
+        transferFrom(owner_, msg.sender, _id);
 	}
 
-	function withdraw ()
+	function withdraw()
         external
         returns(uint)
     {
