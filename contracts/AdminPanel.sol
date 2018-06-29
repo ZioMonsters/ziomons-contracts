@@ -2,6 +2,7 @@ pragma solidity ^0.4.24;
 
 import "./ERCCore.sol";
 
+
 contract AdminPanel is ERCCore {
 
     function createCustomMonster( //TODO Add check whenever a mosnter is created
@@ -32,13 +33,13 @@ contract AdminPanel is ERCCore {
         return(uint32(monsters.length));
     }
 
-    function changeParameter (uint8 _parameter ,uint16 _newValue)
+    function changeParameter (uint8 _parameter, uint16 _newValue)
         external
         isOwner
         returns (uint256)
     {
 
-        require(_newValue>=0 && _parameter<=11);
+        require(_newValue >= 0 && _parameter <= 11);
         emit Changed(_parameter, params[_parameter], _newValue);
         params[_parameter] = _newValue;
     }

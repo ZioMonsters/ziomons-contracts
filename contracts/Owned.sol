@@ -2,11 +2,12 @@ pragma solidity ^0.4.24;
 
 import "./SafeMath.sol";
 
+
 contract Owned {
     using SafeMath for uint256;
 
-    address contractOwner;
-    address newOwner;
+    address internal contractOwner;
+    address private newOwner;
 
     event OwnershipTransferred(
         address indexed _from,

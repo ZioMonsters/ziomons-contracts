@@ -2,6 +2,7 @@ pragma solidity ^0.4.24;
 
 import "./Core.sol";
 
+
 contract CoreFunctions is Core {
 
     function firstLogin() internal {
@@ -35,12 +36,9 @@ contract CoreFunctions is Core {
             _team2[i+15] = uint32(monsters[_defender.deck[i]].spd);
         }
 
-        //Resets the busy state of the defender's monsters.
+        //Resets the busy state of the defender"s monsters.
         for (i = 0; i < 5; i++)
             monsters[_defender.deck[i]].busy = false;
-
-        //removes the defender's money from pending state.
-        moneyPending = moneyPending.sub(_defender.bet);
 
         //Then it computes the result of the match.
         uint256 _winnerId = startMatch(_ids, _defender.deck);
@@ -61,7 +59,7 @@ contract CoreFunctions is Core {
             _betWinner = _defender.bet;
             _betLoser = msg.value;
 
-            //If it's a draw, give back the money to both opponents, without taking fees.
+            //If it"s a draw, give back the money to both opponents, without taking fees.
         } else {
             money[_defender.addr] = money[_defender.addr].add(_defender.bet);
             money[msg.sender] = money[msg.sender].add(msg.value);
@@ -124,7 +122,7 @@ contract CoreFunctions is Core {
         Team[6] memory _team1;
         Team[6] memory _team2;
 
-        for(uint256 i=0; i<5; i++){
+        for (uint256 i = 0; i < 5; i++) {
             _team1[i] = Team(
                 monsters[_team1Id[i]].atk,
                 monsters[_team1Id[i]].def,
@@ -140,67 +138,61 @@ contract CoreFunctions is Core {
             );
         }
 
-        for(i=0; i<5; i++) {
+        for (i = 0; i < 5; i++) {
             if (_team1[i].spd > _team2[i].spd) {
-                if(_team1[i].atk > _team2[i].def) {
+                if (_team1[i].atk > _team2[i].def) {
                     _score1++;
-                    _team1[i+1].atk+=uint8(params[11]);
-                }
-                else {
+                    _team1[i+1].atk += uint8(params[11]);
+                } else {
                     _score2++;
-                    _team2[i+1].def+=uint8(params[11]);
+                    _team2[i+1].def += uint8(params[11]);
                 }
             } else if (_team1[i].spd < _team2[i].spd) {
-                if(_team2[i].atk > _team1[i].def) {
+                if (_team2[i].atk > _team1[i].def) {
                     _score2++;
-                    _team2[i+1].atk+=uint8(params[11]);
-                }
-                else {
+                    _team2[i+1].atk += uint8(params[11]);
+                } else {
                     _score1++;
-                    _team1[i+1].def+=uint8(params[11]);
+                    _team1[i+1].def += uint8(params[11]);
                 }
             } else {
                 if (_team1[i].atk > _team2[i].atk) {
                     _score1++;
-                    _team1[i+1].atk+=uint8(params[11]);
-                }
-                else if (_team1[i].atk < _team2[i].atk) {
+                    _team1[i+1].atk += uint8(params[11]);
+                } else if (_team1[i].atk < _team2[i].atk) {
                     _score2++;
-                    _team2[i+1].def+=uint8(params[11]);
-                }
-                else {
+                    _team2[i+1].def += uint8(params[11]);
+                } else {
                     if (_team1[i].def > _team2[i].def) {
                         _score1++;
-                        _team1[i+1].def+=uint8(params[11]);
-                    }
-                    else if (_team1[i].def < _team1[i].def) {
+                        _team1[i+1].def += uint8(params[11]);
+                    } else if (_team1[i].def < _team1[i].def) {
                         _score2++;
-                        _team2[i+1].def+=uint8(params[11]);
-                    }
-                    else {
+                        _team2[i+1].def += uint8(params[11]);
+                    } else {
                         expUp(_team1Id, _team2Id, true);
                         return 0;
                     }
                 }
             }
-
+        }
+        
         expUp(
-            (_score1>_score2)? _team1Id:_team2Id,
-            (_score1<_score2)? _team1Id:_team2Id,
+            (_score1 > _score2) ? _team1Id : _team2Id,
+            (_score1 < _score2) ? _team1Id : _team2Id,
             false
         );
-        return (_score1 > _score2)? 1:2;
-        }
+        return (_score1 > _score2) ? 1 : 2;
     }
 
     function expUp(uint32[5] _team1Id, uint32[5] _team2Id, bool _draw)
         internal
     {
-        for(uint256 i = 0; i<5; i++) {
+        for (uint256 i = 0; i < 5; i++) {
             if (monsters[_team1Id[i]].lvl < 100)
                 monsters[_team1Id[i]].exp = monsters[_team1Id[i]].exp + params[7];
             if (monsters[_team2Id[i]].lvl < 100)
-                monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp + (_draw? params[7] : params[8]);
+                monsters[_team2Id[i]].exp = monsters[_team2Id[i]].exp + (_draw ? params[7] : params[8]);
         }
     }
 

@@ -3,6 +3,7 @@ pragma solidity ^0.4.24;
 import "./CoreFunctions.sol";
 import "./SafeMath.sol";
 
+
 contract ERCCore is CoreFunctions {
     using SafeMath for uint;
 
@@ -133,40 +134,29 @@ contract ERCCore is CoreFunctions {
         return monsters.length;
     }
 
-    function tokenByIndex(uint256 _index) external view returns (uint256) {
-        require(_index < this.totalSupply());
-        return _index;
-    }
-
-    function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256) {
-        return 1; /*TODO*/
-    }
-
     function supportsInterface(bytes4 interfaceID)
         external
         view
         returns (bool)
     {
-        bytes4 InterfaceSignature_ERC165 =
-            bytes4(keccak256('supportsInterface(bytes4)'));
+        bytes4 interfaceSignatureERC165 =
+            bytes4(keccak256("supportsInterface(bytes4)"));
 
-        bytes4 InterfaceSignature_ERC721 =
-            bytes4(keccak256('balanceOf(address)')) ^
-            bytes4(keccak256('ownerOf(uint256)')) ^
-            bytes4(keccak256('approve(address,uint256)')) ^
-            bytes4(keccak256('getApproved(uint256)')) ^
-            bytes4(keccak256('setApprovalForAll(address,bool)')) ^
-            bytes4(keccak256('isApprovedForAll(address,address)')) ^
-            bytes4(keccak256('transferFrom(address,address,uint256)')) ^
-            bytes4(keccak256('safeTransferFrom(address,address,uint256)')) ^
-            bytes4(keccak256('safeTransferFrom(address,address,uint256,bytes)')) ^
-            bytes4(keccak256('totalSupply()')) ^
-            bytes4(keccak256('tokenByIndex(uint256)')) ^
-            bytes4(keccak256('tokenOfOwnerByIndex(address,uint256)'));
+        bytes4 interfaceSignatureERC721 =
+            bytes4(keccak256("balanceOf(address)")) ^
+            bytes4(keccak256("ownerOf(uint256)")) ^
+            bytes4(keccak256("approve(address,uint256)")) ^
+            bytes4(keccak256("getApproved(uint256)")) ^
+            bytes4(keccak256("setApprovalForAll(address,bool)")) ^
+            bytes4(keccak256("isApprovedForAll(address,address)")) ^
+            bytes4(keccak256("transferFrom(address,address,uint256)")) ^
+            bytes4(keccak256("safeTransferFrom(address,address,uint256)")) ^
+            bytes4(keccak256("safeTransferFrom(address,address,uint256,bytes)")) ^
+            bytes4(keccak256("totalSupply()"));
 
         return(
-            interfaceID == InterfaceSignature_ERC165 ||
-            interfaceID == InterfaceSignature_ERC721
+            interfaceID == interfaceSignatureERC165 ||
+            interfaceID == interfaceSignatureERC721
         );
     }
 

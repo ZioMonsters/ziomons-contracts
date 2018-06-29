@@ -3,27 +3,29 @@ pragma solidity ^0.4.24;
 import "./AdminPanel.sol";
 import "./SafeMath.sol";
 
+
 contract CryptoMon is AdminPanel {
 
-using SafeMath for uint8;
+    using SafeMath for uint8;
 
     constructor() public {
         seed = now;
     }
 
-	function unbox()
+    function unbox()
         external
-	    payable
-	{
+        payable
+    {
         uint256 _modifier;
-        if (msg.value >= params[2])
+        if (msg.value >= params[2]) {
             _modifier = params[5];
-        else if (msg.value >= params[1])
+        } else if (msg.value >= params[1]) {
             _modifier = params[4];
-        else if (msg.value >= params[0])
+        } else if (msg.value >= params[0]) {
             _modifier = params[3];
-        else
+        } else {
             revert();
+        }
 
         firstLogin();
 
@@ -34,54 +36,55 @@ using SafeMath for uint8;
             uint256 _modRarityMax;
             uint8 _rarity;
 
-        if (_tmp == 1) {
-            _modRarityMin = 17;
-            _modRarityMax = 21;
-            _rarity = 3;
-        } else if (_tmp < 11) {
-            _modRarityMin = 14;
-            _modRarityMax = 17;
-            _rarity = 2;
-		} else if (_tmp < 200) {
-            _modRarityMin = 11;
-            _modRarityMax = 14;
-            _rarity = 1;
-		} else {
-    		_modRarityMin = 8;
-            _modRarityMax = 11;
-    		_rarity = 0;
+            if (_tmp == 1) {
+                _modRarityMin = 17;
+                _modRarityMax = 21;
+                _rarity = 3;
+            } else if (_tmp < 11) {
+                _modRarityMin = 14;
+                _modRarityMax = 17;
+                _rarity = 2;
+            } else if (_tmp < 200) {
+                _modRarityMin = 11;
+                _modRarityMax = 14;
+                _rarity = 1;
+            } else {
+                _modRarityMin = 8;
+                _modRarityMax = 11;
+                _rarity = 0;
+            }
+
+            monsters.push(
+                Monster(
+                    uint8(randInt(_modRarityMin, _modRarityMax)),
+                    uint8(randInt(_modRarityMin, _modRarityMax)),
+                    uint8(randInt(_modRarityMin, _modRarityMax)),
+                    1,
+                    _rarity,
+                    0,
+                    false
+                )
+            );
+
+            emit Transfer(address(0), msg.sender, monsters.length);
         }
 
-        monsters.push(
-            Monster(
-                uint8(randInt(_modRarityMin, _modRarityMax)),
-                uint8(randInt(_modRarityMin, _modRarityMax)),
-                uint8(randInt(_modRarityMin, _modRarityMax)),
-                1,
-                _rarity,
-                0,
-                false
-            )
-        );
-
-      emit Transfer(address(0), msg.sender, monsters.length);
-    }
         balances[msg.sender] = balances[msg.sender].add(6);
         money[contractOwner] = money[contractOwner].add(msg.value);
-	}
+    }
 
     function fight(uint32[5] _ids, uint256 _minBet)
         external
         payable
     {
         //Check that you actually payed at least your minimum bet and that you are not already waiting.
-        /* require(msg.value >= _minBet && isWaiting[msg.sender][0] == 100); */
+        require(msg.value >= _minBet && isWaiting[msg.sender][0] == 100);
         for (uint256 i = 0; i < 5; i++) {
             //Check that you own all of the monsters you want to use to attack and that they aren't busy
-            /* require(owner[_ids[i]] == msg.sender && !monsters[_ids[i]].busy); */
+            require(owner[_ids[i]] == msg.sender && !monsters[_ids[i]].busy);
             for (uint256 j = 0; j < 5; j++) {
                 //check that there aren't any duplicates in your squad
-                /* require(_ids[i] != _ids[j] || i == j); */
+                require(_ids[i] != _ids[j] || i == j);
             }
         }
 
@@ -92,9 +95,9 @@ using SafeMath for uint8;
             _tmp[i] = monsters[_ids[i]].lvl;
 
         //Insertion sort algorithm
-        for (i = 1;i < 5;i++) {
+        for (i = 1; i < 5; i++) {
             uint8 temp = _tmp[i];
-            for (j = i -1; j >= 0 && temp < _tmp[j]; j--)
+            for (j = i - 1; j >= 0 && temp < _tmp[j]; j--)
                 _tmp[j+1] = _tmp[j];
             _tmp[j + 1] = temp;
         }
@@ -102,7 +105,7 @@ using SafeMath for uint8;
         //The waiting queue has only 100 spaces, this means that its last index is 99, not 100.
         _level = _tmp[2] - 1;
 
-        //Used to prevent underflows. More efficient than doing other checks
+        //Used to prevent underflow. More efficient than doing other checks
         if (_level < params[6])
             _level = params[6];
 
@@ -127,12 +130,13 @@ using SafeMath for uint8;
                     waiting[i][j_].minBet <= msg.value &&
                     waiting[i][j_].bet >= _minBet &&
                     waiting[i][j_].addr != msg.sender
-                ) return computeBattleResults(i, j_, _ids);
+                )
+                    return computeBattleResults(i, j_, _ids);
             }
         }
 
-        //If the contract couldn't find anyone, it puts you in the waiting list and puts your money
-        //In pending state. All of your monsters are marked as busy.
+        //If the contract couldn"t find anyone, it puts you in the waiting list.
+        //All of your monsters are marked as busy.
         for (i = 0; i < 5; i++)
             monsters[_ids[0]].busy = true;
 
@@ -144,10 +148,9 @@ using SafeMath for uint8;
         );
 
         waitingLength[_level]++;
-        moneyPending= moneyPending.add(msg.value);
 
         //Sets waiting state
-        isWaiting[msg.sender] = [_level, waitingLength[_level]];
+        isWaiting[msg.sender] = [_level, waitingLength[_level] - 1];
     }
 
     function stopWaiting()
@@ -157,6 +160,8 @@ using SafeMath for uint8;
         require(_x != 100);
         uint256 _y = isWaiting[msg.sender][1];
 
+        money[waiting[_x][_y].addr] = money[waiting[_x][_y].addr].add(waiting[_x][_y].bet);
+
         for (uint256 i = 0; i < 5; i++)
             monsters[waiting[_x][_y].deck[i]].busy = false;
 
@@ -165,24 +170,23 @@ using SafeMath for uint8;
         isWaiting[msg.sender] = [100, 0];
     }
 
-
     function sellMonster(
-		uint32 _id,
-		uint256 _price
-	)
-		external
-	{
-        require((!monsters[_id].busy || inSale[_id] > 0) && owner[_id] == msg.sender);
-		inSale[_id] = _price;
-        monsters[_id].busy = (_price == 0)? false : true;
-        emit ForSale(msg.sender, _id, _price);
-	}
-
-	function buyMonster(uint32 _id)
-		external
-		payable
+        uint32 _id,
+        uint256 _price
+    )
+        external
     {
-		require(inSale[_id] > 0 && msg.value >= inSale[_id]);
+        require((!monsters[_id].busy || inSale[_id] > 0) && owner[_id] == msg.sender);
+        inSale[_id] = _price;
+        monsters[_id].busy = (_price == 0) ? false : true;
+        emit ForSale(msg.sender, _id, _price);
+    }
+
+    function buyMonster(uint32 _id)
+        external
+        payable
+    {
+        require(inSale[_id] > 0 && msg.value >= inSale[_id]);
         inSale[_id] = 0;
         address owner_ = owner[_id];
 
@@ -196,18 +200,18 @@ using SafeMath for uint8;
         monsters[_id].busy = false;
 
         transferFrom(owner_, msg.sender, _id);
-	}
+    }
 
-	function withdraw()
+    function withdraw()
         external
         returns(uint)
     {
-		require(money[msg.sender] > 0 );
-		uint256 _amount = money[msg.sender];
-		money[msg.sender] = 0;
-		msg.sender.transfer(_amount);
+        require(money[msg.sender] > 0);
+        uint256 _amount = money[msg.sender];
+        money[msg.sender] = 0;
+        msg.sender.transfer(_amount);
         return _amount;
-	}
+    }
 
     function lvlUp (
         uint32[] _ids,
@@ -225,7 +229,7 @@ using SafeMath for uint8;
 
         uint8 _skillsAvailable;
 
-        for(uint256 i = 0; i<_ids.length; i++) {
+        for (uint256 i = 0; i < _ids.length; i++) {
             _skillsAvailable = 0;
             require(owner[_ids[i]] == msg.sender);
 
@@ -243,13 +247,13 @@ using SafeMath for uint8;
             uint256 _cap = monsters[_ids[i]].lvl/11*12+20;
 
             require(
-                _cap>=monsters[_ids[i]].atk+_atkMod[i] &&
-                _cap>=monsters[_ids[i]].def+_defMod[i] &&
-                _cap>=monsters[_ids[i]].spd+_spdMod[i]
-                );
-                monsters[_ids[i]].atk += _atkMod[i];
-                monsters[_ids[i]].def += _defMod[i];
-                monsters[_ids[i]].spd += _spdMod[i];
+                _cap >= monsters[_ids[i]].atk+_atkMod[i] &&
+                _cap >= monsters[_ids[i]].def+_defMod[i] &&
+                _cap >= monsters[_ids[i]].spd+_spdMod[i]
+            );
+            monsters[_ids[i]].atk += _atkMod[i];
+            monsters[_ids[i]].def += _defMod[i];
+            monsters[_ids[i]].spd += _spdMod[i];
         }
         emit Upgraded(
             _ids,
