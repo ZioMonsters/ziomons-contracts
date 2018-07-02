@@ -29,7 +29,9 @@ contract CryptoMon is AdminPanel {
 
         firstLogin();
 
-        for (uint8 i = 0; i < 6; i++) {
+        uint32[6] _ids;
+
+        for (uint256 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
             uint256 _tmp = randInt(0, 1000-_modifier);
             uint256 _modRarityMin;
@@ -66,8 +68,11 @@ contract CryptoMon is AdminPanel {
                 )
             );
 
-            emit Transfer(address(0), msg.sender, monsters.length);
+            emit Transfer(address(0), msg.sender, monsters.length - 1);
+            _ids[i] = uint32(monsters.length - 1);
         }
+
+        emit Unboxed(msg.sender, _ids);
 
         balances[msg.sender] = balances[msg.sender].add(6);
         money[contractOwner] = money[contractOwner].add(msg.value);

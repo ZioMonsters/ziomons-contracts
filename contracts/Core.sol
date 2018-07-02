@@ -67,6 +67,11 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     ////////////////////////////////////////////////////////////////
 
     //EVENTS////////////////////////////////////////////////////////
+    event Unboxed(
+        address indexed _player,
+        uint32[6] _ids
+    );
+
     event ForSale(
         address indexed _player,
         uint32 _id,
