@@ -197,10 +197,10 @@ contract CoreFunctions is Core {
     }
 
     function randInt(uint256 _min, uint256 _max)
-        internal
+        public
         returns(uint256)
     {
-        seed = (45673657420947598375958743997 * seed + 359873489578437507340985340985347) % 984732984732897443257676352;
+        seed = (45634872096 * seed + 3743892058) % 63767; //tmpfix. TODO: Find solution.
         if (_min == _max)
             return 0;
         else
