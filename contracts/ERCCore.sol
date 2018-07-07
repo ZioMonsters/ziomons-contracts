@@ -1,11 +1,8 @@
 pragma solidity ^0.4.24;
 
 import "./CoreFunctions.sol";
-import "./SafeMath.sol";
-
 
 contract ERCCore is CoreFunctions {
-    using SafeMath for uint;
 
     function isContract(address addr)
         internal

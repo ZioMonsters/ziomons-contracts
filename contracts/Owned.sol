@@ -2,8 +2,8 @@ pragma solidity ^0.4.24;
 
 /**
   * @title Owned
-  * @dev The owner of the contract can change game parameters (See AdminPanel)
-  * @dev and the money from fees and unboxes goes to its address.
+  * @notice The owner of the contract can change game parameters (See AdminPanel)
+  * @notice and the money from fees and unboxes goes to its address.
   * @author Matteo Bonacini
   */
 contract Owned {

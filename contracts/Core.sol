@@ -49,7 +49,7 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     // is capped at 2**32. Once (and if) that number is reached, the unbox
     // function will be disabled, and the only way to receive a new monster
     // would be to buy it, or receive it with a transfer.
-    Monster[] public monsters;
+    Monster[] public monsters; //TODO check for overflow whenever a mosnter is created
 
     // Stores the team and other relevant data for
     // every player who chose to fight in any level range.
