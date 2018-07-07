@@ -176,8 +176,9 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     /**
       * @notice Emitted when a player upgrades a monster's stats.
       * @param _id The id of the monster.
-      
-      
+      * @param _atkMod The increase of the attack.
+      * @param _defMod The increase of the defence.
+      * @param _spdMod The increase of the speed.     
       */
     event Upgraded(
         uint32 _id,
@@ -188,6 +189,9 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     ///////////////////////////////////////////////////////////////
 
     //MODIFIERS////////////////////////////////////////////////////
+    // Used in some ERC-721 functions to check wheter an address is authorized
+    // to perform actions on a token.
+    // Throws if _sender is not the owner or an approved address for _id.
     modifier isAuthorized(address _sender, uint256 _id) {
         require(
             owner[_id] == _sender ||
