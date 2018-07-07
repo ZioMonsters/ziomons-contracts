@@ -27,6 +27,9 @@ library SafeMath {
         return c;
     }
 
+    /**
+      * @dev Subtracts two numbers, throws on overflow.
+      */
     function sub(uint256 a, uint256 b)
         internal
         pure

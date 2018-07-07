@@ -238,7 +238,7 @@ contract CryptoMon is AdminPanel {
             _skillsAvailable = 0;
             require(owner[_ids[i]] == msg.sender);
 
-            while (
+            while ( //TODO Wtf, can this be resolved without the need for a while loop?
                 ((uint256(monsters[_ids[i]].lvl)**3)/5) <= monsters[_ids[i]].exp &&
                 monsters[_ids[i]].lvl < 100
             ) {
@@ -247,24 +247,28 @@ contract CryptoMon is AdminPanel {
             }
 
 
-            require(_atkMod[i] + _defMod[i] + _spdMod[i] <= _skillsAvailable);
+            require(_atkMod[i].add(_defMod[i]).add(_spdMod[i]) <= _skillsAvailable);
 
             uint256 _cap = monsters[_ids[i]].lvl/11*12+20;
 
             require(
-                _cap >= monsters[_ids[i]].atk+_atkMod[i] &&
-                _cap >= monsters[_ids[i]].def+_defMod[i] &&
-                _cap >= monsters[_ids[i]].spd+_spdMod[i]
+                _cap >= monsters[_ids[i]].atk.add(_atkMod[i]) &&
+                _cap >= monsters[_ids[i]].def.add(_defMod[i]) &&
+                _cap >= monsters[_ids[i]].spd.add(_spdMod[i])
             );
+
+            // No need to use safemath: overflows are checked for 
+            // in the require above.
             monsters[_ids[i]].atk += _atkMod[i];
             monsters[_ids[i]].def += _defMod[i];
             monsters[_ids[i]].spd += _spdMod[i];
-        }
-        emit Upgraded(
-            _ids,
-            _atkMod,
-            _defMod,
-            _spdMod
+
+            emit Upgraded(
+                _ids[i],
+                _atkMod[i],
+                _defMod[i],
+                _spdMod[i]
             );
+        }
     }
 }
