@@ -33,7 +33,7 @@ contract AdminPanel is ERCCore {
             )
         );
         owner[monsters.length] = msg.sender;
-        emit Transfer(address(0), msg.sender, monsters.length);
+        emit Transfer(address(0), msg.sender, monsters.length-1);
         return(uint32(monsters.length));
     }
     /**

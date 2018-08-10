@@ -97,15 +97,15 @@ contract CoreFunctions is Core {
 
         //Emits the result. The squads are logged, together with the winnerBonus to allow
         //people to recreate the fight in case they want to.
-        emit Results(
-            msg.sender,
-            _defender.addr,
-            _team1,
-            _team2,
-            uint8(params[11]),
-            _winnerId,
-            _moneyWon
-        );
+            emit Results(
+                msg.sender,
+                _defender.addr,
+                _team1,
+                _team2,
+                uint8(params[11]),
+                _winnerId,
+                _moneyWon
+            );
 
         //At the end, the function returns to prevent multiple fights
         return;
@@ -176,7 +176,7 @@ contract CoreFunctions is Core {
                 }
             }
         }
-        
+
         expUp(
             (_score1 > _score2) ? _team1Id : _team2Id,
             (_score1 < _score2) ? _team1Id : _team2Id,

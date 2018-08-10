@@ -33,7 +33,7 @@ contract CryptoMon is AdminPanel {
 
         for (uint256 i = 0; i < 6; i++) {
             owner[monsters.length] = msg.sender;
-            uint256 _tmp = randInt(0, 1000-_modifier);
+            uint256 _tmp = randInt(0, 10000-_modifier);
             uint256 _modRarityMin;
             uint256 _modRarityMax;
             uint8 _rarity;
@@ -257,7 +257,7 @@ contract CryptoMon is AdminPanel {
                 _cap >= monsters[_ids[i]].spd.add(_spdMod[i])
             );
 
-            // No need to use safemath: overflows are checked for 
+            // No need to use safemath: overflows are checked for
             // in the require above.
             monsters[_ids[i]].atk += _atkMod[i];
             monsters[_ids[i]].def += _defMod[i];

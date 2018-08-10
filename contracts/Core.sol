@@ -6,7 +6,7 @@ import "./SafeMath.sol";
 
 /**
   * @title Core
-  * @dev In this contract are declared all the storage variables used 
+  * @dev In this contract are declared all the storage variables used
   * @dev by the game.
   * @author Emanuele Caruso, Matteo Bonacini
   */
@@ -83,7 +83,7 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     // Stores whether an address is approved to manage all the tokens
     // of another address. (Needed for the contract to be ERC-721 compliant).
     mapping(address => mapping(address => bool)) internal approvedForAll;
-    
+
     // Stores the approves address for a token. (Needed for the contract
     // to be ERC-721 compliant).
     mapping(uint256 => address) internal approved;
@@ -96,19 +96,19 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     // These are the parameters that can be changed by the onwer. An event is
     // emitted whenever a change occurs. We will try to keep these changes to
     // a minimum, and to let the users know in advance if one is planned.
-    uint16[12] public params = [
-        2, //standardBoxPrice
-        5, //plusBoxPrice
-        8, //maxiBoxPrice
-        0, //modifierStandard
-        100, //modifierPlus
-        200, //modifierMaxi
-        5, //matchmakingRange
-        100, //expUpWinner
-        40, //expUpLoser
-        375, //fees
-        1, //possibleUpgrade
-        1     //bonusWinner
+    uint64[12] public params = [
+        2500 szabo,     //standardBoxPrice 1$
+        12500 szabo,    //plusBoxPrice 5$
+        37500 szabo,    //maxiBoxPrice 15$
+        0,              //modifierStandard 1/10000 chance legendary
+        700,            //modifierPlus   1/9300  chance legendary
+        2000,           //modifierMaxi  1/8000  chance legendary
+        5,              //matchmakingRange
+        100,            //expUpWinner
+        40,             //expUpLoser
+        375,            //fees
+        1,              //possibleUpgrade
+        5               //bonusWinner
     ];
     ////////////////////////////////////////////////////////////////
 
@@ -178,7 +178,7 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
       * @param _id The id of the monster.
       * @param _atkMod The increase of the attack.
       * @param _defMod The increase of the defence.
-      * @param _spdMod The increase of the speed.     
+      * @param _spdMod The increase of the speed.
       */
     event Upgraded(
         uint32 _id,
