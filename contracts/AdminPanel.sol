@@ -1,13 +1,12 @@
 pragma solidity ^0.4.24;
 
-import "./ERCCore.sol";
-
+import "./CryptoMon.sol";
 /**
   * @title AdminPanel
   * @notice Contains functions that can be called only by the owner.
   * @author Emanuele Caruso
   */
-contract AdminPanel is ERCCore {
+contract AdminPanel is CryptoMon {
 
     function createCustomMonster( //TODO REMOVE, just for testing
         uint8 _atk,
@@ -56,5 +55,23 @@ contract AdminPanel is ERCCore {
 
         // Stores the new value.
         params[_parameter] = _newValue;
+    }
+
+    function clearQueue(uint8 _levelFrom, uint8 _levelTo, uint256 _tokick)
+        external
+        isOwner
+    {
+        for(uint8 i=_levelFrom; i<=_levelTo; i++){
+            for(uint8 j=0; j<=_tokick; j++){
+                isWaiting[waiting[i][j].addr] = [100,0];
+                monsters[waiting[i][j].deck[0]].busy = false;
+                monsters[waiting[i][j].deck[1]].busy = false;
+                monsters[waiting[i][j].deck[2]].busy = false;
+                monsters[waiting[i][j].deck[3]].busy = false;
+                monsters[waiting[i][j].deck[4]].busy = false;
+                delete waiting[i][j];
+            }
+            waitingLength[i] = 0;
+        }
     }
 }
