@@ -152,6 +152,8 @@ contract CryptoMon is AdminPanel {
             msg.value
         );
 
+        if(!isContract(msg.sender)) withdraw();
+
         waitingLength[_level]++;
 
         //Sets waiting state
@@ -208,7 +210,7 @@ contract CryptoMon is AdminPanel {
     }
 
     function withdraw()
-        external
+        public
         returns(uint)
     {
         require(money[msg.sender] > 0);
