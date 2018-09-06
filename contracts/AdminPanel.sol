@@ -7,7 +7,7 @@ import "./CryptoMon.sol";
   * @author Emanuele Caruso
   */
 contract AdminPanel is CryptoMon {
-
+/*
     function createCustomMonster( //TODO REMOVE, just for testing
         uint8 _atk,
         uint8 _def,
@@ -34,7 +34,7 @@ contract AdminPanel is CryptoMon {
         owner[monsters.length] = msg.sender;
         emit Transfer(address(0), msg.sender, monsters.length-1);
         return(uint32(monsters.length));
-    }
+    } */
     /**
       * @notice Changes contract parameters. Can only be called by the owner.
       * @notice Checks on the new value MUST be performed BY THE CALLER.
