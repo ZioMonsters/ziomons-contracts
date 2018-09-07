@@ -1,10 +1,10 @@
 pragma solidity ^0.4.24;
 
-import "./ERCCore.sol";
+import "./AdminPanel.sol";
 import "./SafeMath.sol";
 
 
-contract CryptoMon is ERCCore {
+contract CryptoMon is AdminPanel {
 
     using SafeMath for uint8;
 
