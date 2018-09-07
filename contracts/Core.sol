@@ -73,7 +73,6 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     // Stores the owner of every token.
     mapping(uint256 => address) internal owner; //TODO set uint32
 
-    //TODO: auto-withdraw && set internal
     mapping(address => uint256) public money;
 
     // Stores the number of tokens a person owns. (Needed for the contract
