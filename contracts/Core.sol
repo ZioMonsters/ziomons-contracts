@@ -95,7 +95,7 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
     // These are the parameters that can be changed by the onwer. An event is
     // emitted whenever a change occurs. We will try to keep these changes to
     // a minimum, and to let the users know in advance if one is planned.
-    uint64[12] public params = [
+    uint64[13] public params = [
         2500 szabo,     //standardBoxPrice 1$
         12500 szabo,    //plusBoxPrice 5$
         37500 szabo,    //maxiBoxPrice 15$
@@ -107,7 +107,8 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
         40,             //expUpLoser
         375,            //fees
         1,              //possibleUpgrade
-        5               //bonusWinner
+        5,              //bonusWinner
+        20180908        //to put in destroy
     ];
     ////////////////////////////////////////////////////////////////
 
