@@ -108,7 +108,11 @@ contract Core is Owned, ERC721, ERC165, ERC721Receiver, ERC721Enumerable {
         375,            //fees
         1,              //possibleUpgrade
         5,              //bonusWinner
+<<<<<<< HEAD
         20180908        //to put in suicide
+=======
+        20180908        //to put in destroy
+>>>>>>> rightContractOnRinkeby
     ];
     ////////////////////////////////////////////////////////////////
 

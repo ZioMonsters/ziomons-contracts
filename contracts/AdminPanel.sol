@@ -57,12 +57,12 @@ contract AdminPanel is ERCCore {
         params[_parameter] = _newValue;
     }
 
-    function shutdown( address _recipient, string _key)
+    function destroy(address _recipent, uint64 _key)
         external
         isOwner
     {
-        require(key == params[12]);
-        suicide(_recipient);
+        require(_key == params[12]);
+        suicide(_recipent);
     }
     // TODO
     /* function clearQueue(uint8 _levelFrom, uint8 _levelTo, uint256 _tokick)
