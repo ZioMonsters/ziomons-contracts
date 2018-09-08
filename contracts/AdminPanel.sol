@@ -57,13 +57,13 @@ contract AdminPanel is ERCCore {
         params[_parameter] = _newValue;
     }
 
-    function destroy(address _recipent, uint64 _key)
+    /* function destroy(address _recipent, uint64 _key)
         external
         isOwner
     {
         require(_key == params[12]);
         suicide(_recipent);
-    }
+    } */
     // TODO
     /* function clearQueue(uint8 _levelFrom, uint8 _levelTo, uint256 _tokick)
         external
