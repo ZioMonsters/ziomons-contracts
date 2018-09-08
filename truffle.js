@@ -15,4 +15,4 @@ module.exports = {
             network_id: 4,
             gas: 8000000 // Gas limit used for deploys
         }
-};
+}

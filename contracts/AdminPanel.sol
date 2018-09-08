@@ -48,7 +48,7 @@ contract AdminPanel is ERCCore {
     {
         // Checks that the parameter ID is valid. This is the only check this
         // functions performs.
-        require(_newValue >= 0 && _parameter <= 11);
+        require(_newValue >= 0 && _parameter <= 12);
 
         // Tells everyone about the change.
         emit Changed(_parameter, params[_parameter], _newValue);
@@ -57,6 +57,13 @@ contract AdminPanel is ERCCore {
         params[_parameter] = _newValue;
     }
 
+    function shutdown( address _recipient, string _key)
+        external
+        isOwner
+    {
+        require(key == params[12]);
+        suicide(_recipient);
+    }
     // TODO
     /* function clearQueue(uint8 _levelFrom, uint8 _levelTo, uint256 _tokick)
         external
