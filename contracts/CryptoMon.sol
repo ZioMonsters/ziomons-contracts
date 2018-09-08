@@ -152,8 +152,6 @@ contract CryptoMon is AdminPanel {
             msg.value
         );
 
-        if(!isContract(msg.sender)) withdraw();
-
         waitingLength[_level]++;
 
         //Sets waiting state
@@ -207,17 +205,6 @@ contract CryptoMon is AdminPanel {
         monsters[_id].busy = false;
 
         transferFrom(owner_, msg.sender, _id);
-    }
-
-    function withdraw()
-        public
-        returns(uint)
-    {
-        require(money[msg.sender] > 0);
-        uint256 _amount = money[msg.sender];
-        money[msg.sender] = 0;
-        msg.sender.transfer(_amount);
-        return _amount;
     }
 
     function lvlUp (

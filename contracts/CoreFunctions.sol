@@ -97,15 +97,19 @@ contract CoreFunctions is Core {
 
         //Emits the result. The squads are logged, together with the winnerBonus to allow
         //people to recreate the fight in case they want to.
-            emit Results(
-                msg.sender,
-                _defender.addr,
-                _team1,
-                _team2,
-                uint8(params[11]),
-                _winnerId,
-                _moneyWon
-            );
+        emit Results(
+            msg.sender,
+            _defender.addr,
+            _team1,
+            _team2,
+            uint8(params[11]),
+            _winnerId,
+            _moneyWon
+        );
+
+        //Sends the money to the wallets. Done in this way to be more secure
+        //and because we have used too many local variables to do it here
+        withdraw(msg.sender, _defender.addr);
 
         //At the end, the function returns to prevent multiple fights
         return;
@@ -205,5 +209,17 @@ contract CoreFunctions is Core {
             return 0;
         else
             return seed % (_max-_min) + _min;
+    }
+
+
+    function withdraw(address firstAddress, address secondAddress)
+        internal
+    {
+        uint256 _amount = money[firstAddress];
+        money[firstAddress] = 0;
+        firstAddress.transfer(_amount);
+        _amount = money[secondAddress];
+        money[secondAddress] = 0;
+        secondAddress.transfer(_amount);
     }
 }
