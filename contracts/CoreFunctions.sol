@@ -206,5 +206,4 @@ contract CoreFunctions is Core {
         else
             return seed % (_max-_min) + _min;
     }
-    
 }
